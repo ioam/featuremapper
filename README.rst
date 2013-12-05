@@ -10,5 +10,5 @@ own repository, so  that sometime in the next few days it will be ready to use i
 Installation
 ============
 
-FeatureMapper requires `NumPy <http://numpy.scipy.org/>`_, `PIL <http://www.pythonware.com/products/pil/>`_, `ImaGen's website <http://ioam.github.com/imagen/>`_  and `Param <http://ioam.github.com/param/>`_.
+FeatureMapper requires `NumPy <http://numpy.scipy.org/>`_, `PIL <http://www.pythonware.com/products/pil/>`_, `ImaGen <http://ioam.github.com/imagen/>`_,  and `Param <http://ioam.github.com/param/>`_.
 
