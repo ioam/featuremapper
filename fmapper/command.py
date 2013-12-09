@@ -189,7 +189,7 @@ class PositionMeasurementCommand(MeasureResponseCommand):
     Parameterized command for measuring topographic position.
     """
 
-    divisions = param.Integer(default=6, bounds=(1, None), doc="""
+    divisions = param.Integer(default=7, bounds=(1, None), doc="""
         The number of different positions to measure in X and in Y.""")
 
     x_range = param.NumericTuple((-0.5, 0.5), doc="""
@@ -310,9 +310,9 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
 
     def _feature_list(self, p):
         return [Feature(name="orientation", range=(0, np.pi),
-                        step=np.pi / p.num_orientation, cyclic=True),
+                        steps=p.num_orientation, cyclic=True),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies)]
 
 
@@ -434,7 +434,7 @@ class measure_rfs(SingleInputResponseCommand):
 
     def _feature_list(self, p):
         return [
-            Feature(name="presentation", range=(0, p.presentations), step=1.0),
+            Feature(name="presentation", range=(0, p.presentations-1), steps=p.presentations),
             Feature(name="scale", values=[p.scale])]
 
 
@@ -512,24 +512,24 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
 
         if p.num_direction == 0: features += \
             [Feature(name="orientation", range=(0.0, np.pi),
-                     step=np.pi / p.num_orientation,
+                     steps=p.num_orientation,
                      cyclic=True, preference_fn=self.preference_fn)]
 
         features += \
             [Feature(name="phase", range=(0.0, 2 * np.pi),
-                     step=2 * np.pi / p.num_phase, cyclic=True,
+                     steps=p.num_phase, cyclic=True,
                      preference_fn=DSF_WeightedAverage())]
 
         if p.num_ocularity > 1: features += \
             [Feature(name="ocular", range=(0.0, 1.0),
-                     step=1.0 / p.num_ocularity)]
+                     steps=p.num_ocularity)]
 
         if p.num_disparity > 1: features += \
             [Feature(name="phasedisparity", range=(0.0, 2 * np.pi),
-                     step=2 * np.pi / p.num_disparity, cyclic=True)]
+                     steps=p.num_disparity, cyclic=True)]
 
         if p.num_hue > 1: features += \
-            [Feature(name="hue", range=(0.0, 1.0), step=1.0 / p.num_hue,
+            [Feature(name="hue", range=(0.0, 1.0), steps=p.num_hue,
                      cyclic=True)]
 
         if p.num_direction > 0 and p.num_speeds == 0: features += \
@@ -537,12 +537,12 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
 
         if p.num_direction > 0 and p.num_speeds > 0: features += \
             [Feature(name="speed", range=(0.0, p.max_speed),
-                     step=float(p.max_speed) / p.num_speeds, cyclic=False)]
+                     steps=p.num_speeds, cyclic=False)]
 
         if p.num_direction > 0:
             # Compute orientation from direction
             dr = Feature(name="direction", range=(0.0, 2 * np.pi),
-                         step=2 * np.pi / p.num_direction, cyclic=True)
+                         steps=p.num_direction, cyclic=True)
             or_values = list(set(
                 [compute_orientation_from_direction([("direction", v)]) for v in
                  dr.values]))
@@ -570,10 +570,10 @@ class measure_or_pref(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         return [Feature(name="frequency", values=p.frequencies),
                 Feature(name="orientation", range=(0.0, np.pi),
-                        step=np.pi / p.num_orientation,
+                        steps=p.num_orientation,
                         preference_fn=self.preference_fn, cyclic=True),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True)]
+                        steps=p.num_phase, cyclic=True)]
 
 
 
@@ -589,9 +589,9 @@ class measure_od_pref(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         return [Feature(name="frequency", values=p.frequencies),
                 Feature(name="orientation", range=(0.0, np.pi),
-                        step=np.pi / p.num_orientation, cyclic=True),
+                        steps=p.num_orientation, cyclic=True),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="ocular", range=(0.0, 1.0), values=[0.0, 1.0])]
 
 
@@ -619,9 +619,9 @@ class measure_phasedisparity(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         return [Feature(name="frequency", values=p.frequencies),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="phasedisparity", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_disparity, cyclic=True)]
+                        steps=p.num_disparity, cyclic=True)]
 
 
 class measure_dr_pref(SinusoidalMeasureResponseCommand):
@@ -655,7 +655,7 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         # orientation is computed from direction
         dr = Feature(name="direction", range=(0.0, 2 * np.pi),
-                     step=2 * np.pi / p.num_direction, cyclic=True)
+                     steps=p.num_direction, cyclic=True)
         or_values = list(set(
             [compute_orientation_from_direction([("direction", v)]) for v in
              dr.values]))
@@ -663,14 +663,14 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
         return [Feature(name="speed", values=[0],
                         cyclic=False) if p.num_speeds is 0 else
                 Feature(name="speed", range=(0.0, p.max_speed),
-                        step=float(p.max_speed) / p.num_speeds, cyclic=False),
+                        steps=p.num_speeds, cyclic=False),
                 Feature(name="duration", values=np.max(p.durations)),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="direction", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_direction, cyclic=True,
+                        steps=p.num_direction, cyclic=True,
                         preference_fn=self.preference_fn),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="orientation", range=(0.0, np.pi),
                         values=or_values,
                         cyclic=True,
@@ -697,11 +697,11 @@ class measure_hue_pref(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         return [Feature(name="frequency", values=p.frequencies),
                 Feature(name="orientation", range=(0, np.pi),
-                        step=np.pi / p.num_orientation, cyclic=True),
-                Feature(name="hue", range=(0.0, 1.0), step=1.0 / p.num_hue,
+                        steps=p.num_orientation, cyclic=True),
+                Feature(name="hue", range=(0.0, 1.0), steps=p.num_hue,
                         cyclic=True),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True)]
+                        steps=p.num_phase, cyclic=True)]
 
 
 
@@ -724,14 +724,14 @@ class measure_second_or_pref(SinusoidalMeasureResponseCommand):
         fs = [Feature(name="frequency", values=p.frequencies)]
         if p.true_peak:
             fs.append(Feature(name="orientation", range=(0.0, np.pi),
-                              step=np.pi / p.num_orientation, cyclic=True,
+                              steps=p.num_orientation, cyclic=True,
                               preference_fn=DSF_BimodalPeaks()))
         else:
             fs.append(Feature(name="orientation", range=(0.0, np.pi),
-                              step=np.pi / p.num_orientation, cyclic=True,
+                              steps=p.num_orientation, cyclic=True,
                               preference_fn=DSF_BimodalPeaks()))
             fs.append(Feature(name="phase", range=(0.0, 2 * np.pi),
-                              step=2 * np.pi / p.num_phase, cyclic=True))
+                              steps=p.num_phase, cyclic=True))
 
         return fs
 
@@ -747,7 +747,7 @@ class measure_corner_or_pref(PositionMeasurementCommand):
 
     scale = param.Number(default=1.0)
 
-    divisions = param.Integer(default=10)
+    divisions = param.Integer(default=11)
 
     pattern_generator = param.Callable(default=gaussian_corner)
 
@@ -764,15 +764,13 @@ class measure_corner_or_pref(PositionMeasurementCommand):
 
 
     def _feature_list(self, p):
-        width = 1.0 * p.x_range[1] - p.x_range[0]
-        height = 1.0 * p.y_range[1] - p.y_range[0]
         return [
-            Feature(name="x", range=p.x_range, step=width / p.divisions,
+            Feature(name="x", range=p.x_range, steps=p.divisions,
                     preference_fn=self.preference_fn),
-            Feature(name="y", range=p.y_range, step=height / p.divisions,
+            Feature(name="y", range=p.y_range, steps=p.divisions,
                     preference_fn=self.preference_fn),
-            Feature(name="orientation", range=(0, 2 * np.pi),
-                    step=2 * np.pi / p.num_orientation, cyclic=True,
+            Feature(name="orientation", range=(0, 2*np.pi),
+                    steps=p.num_orientation, cyclic=True,
                     preference_fn=DSF_WeightedAverage()
             )]
 
@@ -784,7 +782,7 @@ class measure_corner_angle_pref(PositionMeasurementCommand):
 
     size = param.Number(default=0.2)
 
-    positions = param.Integer(default=6)
+    positions = param.Integer(default=7)
 
     x_range = param.NumericTuple((-1.0, 1.0))
 
@@ -815,23 +813,19 @@ class measure_corner_angle_pref(PositionMeasurementCommand):
 
     def _feature_list(self, p):
         """Return the list of features to vary, generate hue code static image"""
-        x_step = ( p.x_range[1] - p.x_range[0] ) / float(p.positions - 1)
-        y_step = ( p.y_range[1] - p.y_range[0] ) / float(p.positions - 1)
-        o_step = 2.0 * np.pi / p.num_or
         if p.angle_0 < p.angle_1:
             angle_0 = p.angle_0
             angle_1 = p.angle_1
         else:
             angle_0 = p.angle_1
             angle_1 = p.angle_0
-        a_range = ( angle_0, angle_1 )
-        a_step = ( angle_1 - angle_0 ) / float(p.num_angle - 1)
+        a_range = (angle_0, angle_1)
         self._make_key_image(p)
-        return [Feature(name="x", range=p.x_range, step=x_step),
-                Feature(name="y", range=p.y_range, step=y_step),
-                Feature(name="orientation", range=(0, 2 * np.pi), step=o_step,
+        return [Feature(name="x", range=p.x_range, steps=p.positions),
+                Feature(name="y", range=p.y_range, steps=p.positions),
+                Feature(name="orientation", range=(0, 2 * np.pi), steps=p.num_or,
                         cyclic=True),
-                Feature(name="angle", range=a_range, step=a_step,
+                Feature(name="angle", range=a_range, steps=p.num_angle,
                         preference_fn=DSF_WeightedAverage())]
 
 
@@ -879,13 +873,10 @@ class measure_position_pref(PositionMeasurementCommand):
 
     scale = param.Number(default=0.3)
 
-
     def _feature_list(self, p):
-        width = 1.0 * p.x_range[1] - p.x_range[0]
-        height = 1.0 * p.y_range[1] - p.y_range[0]
-        return [Feature(name="x", range=p.x_range, step=width / p.divisions,
+        return [Feature(name="x", range=p.x_range, steps=p.divisions,
                         preference_fn=self.preference_fn),
-                Feature(name="y", range=p.y_range, step=height / p.divisions,
+                Feature(name="y", range=p.y_range, steps=p.divisions,
                         preference_fn=self.preference_fn)]
 
 
@@ -971,7 +962,7 @@ class measure_size_response(UnitCurveCommand):
 
     static_parameters = param.List(default=["orientation", "x", "y"])
 
-    num_sizes = param.Integer(default=10, bounds=(1, None), softbounds=(1, 50),
+    num_sizes = param.Integer(default=11, bounds=(1, None), softbounds=(1, 50),
                               doc="Number of different sizes to test.")
 
     max_size = param.Number(default=1.0, bounds=(0.1, None), softbounds=(1, 50),
@@ -1001,10 +992,10 @@ class measure_size_response(UnitCurveCommand):
     # Why not vary frequency too?  Usually it's just one number, but it could be otherwise.
     def _feature_list(self, p):
         return [Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="size", range=(0.0, p.max_size),
-                        step=p.max_size / p.num_sizes, cyclic=False)]
+                        steps=p.num_sizes, cyclic=False)]
 
 
 class measure_contrast_response(UnitCurveCommand):
@@ -1063,7 +1054,7 @@ class measure_contrast_response(UnitCurveCommand):
 
     def _feature_list(self, p):
         return [Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="contrast", values=p.contrasts, cyclic=False)]
 
@@ -1091,7 +1082,7 @@ class measure_frequency_response(UnitCurveCommand):
 
     static_parameters = param.List(default=["orientation", "x", "y"])
 
-    num_freq = param.Integer(default=20, bounds=(1, None), softbounds=(1, 50),
+    num_freq = param.Integer(default=21, bounds=(1, None), softbounds=(1, 50),
                              doc="Number of different sizes to test.")
 
     max_freq = param.Number(default=10.0, bounds=(0.1, None),
@@ -1122,9 +1113,9 @@ class measure_frequency_response(UnitCurveCommand):
         return [
             Feature(name="orientation", values=[p.orientation], cyclic=True),
             Feature(name="phase", range=(0.0, 2 * np.pi),
-                    step=2 * np.pi / p.num_phase, cyclic=True),
+                    steps=p.num_phase, cyclic=True),
             Feature(name="frequency", range=(0.0, p.max_freq),
-                    step=p.max_freq / p.num_freq, cyclic=False),
+                    steps=p.num_freq, cyclic=False),
             Feature(name="size", values=[p.size])]
 
 
@@ -1212,7 +1203,7 @@ class measure_orientation_contrast(UnitCurveCommand):
 
     def _feature_list(self, p):
         return [Feature(name="phase", range=(0.0, 2 * np.pi),
-                        step=2 * np.pi / p.num_phase, cyclic=True),
+                        steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="orientationsurround", values=self.or_surrounds,
                         cyclic=True)]

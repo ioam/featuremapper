@@ -1,10 +1,20 @@
+"""
+Metaparameter functions allow for the presentation of complex patterns that are
+coordinated across different inputs (controlled via the input name) or
+controlled by a higher-level parameter.
+
+Current examples are transformations of contrast between the stimulus and the
+background based on a contrast parameter, which can be set to implement
+Michelson or Weber contrast or the coordinated presentation of input patterns
+to each eye, which assigns the correct input pattern based on whether an input
+source contains 'left' or 'right'.
+"""
+
 import numpy as np
 from colorsys import hsv_to_rgb
 
 import param
 from imagen import Translator, Sweeper
-
-from util import wrap
 
 class contrast2centersurroundscale(param.ParameterizedFunction):
     """
@@ -14,7 +24,6 @@ class contrast2centersurroundscale(param.ParameterizedFunction):
     contrast_parameter, which can be set to one of three values:
     'michelson_contrast', 'weber_contrast' or simply 'scale'.
     """
-
 
     contrast_parameter = param.String(default='weber_contrast')
 
@@ -150,9 +159,9 @@ class phasedisparity2leftrightphase(param.ParameterizedFunction):
             temp_phase2 = features['phase'] + features['phasedisparity']/2.0
             for name in inputs.keys():
                 if (name.count('Right')):
-                    inputs[name].phase = wrap(0, 2*np.pi, temp_phase1)
+                    inputs[name].phase = temp_phase1 % 2*np.pi
                 elif (name.count('Left')):
-                    inputs[name].phase = wrap(0, 2*np.pi, temp_phase2)
+                    inputs[name].phase = temp_phase2 % 2*np.pi
                 else:
                     if not hasattr(self, 'disparity_warned'):
                         self.warning('Unable to measure disparity preference, '

@@ -10,6 +10,7 @@ import copy
 from collections import defaultdict
 
 import numpy as np
+from itertools import product
 
 import param
 from param.parameterized import ParamOverrides, bothmethod
@@ -18,7 +19,6 @@ from imagen.ndmapping import AttrDict
 from imagen.views import SheetView, SheetStack, ProjectionGrid, NdMapping
 
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
-from util import cross_product, frange
 
 activity_dtype = np.float64
 
@@ -262,8 +262,8 @@ class FeatureResponses(PatternDrivenAnalysis):
         self._featureresponses = defaultdict(lambda: defaultdict(dict))
         self._activities = defaultdict(dict)
 
-        self.measurement_labels = cross_product([self.metadata.outputs.keys(),
-                                                 p.durations])
+        self.measurement_labels = [label for label in product(self.metadata.outputs.keys(),
+                                                              p.durations)]
 
         for label in self.measurement_labels:
             out_label, d = label
@@ -295,7 +295,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         self.feature_names = [f.name for f in features_to_permute]
         values_lists = [f.values for f in features_to_permute]
 
-        self.permutations = cross_product(values_lists)
+        self.permutations = [permutation for permutation in product(*values_lists)]
 
         self.total_steps = len(self.permutations) * p.repetitions - 1
         for permutation_num, permutation in enumerate(self.permutations):
@@ -619,9 +619,9 @@ class ReverseCorrelation(FeatureResponses):
             self.metadata = AttrDict(self.metadata, **fn(p.inputs, p.outputs))
 
         # Create cross product of all sources and durations
-        self.measurement_labels = cross_product([self.metadata.inputs.keys(),
-                                                 self.metadata.outputs.keys(),
-                                                 p.durations])
+        self.measurement_labels = [label for label in product(self.metadata.inputs.keys(),
+                                                              self.metadata.outputs.keys(),
+                                                              p.durations)]
 
         # Set up the featureresponses measurement dict
         self._featureresponses = defaultdict(lambda: defaultdict(dict))
@@ -729,9 +729,8 @@ class Feature(param.Parameterized):
         Lower and upper values for a feature,used to build a list of values,
         together with the step parameter.""")
 
-    step = param.Number(default=0.0, doc="""
-        Increment used to build a list of values for this feature, together with
-        the range parameter.""")
+    steps = param.Integer(default=0, doc="""
+        Number of steps between lower and upper range value to be presented.""")
 
     offset = param.Number(default=0.0, doc="""
         Offset to add to the values for this feature""")
@@ -768,11 +767,8 @@ class Feature(param.Parameterized):
             if self.range == (0, 0):
                 raise ValueError('The range or values must be specified.')
             low_bound, up_bound = self.range
-            self.values = frange(low_bound, up_bound,
-                                 self.step, not self.cyclic)
-            self.values = self.values if self.offset == 0 else \
-                [(v + self.offset) % (up_bound - low_bound) if self.cyclic
-                 else (v + self.offset) for v in self.values]
+            values = np.linspace(low_bound, up_bound, self.steps, not self.cyclic) + self.offset
+            self.values = list(values % (up_bound - low_bound) if self.cyclic else values)
 
 ##############################################################################
 ###############################################################################
