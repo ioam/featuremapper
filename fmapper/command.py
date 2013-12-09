@@ -27,7 +27,7 @@ from imagen.views import SheetStack, SheetView
 from metaparams import *
 from distribution import DSF_MaxValue, DistributionStatisticFn, \
     DSF_WeightedAverage, DSF_BimodalPeaks
-from core import Feature, FeatureResponses, FeatureMaps, FeatureCurves, \
+from . import Feature, FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
 
 
