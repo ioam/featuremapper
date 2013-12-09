@@ -16,26 +16,40 @@ Distribution class
 # - should this be two classes: one for the core (which would be
 #   small though) and another for statistics?
 
+import numpy as np
 
-
-# The basic functions do not have any dependencies, but these imports
-# are needed for some of the statistical functions (e.g. vector sum).
-import numpy
 import param
 
-from math import pi
-
-unavailable_scipy_optimize  = False
+unavailable_scipy_optimize = False
 try:
-    from scipy            import optimize
+    from scipy import optimize
 except ImportError:
     param.Parameterized().debug("scipy.optimize not available, dummy von Mises fit")
-    unavailable_scipy_optimize  = True
+    unavailable_scipy_optimize = True
 
-from numpy            import cos, log
-from numpy.oldnumeric import innerproduct, array, exp, argmax
+def arg(z):
+    """
+    Return the complex argument (phase) of z.
+    (z in radians.)
+    """
+    z = z + complex(0,0)  # so that arg(z) also works for real z
+    return np.arctan2(z.imag, z.real)
 
-from topo.base.arrayutil import arg, wrap
+
+def wrap(lower, upper, x):
+    """
+    Circularly alias the numeric value x into the range [lower,upper).
+
+    Valid for cyclic quantities like orientations or hues.
+    """
+    #I have no idea how I came up with this algorithm; it should be simplified.
+    #
+    # Note that Python's % operator works on floats and arrays;
+    # usually one can simply use that instead.  E.g. to wrap array or
+    # scalar x into 0,2*pi, just use "x % (2*pi)".
+    range_ = upper-lower
+    return lower + np.fmod(x-lower + 2*range_*(1-np.floor(x/(2*range_))), range_)
+
 
 class Distribution(object):
     """
@@ -81,7 +95,7 @@ class Distribution(object):
     # not meaningful.
     undefined_vals  = 0
 
-    def __init__(self, axis_bounds=(0.0, 2*pi), cyclic=False, keep_peak=False):
+    def __init__(self, axis_bounds=(0.0, 2*np.pi), cyclic=False, keep_peak=False):
         self._data = {}
         self._counts = {}
 
@@ -103,7 +117,7 @@ class Distribution(object):
     ### an expression like x+y should not modify x, while this does.  It could
     ### be renamed __iadd__, to implement += (which has the correct semantics),
     ### but it's not yet clear how to do that.
-    def __add__(self,a):
+    def __add__(self, a):
         """
         Allows add() method to be used via the '+' operator; i.e.,
         Distribution + dictionary does Distribution.add(dictionary).
@@ -221,17 +235,18 @@ class Distribution(object):
         """
         for b in distr.bins():
             if b in self.bins():
-                v   = distr._data.get( b )
-                if v is not None:   self._data[ b ] -= v
+                v = distr._data.get(b)
+                if v is not None: self._data[b] -= v
 
 
     def max_value_bin(self):
         """Return the bin with the largest value."""
-        return self._data.keys()[argmax(self._data.values())]
+        return self._data.keys()[np.argmax(self._data.values())]
+
 
     def weighted_sum(self):
         """Return the sum of each value times its bin."""
-        return innerproduct(self._data.keys(), self._data.values())
+        return np.inner(self._data.keys(), self._data.values())
 
 
     def value_mag(self, bin):
@@ -252,7 +267,7 @@ class Distribution(object):
         Works for NumPy arrays of bin numbers, returning
         an array of directions.
         """
-        return (2*pi)*bin/self.axis_range
+        return (2*np.pi)*bin/self.axis_range
 
 
     def _radians_to_bins(self, direction):
@@ -262,23 +277,23 @@ class Distribution(object):
         Works for NumPy arrays of direction, returning
         an array of bin numbers.
         """
-        return direction*self.axis_range/(2*pi)
+        return direction*self.axis_range / (2*np.pi)
 
 
-    def _safe_divide(self,numerator,denominator):
+    def _safe_divide(self, numerator, denominator):
         """
         Division routine that avoids division-by-zero errors
         (returning zero in such cases) but keeps track of them
         for undefined_values().
         """
-        if denominator==0:
+        if denominator == 0:
             self.undefined_vals += 1
             return 0
         else:
             return numerator/denominator
 
 
-class Pref( dict ):
+class Pref(dict):
     """
     This class simply collects named arguments into a dictionary
 
@@ -287,36 +302,35 @@ class Pref( dict ):
     In addition, trap missing keys
     """
 
-    def __init__( self, **args ):
-        dict.__init__( self, **args )
+    def __init__(self, **args):
+        dict.__init__(self, **args)
 
-    def __getitem__( self, key ):
+    def __getitem__(self, key):
         try:
-            return dict.__getitem__( self, key )
+            return dict.__getitem__(self, key)
         except KeyError:
             return None
 
 
 
-class DistributionStatisticFn( param.Parameterized ):
+class DistributionStatisticFn(param.Parameterized):
     """
-    Base class for various functions performing statistics on a distribution
-
+    Base class for various functions performing statistics on a distribution.
     """
 
-    value_scale = param.NumericTuple( (0.0, 1.0), doc="""
+    value_scale = param.NumericTuple((0.0, 1.0), doc="""
             Scaling of the resulting value of the distribution statistics,
             typically the preference of a unit to feature values. The tuple
-            specifies (offset, multiplier) of the output scaling""" )
+            specifies (offset, multiplier) of the output scaling""")
 
 # APNOTE: previously selectivity_scale[ 1 ] used to be 17, a value suitable
 # for combining preference and selectivity in HSV plots. Users wishing to keep
 # this value should now set it when creating SheetViews, in commands like that
 # in command/analysis.py
-    selectivity_scale = param.NumericTuple( (0.0, 1.0), doc="""
+    selectivity_scale = param.NumericTuple((0.0, 1.0), doc="""
             Scaling of the resulting measure of the distribution peakedness,
             typically the selectivity of a unit to its preferred feature value.
-            The tuple specifies (offset, multiplier) of the output scaling""" )
+            The tuple specifies (offset, multiplier) of the output scaling""")
 
     __abstract = True
 
@@ -330,13 +344,12 @@ class DistributionStatisticFn( param.Parameterized ):
         raise NotImplementedError
 
 
-class DescriptiveStatisticFn( DistributionStatisticFn ):
+class DescriptiveStatisticFn(DistributionStatisticFn):
     """
     Abstract class for basic descriptive statistics
-
     """
 
-    def vector_sum(self, d ):
+    def vector_sum(self, d):
         """
         Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
 
@@ -362,10 +375,10 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
 
         """
         # vectors are represented in polar form as complex numbers
-        h   = d._data
-        r   = h.values()
-        theta = d._bins_to_radians(array( h.keys() ))
-        v_sum = innerproduct(r, exp(theta*1j))
+        h = d._data
+        r = h.values()
+        theta = d._bins_to_radians(np.array(h.keys()))
+        v_sum = np.inner(r, np.exp(theta * 1j))
 
         magnitude = abs(v_sum)
         direction = arg(v_sum)
@@ -385,7 +398,7 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
         """
         Return the weighted_sum divided by the sum of the values
         """
-        return d._safe_divide(d.weighted_sum(),sum(d._data.values()))
+        return d._safe_divide(d.weighted_sum(), sum(d._data.values()))
 
 
     def selectivity(self, d):
@@ -399,16 +412,16 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
         sum_value() (see _relative_selectivity for more details).
         """
         if d.cyclic == True:
-            return self._vector_selectivity( d )
+            return self._vector_selectivity(d)
         else:
-            return self._relative_selectivity( d )
+            return self._relative_selectivity(d)
 
 
     # CEBHACKALERT: the definition of selectivity for non-cyclic
     # quantities probably needs some more thought.
     # Additionally, this fails the test in testfeaturemap
     # (see the comment there).
-    def _relative_selectivity( self, d ):
+    def _relative_selectivity(self, d):
         """
         Return max_value_bin()) as a proportion of the sum_value().
 
@@ -428,10 +441,10 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
         if len(d._data) <= 1:
             return 1.0
 
-        proportion = d._safe_divide( max(d._data.values()),
-                                        sum(d._data.values()) )
+        proportion = d._safe_divide(max(d._data.values()),
+                                    sum(d._data.values()))
         offset = 1.0/len(d._data)
-        scaled = (proportion-offset)/(1.0-offset)
+        scaled = (proportion-offset) / (1.0-offset)
 
         # negative scaled is possible
         # e.g. 2 bins, with values that sum to less than 0.5
@@ -442,7 +455,7 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
             return 0.0
 
 
-    def _vector_selectivity( self, d ):
+    def _vector_selectivity(self, d):
         """
         Return the magnitude of the vector_sum() divided by the sum_value().
 
@@ -460,20 +473,20 @@ class DescriptiveStatisticFn( DistributionStatisticFn ):
         value of undefined_values() before and after a series of
         calls to this function.
         """
-        return d._safe_divide(self.vector_sum( d )[0], sum(d._data.values()))
+        return d._safe_divide(self.vector_sum(d)[0], sum(d._data.values()))
 
 
     __abstract = True
 
 
 
-class DescriptiveBimodalStatisticFn( DescriptiveStatisticFn ):
+class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
     """
     Abstract class for descriptive statistics of two-modes distributions
 
     """
 
-    def second_max_value_bin( self, d ):
+    def second_max_value_bin(self, d):
         """
         Return the bin with the second largest value.
         If there is one bin only, return it. This is not a correct result,
@@ -481,19 +494,19 @@ class DescriptiveBimodalStatisticFn( DescriptiveStatisticFn ):
         mistakenly be claimed as secondary maximum, by forcing its selectivity
         to 0.0
         """
-        h   = d._data
-        if len( h ) <= 1:
-            return h.keys()[ 0 ]
+        h = d._data
+        if len(h) <= 1:
+            return h.keys()[0]
 
-        k       = self.max_value_bin()
-        v       = h.pop(k)
-        m       = self.max_value_bin()
-        h[ k ]  = v
+        k = self.max_value_bin()
+        v = h.pop(k)
+        m = self.max_value_bin()
+        h[k] = v
 
         return m
 
 
-    def second_selectivity( self, d ):
+    def second_selectivity(self, d):
         """
         Return the selectivity of the second largest value in the distribution.
         If there is one bin only, the selectivity is 0, since there is no second
@@ -505,133 +518,133 @@ class DescriptiveBimodalStatisticFn( DescriptiveStatisticFn ):
         if len( d._data ) <= 1:
             return 0.0
         if d.cyclic == True:
-            return self._vector_second_selectivity( d )
+            return self._vector_second_selectivity(d)
         else:
-            return self._relative_second_selectivity( d )
+            return self._relative_second_selectivity(d)
 
 
-    def _relative_second_selectivity( self, d ):
+    def _relative_second_selectivity(self, d):
         """
         Return the value of the second maximum as a proportion of the sum_value()
         see _relative_selectivity() for further details
         """
-        h   = d._data
-        k               = d.max_value_bin()
-        v               = h.pop(k)
-        m               = max( h.values() )
-        h[k]   = v
+        h = d._data
+        k = d.max_value_bin()
+        v = h.pop(k)
+        m = max(h.values())
+        h[k] = v
 
-        proportion      = d._safe_divide( m, sum( h.values() ) )
-        offset          = 1.0/len(h)
-        scaled          = (proportion-offset)/(1.0-offset)
+        proportion = d._safe_divide(m, sum(h.values()))
+        offset = 1.0 / len(h)
+        scaled = (proportion - offset) / (1.0 - offset)
 
-        return max( scaled, 0.0 )
+        return max(scaled, 0.0)
 
 
-    def _vector_second_selectivity( self, d ):
+    def _vector_second_selectivity(self, d):
         """
         Return the magnitude of the vector_sum() of all bins excluding the
         maximum one, divided by the sum_value().
         see _vector_selectivity() for further details
         """
-        h   = d._data
-        k               = d.max_value_bin()
-        v               = h.pop(k)
-        s               = d.vector_sum()[0]
-        h[k]   = v
+        h = d._data
+        k = d.max_value_bin()
+        v = h.pop(k)
+        s = d.vector_sum()[0]
+        h[k] = v
 
-        return self._safe_divide( s, sum( h.values() ) )
+        return self._safe_divide(s, sum(h.values()))
 
 
-    def second_peak_bin( self, d ):
+    def second_peak_bin(self, d):
         """
         Return the bin with the second peak in the distribution.
         Unlike second_max_value_bin(), it does not return a bin which is the
         second largest value, if laying on a wing of the first peak, the second
         peak is returned only if the distribution is truly multimodal. If it isn't,
         return the first peak (for compatibility with numpy array type, and
-        plotting compatibility), however the correspondong selectivity will be
+        plotting compatibility), however the corresponding selectivity will be
         forced to 0.0
         """
-        h   = d._data
-        l   = len( h )
+        h = d._data
+        l = len(h)
         if l <= 1:
-            return h.keys()[ 0 ]
+            return h.keys()[0]
 
-        ks  = h.keys()
+        ks = h.keys()
         ks.sort()
-        ik0 = ks.index( h.keys()[ argmax( h.values() ) ] )
-        k0  = ks[ ik0 ]
-        v0  = h[ k0 ]
+        ik0 = ks.index(h.keys()[np.argmax(h.values())])
+        k0 = ks[ik0]
+        v0 = h[k0]
 
-        v   = v0
-        k   = k0
-        ik  = ik0
-        while h[ k ] <= v:
-            ik  += 1
+        v = v0
+        k = k0
+        ik = ik0
+        while h[k] <= v:
+            ik += 1
             if ik >= l:
-                ik      = 0
+                ik = 0
             if ik == ik0:
                 return k0
-            v   = h[ k ]
-            k   = ks[ ik ]
+            v = h[k]
+            k = ks[ik]
         ik1 = ik
 
-        v   = v0
-        k   = k0
-        ik  = ik0
-        while h[ k ] <= v:
-            ik  -= 1
+        v = v0
+        k = k0
+        ik = ik0
+        while h[k] <= v:
+            ik -= 1
             if ik < 0:
-                ik  = l - 1
+                ik = l - 1
             if ik == ik0:
                 return k0
-            v   = h[ k ]
-            k   = ks[ ik ]
+            v = h[k]
+            k = ks[ik]
         ik2 = ik
 
         if ik1 == ik2:
-            return ks[ ik1 ]
+            return ks[ik1]
 
-        ik  = ik1
-        m   = 0
+        ik = ik1
+        m = 0
         while ik != ik2:
-            k   = ks[ ik ]
-            if h[ k ] > m:
-                m   = h[ k ]
-                im  = ik
-            ik  += 1
+            k = ks[ik]
+            if h[k] > m:
+                m = h[k]
+                im = ik
+            ik += 1
             if ik >= l:
-                ik  = 0
+                ik = 0
 
-        return ks[ im ]
+        return ks[im]
 
 
-    def second_peak_selectivity( self, d ):
+    def second_peak_selectivity(self, d):
         """
         Return the selectivity of the second peak in the distribution.
 
         If the distribution has only one peak, return 0.0, and this value is
         also usefl to discriminate the validity of second_peak_bin()
         """
-        h   = d._data
-        if len( h ) <= 1:
+        h = d._data
+        if len(h) <= 1:
             return 0.0
 
-        p1  = d.max_value_bin()
-        p2  = self.second_peak_bin( d )
+        p1 = d.max_value_bin()
+        p2 = self.second_peak_bin(d)
         if p1 == p2:
             return 0.0
 
-        m           = h[ p2 ]
-        proportion  = d._safe_divide( m, sum( h.values() ) )
-        offset      = 1.0 / len( h )
-        scaled      = (proportion - offset) / (1.0 - offset)
+        m = h[p2]
+        proportion = d._safe_divide(m, sum(h.values()))
+        offset = 1.0 / len(h)
+        scaled = (proportion - offset) / (1.0 - offset)
 
-        return max( scaled, 0.0 )
+        return max(scaled, 0.0)
 
 
-    def second_peak( self, d ):
+    def second_peak(self, d):
         """
         Return preference and selectivity of the second peak in the distribution.
 
@@ -640,42 +653,42 @@ class DescriptiveBimodalStatisticFn( DescriptiveStatisticFn ):
         call of second_peak_bin(), if the user is interested in both preference
         and selectivity, as often is the case.
         """
-        h   = d._data
-        if len( h ) <= 1:
-            return ( h.keys()[ 0 ], 0.0 )
+        h = d._data
+        if len(h) <= 1:
+            return (h.keys()[0], 0.0)
 
-        p1  = d.max_value_bin()
-        p2  = self.second_peak_bin( d )
+        p1 = d.max_value_bin()
+        p2 = self.second_peak_bin(d)
         if p1 == p2:
-            return ( p1, 0.0 )
+            return (p1, 0.0)
 
-        m           = h[ p2 ]
-        proportion  = d._safe_divide( m, sum( h.values() ) )
-        offset      = 1.0 / len( h )
-        scaled      = (proportion - offset) / (1.0 - offset)
+        m = h[p2]
+        proportion = d._safe_divide(m, sum(h.values()))
+        offset = 1.0 / len(h)
+        scaled = (proportion - offset) / (1.0 - offset)
 
-        return ( p2, max( scaled, 0.0 ) )
+        return (p2, max(scaled, 0.0))
 
 
     __abstract = True
 
 
-
-class DSF_MaxValue( DescriptiveStatisticFn ):
+class DSF_MaxValue(DescriptiveStatisticFn):
     """
     Return the peak value of the given distribution
 
     """
 
-    def __call__( self, d ):
-        p   = self.value_scale[ 1 ] * ( d.max_value_bin() + self.value_scale[ 0 ] )
-        s   = self.selectivity_scale[ 1 ] * ( self.selectivity( d ) + self.selectivity_scale[ 0 ] )
 
-        return { "": Pref( preference=p, selectivity=s ) }
+    def __call__(self, d):
+        p = self.value_scale[1] * (d.max_value_bin() + self.value_scale[0])
+        s = self.selectivity_scale[1] * (self.selectivity(d)+self.selectivity_scale[0])
+
+        return {"": Pref(preference=p, selectivity=s)}
 
 
 
-class DSF_WeightedAverage( DescriptiveStatisticFn ):
+class DSF_WeightedAverage(DescriptiveStatisticFn):
     """
     Return the main mode of the given distribution
 
@@ -699,107 +712,104 @@ class DSF_WeightedAverage( DescriptiveStatisticFn ):
     not cover the full range of possible values.  In such cases
     max_value_bin should be used, and the number of test patterns will
     usually need to be increased instead.
-
     """
 
-    def __call__( self, d ):
-        p   = self.vector_sum( d )[1]  if d.cyclic  else self._weighted_average( d )
-        p   = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s   = self.selectivity_scale[ 1 ] * ( self.selectivity( d ) + self.selectivity_scale[ 0 ] )
+    def __call__(self, d):
+        p = self.vector_sum(d)[1] if d.cyclic else self._weighted_average(d)
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (self.selectivity(d) + self.selectivity_scale[0])
 
-        return { "": Pref( preference=p, selectivity=s ) }
+        return {"": Pref(preference=p, selectivity=s)}
 
 
 
-class DSF_TopTwoValues( DescriptiveBimodalStatisticFn ):
+class DSF_TopTwoValues(DescriptiveBimodalStatisticFn):
     """
     Return the two max values of distributions in the given matrix
 
     """
 
-    def __call__( self, d ):
-        r               = {}
-        p               = self.value_scale[ 1 ] * ( d.max_value_bin() + self.value_scale[ 0 ] )
-        s               = self.selectivity_scale[ 1 ] * ( self.selectivity( d ) + self.selectivity_scale[ 0 ] )
-        r[ "" ]         = Pref( preference=p, selectivity=s )
-        p               = self.second_max_value_bin( d )
-        s               = self.second_selectivity( d )
-        p               = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s               = self.selectivity_scale[ 1 ] * ( s + self.selectivity_scale[ 0 ] )
-        r[ "Mode2" ]    = Pref( preference=p, selectivity=s )
+
+    def __call__(self, d):
+        r = {}
+        p = self.value_scale[1] * (d.max_value_bin() + self.value_scale[0])
+        s = self.selectivity_scale[1] * (self.selectivity(d) + self.selectivity_scale[0])
+        r[""] = Pref(preference=p, selectivity=s)
+        p = self.second_max_value_bin(d)
+        s = self.second_selectivity(d)
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (s + self.selectivity_scale[0])
+        r["Mode2"] = Pref(preference=p, selectivity=s)
 
         return r
 
 
-
-class DSF_BimodalPeaks( DescriptiveBimodalStatisticFn ):
+class DSF_BimodalPeaks(DescriptiveBimodalStatisticFn):
     """
     Return the two peak values of distributions in the given matrix
-
     """
 
-    def __call__( self, d ):
-        r               = {}
-        p               = self.value_scale[ 1 ] * ( d.max_value_bin() + self.value_scale[ 0 ] )
-        s               = self.selectivity_scale[ 1 ] * ( self.selectivity( d ) + self.selectivity_scale[ 0 ] )
-        r[ "" ]         = Pref( preference=p, selectivity=s )
-        p, s            = self.second_peak( d )
-        p               = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s               = self.selectivity_scale[ 1 ] * ( s + self.selectivity_scale[ 0 ] )
-        r[ "Mode2" ]    = Pref( preference=p, selectivity=s )
+    def __call__(self, d):
+        r = {}
+        p = self.value_scale[1] * (d.max_value_bin() + self.value_scale[0])
+        s = self.selectivity_scale[1] * (self.selectivity(d) + self.selectivity_scale[0])
+        r[""] = Pref(preference=p, selectivity=s)
+        p, s = self.second_peak(d)
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (s + self.selectivity_scale[0])
+        r["Mode2"] = Pref(preference=p, selectivity=s)
 
         return r
 
 
 
-class VonMisesStatisticFn( DistributionStatisticFn ):
+class VonMisesStatisticFn(DistributionStatisticFn):
     """
     Base class for von Mises statistics
-
     """
 
     # values to fit the maximum value of k parameter in von Mises distribution,
     # as a function of the number of bins in the distribution. Useful for
     # keeping selectivity in range 0..1. Values derived offline from distribution
     # with a single active bin, and total bins from 8 to 32
-    vm_kappa_fit    = ( 0.206, 0.614 )
+    vm_kappa_fit = (0.206, 0.614)
 
     # level of activity in units confoundable with noise. Used in von Mises fit,
     # for two purposes: if the standard deviation of a distribution is below this
     # value, the distribution is assumed to lack any mode; it is the maximum level
     # of random noise added to a distribution before the fit optimization, for
     # stability reasons
-    noise_level     = 0.001
+    noise_level = 0.001
 
     # exit code of the distribution fit function. Codes are function-specific and
     # each fit function, if provide exit codes, should have corresponding string translation
-    fit_exit_code   = 0
+    fit_exit_code = 0
 
     user_warned_if_unavailable = False
 
     __abstract = True
 
-    def _orth( self, t ):
+    def _orth(self, t):
         """
         Return the orthogonal orientation
         """
-        if t < 0.5 * pi:
-            return t + 0.5 * pi
-        return t - 0.5 * pi
+        if t < 0.5 * np.pi:
+            return t + 0.5 * np.pi
+        return t - 0.5 * np.pi
 
 
-    def _in_pi( self, t ):
+    def _in_pi(self, t):
         """
         Reduce orientation from -pi..2pi to 0..pi
         """
-        if t > pi:
-            return t - pi
+        if t > np.pi:
+            return t - np.pi
         if t < 0:
-            return t + pi
+            return t + np.pi
         return t
 
 
-    def von_mises( self, pars, x ):
+    def von_mises(self, pars, x):
         """
         Compute a simplified von Mises function.
 
@@ -814,29 +824,34 @@ class VonMisesStatisticFn( DistributionStatisticFn ):
         Bessel function of first kind and 0 degree in the original, is here a fit parameter.
         """
         a, k, t = pars
-        return a * exp( k * ( cos( 2 * ( x - t ) ) - 1 ) )
+        return a * np.exp(k * (np.cos(2 * (x - t)) - 1))
 
-    def von2_mises( self, pars, x ):
+
+    def von2_mises(self, pars, x):
         """
         Compute a simplified bimodal von Mises function
 
         Two superposed von Mises functions, with different peak and bandwith values
         """
-        p1  = pars[ : 3 ]
-        p2  = pars[ 3 : ]
-        return self.von_mises( p1, x ) + self.von_mises( p2, x )
+        p1 = pars[: 3]
+        p2 = pars[3:]
+        return self.von_mises(p1, x) + self.von_mises(p2, x)
 
-    def von_mises_res( self, pars, x, y ):
-        return y - self.von_mises( pars, x )
 
-    def von2_mises_res( self, pars, x, y ):
-        return y - self.von2_mises( pars, x )
+    def von_mises_res(self, pars, x, y):
+        return y - self.von_mises(pars, x)
 
-    def norm_sel( self, k, n ):
-        m   = ( self.vm_kappa_fit[ 0 ] + n * self.vm_kappa_fit[ 1 ] ) ** 2
-        return log( 1 + k ) / log( 1 + m )
 
-    def fit_vm( self, distribution ):
+    def von2_mises_res(self, pars, x, y):
+        return y - self.von2_mises(pars, x)
+
+
+    def norm_sel(self, k, n):
+        m = (self.vm_kappa_fit[0] + n * self.vm_kappa_fit[1])**2
+        return np.log(1 + k) / np.log(1 + m)
+
+
+    def fit_vm(self, distribution):
         """
         computes the best fit of the monovariate von Mises function in the
         semi-circle.
@@ -867,52 +882,54 @@ class VonMisesStatisticFn( DistributionStatisticFn ):
             if not VonMisesStatisticFn.user_warned_if_unavailable:
                 param.Parameterized().warning("scipy.optimize not available, dummy von Mises fit")
                 VonMisesStatisticFn.user_warned_if_unavailable=True
-            self.fit_exit_code  = 3
+            self.fit_exit_code = 3
             return 0, 0, 0
 
-        to_pi   = pi / distribution.axis_range
-        x       = to_pi * numpy.array( distribution.bins() )
-        n       = len( x )
+        to_pi = np.pi / distribution.axis_range
+        x = to_pi * np.array(distribution.bins())
+        n = len(x)
         if n < 5:
-            param.Parameterized().warning( "no von Mises fit possible with less than 4 bins" )
-            self.fit_exit_code  = -1
+            param.Parameterized().warning("No von Mises fit possible with less than 4 bins")
+            self.fit_exit_code = -1
             return 0, 0, 0
 
-        y   = numpy.array( distribution.values() )
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
-            self.fit_exit_code  = 1
+            self.fit_exit_code = 1
             return 0, 0, 0
 
-        rn  = self.noise_level * numpy.random.random_sample( y.shape )
-        p0  = ( 1.0, 1.0, distribution.max_value_bin() )
-        r   = optimize.leastsq( self.von_mises_res, p0, args = ( x, y + rn ), full_output = True )
+        rn = self.noise_level * np.random.random_sample(y.shape)
+        p0 = (1.0, 1.0, distribution.max_value_bin())
+        r = optimize.leastsq(self.von_mises_res, p0, args=(x, y + rn),
+                             full_output=True)
 
-        if not r[ -1 ] in ( 1, 2, 3, 4 ):
-            self.fit_exit_code  = 100 + r[ -1 ]
+        if not r[-1] in ( 1, 2, 3, 4 ):
+            self.fit_exit_code = 100 + r[-1]
             return 0, 0, 0
 
-        residuals   = r[ 2 ][ 'fvec' ]
-        jacobian    = r[ 1 ]
-        bandwith    = r[ 0 ][ 1 ]
-        tuning      = r[ 0 ][ 2 ]
+        residuals = r[2]['fvec']
+        jacobian = r[1]
+        bandwith = r[0][1]
+        tuning = r[0][2]
 
         if bandwith < 0:
-            self.fit_exit_code  = 1
+            self.fit_exit_code = 1
             return 0, 0, 0
 
         if jacobian is None:
-            self.fit_exit_code  = 2
+            self.fit_exit_code = 2
             return 0, 0, 0
 
-        error       = ( residuals ** 2 ).sum() / ( n - len( p0 ) )
-        covariance  = jacobian * error
-        g   = covariance[ 2, 2 ]
-        p   = self._in_pi( tuning ) / to_pi
-        s   = self.norm_sel( bandwith, n )
-        self.fit_exit_code  = 0
+        error = (residuals**2).sum() / (n - len(p0))
+        covariance = jacobian * error
+        g = covariance[2, 2]
+        p = self._in_pi(tuning) / to_pi
+        s = self.norm_sel(bandwith, n)
+        self.fit_exit_code = 0
         return p, s, g
 
-    def vm_fit_exit_codes ( self ):
+
+    def vm_fit_exit_codes(self):
         if self.fit_exit_code == 0:
             return "succesfull exit"
         if self.fit_exit_code == -1:
@@ -926,12 +943,12 @@ class VonMisesStatisticFn( DistributionStatisticFn ):
         if self.fit_exit_code > 110:
             return "unknown exit code"
         if self.fit_exit_code > 100:
-            return "error " + str( self.fit_exit_code - 100 ) + " in scipy.optimize.leastsq"
+            return "error " + str(self.fit_exit_code - 100) + " in scipy.optimize.leastsq"
 
         return "unknown exit code"
 
 
-    def fit_v2m( self, distribution ):
+    def fit_v2m(self, distribution):
         """
         computes the best fit of the bivariate von Mises function in the
         semi-circle.
@@ -942,59 +959,61 @@ class VonMisesStatisticFn( DistributionStatisticFn ):
         )
         See fit_vm() for considerations about selectivity and goodness_of_fit
         """
-        null    = 0, 0, 0, 0, 0, 0
+        null = 0, 0, 0, 0, 0, 0
         if unavailable_scipy_optimize:
             if not VonMisesStatisticFn.user_warned_if_unavailable:
                 param.Parameterized().warning("scipy.optimize not available, dummy von Mises fit")
                 VonMisesStatisticFn.user_warned_if_unavailable=True
-            self.fit_exit_code  = 3
+            self.fit_exit_code = 3
             return null
 
-        to_pi   = pi / distribution.axis_range
-        x       = to_pi * numpy.array( distribution.bins() )
-        n       = len( x )
+        to_pi = np.pi / distribution.axis_range
+        x = to_pi * np.array(distribution.bins())
+        n = len(x)
         if n < 9:
             param.Parameterized().warning( "no bimodal von Mises fit possible with less than 8 bins" )
-            self.fit_exit_code  = -1
+            self.fit_exit_code = -1
             return null
-        y       = numpy.array( distribution.values() )
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
-            self.fit_exit_code  = 1
+            self.fit_exit_code = 1
             return null
 
-        rn  = self.noise_level * numpy.random.random_sample( y.shape )
-        t0  = distribution.max_value_bin()
-        p0  = ( 1.0, 1.0, t0, 1.0, 1.0, self._orth( t0 ) )
-        r   = optimize.leastsq( self.von2_mises_res, p0, args = ( x, y + rn ), full_output = True )
-        if not r[ -1 ] in ( 1, 2, 3, 4 ):
-            self.fit_exit_code  = 100 + r[ -1 ]
+        rn = self.noise_level * np.random.random_sample(y.shape)
+        t0 = distribution.max_value_bin()
+        p0 = (1.0, 1.0, t0, 1.0, 1.0, self._orth(t0))
+        r = optimize.leastsq(self.von2_mises_res, p0, args=(x, y + rn),
+                             full_output=True)
+        if not r[-1] in ( 1, 2, 3, 4 ):
+            self.fit_exit_code = 100 + r[-1]
             return null
-        residuals   = r[ 2 ][ 'fvec' ]
-        jacobian    = r[ 1 ]
-        bandwith_1  = r[ 0 ][ 1 ]
-        tuning_1    = r[ 0 ][ 2 ]
-        bandwith_2  = r[ 0 ][ 4 ]
-        tuning_2    = r[ 0 ][ 5 ]
+        residuals = r[2]['fvec']
+        jacobian = r[1]
+        bandwith_1 = r[0][1]
+        tuning_1 = r[0][2]
+        bandwith_2 = r[0][4]
+        tuning_2 = r[0][5]
         if jacobian is None:
-            self.fit_exit_code  = 2
+            self.fit_exit_code = 2
             return null
         if bandwith_1 < 0:
-            self.fit_exit_code  = 1
+            self.fit_exit_code = 1
             return null
         if bandwith_2 < 0:
-            self.fit_exit_code  = 1
+            self.fit_exit_code = 1
             return null
 
-        error       = ( residuals ** 2 ).sum() / ( n - len( p0 ) )
-        covariance  = jacobian * error
-        g1  = covariance[ 2, 2 ]
-        g2  = covariance[ 5, 5 ]
-        p1  = self._in_pi( tuning_1 ) / to_pi
-        p2  = self._in_pi( tuning_2 ) / to_pi
-        s1  = self.norm_sel( bandwith_1, n )
-        s2  = self.norm_sel( bandwith_2, n )
-        self.fit_exit_code  = 0
+        error = (residuals ** 2).sum() / (n - len(p0))
+        covariance = jacobian * error
+        g1 = covariance[2, 2]
+        g2 = covariance[5, 5]
+        p1 = self._in_pi(tuning_1) / to_pi
+        p2 = self._in_pi(tuning_2) / to_pi
+        s1 = self.norm_sel(bandwith_1, n)
+        s2 = self.norm_sel(bandwith_2, n)
+        self.fit_exit_code = 0
         return p1, s1, g1, p2, s2, g2
+
 
     def __call__(self,  distribution):
         """
@@ -1005,33 +1024,34 @@ class VonMisesStatisticFn( DistributionStatisticFn ):
 
 
 
-class DSF_VonMisesFit( VonMisesStatisticFn ):
+class DSF_VonMisesFit(VonMisesStatisticFn):
     """
-    Return the main mode of distribution in the given matrix, by fit with von Mises function
-
+    Return the main mode of distribution in the given matrix, by fit with von Mises function.
     """
 
-    worst_fit   = param.Number( default=0.5, bounds=(0.0,None), softbounds=(0.0,1.0), doc="""
-            worst good-of-fitness value for accepting the distribution as monomodal""" )
+    worst_fit = param.Number(default=0.5, bounds=(0.0, None), softbounds=(0.0, 1.0), doc="""
+            worst good-of-fitness value for accepting the distribution as monomodal""")
 
     # default result in case of failure of the fit
-    null_result = { "": Pref( preference=0, selectivity=0, goodness_of_fit=0 ), "Modes": Pref( number=0 ) }
+    null_result = {"": Pref(preference=0, selectivity=0, goodness_of_fit=0),
+                   "Modes": Pref(number=0)}
 
-    def __call__( self, distribution ):
-        f   = self.fit_vm( distribution )
-        if self.fit_exit_code != 0 or f[ -1 ] > self.worst_fit:
+    def __call__(self, distribution):
+        f = self.fit_vm(distribution)
+        if self.fit_exit_code != 0 or f[-1] > self.worst_fit:
             return self.null_result
-        results             = {}
-        p, s, g             = f
-        p                   = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s                   = self.selectivity_scale[ 1 ] * ( s + self.selectivity_scale[ 0 ] )
-        results[ "" ]       = Pref( preference=p, selectivity=s, goodness_of_fit=g )
-        results[ "Modes" ]  = Pref( number=1 )
+        results = {}
+        p, s, g = f
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (s + self.selectivity_scale[0])
+        results[""] = Pref(preference=p, selectivity=s, goodness_of_fit=g)
+        results["Modes"] = Pref(number=1)
 
         return results
 
 
-class DSF_BimodalVonMisesFit( VonMisesStatisticFn ):
+
+class DSF_BimodalVonMisesFit(VonMisesStatisticFn):
     """
     Return the two modes of distributions in the given matrix, by fit with von Mises function
 
@@ -1041,17 +1061,18 @@ class DSF_BimodalVonMisesFit( VonMisesStatisticFn ):
     preference,selectivity,good_of_fit.
     """
 
-    worst_fit   = param.Number( default=0.5, bounds=(0.0,None), softbounds=(0.0,1.0), doc="""
-            worst good-of-fitness value for accepting the distribution as mono- or bi-modal""" )
+    worst_fit = param.Number(default=0.5, bounds=(0.0, None), softbounds=(0.0, 1.0), doc="""
+            Worst good-of-fitness value for accepting the distribution as mono- or bi-modal""")
 
     # default result in case of failure of the fit
     null_result = {
-        "":         Pref( preference=0, selectivity=0, goodness_of_fit=0 ),
-        "Mode2":    Pref( preference=0, selectivity=0, goodness_of_fit=0 ),
-        "Modes":    Pref( number=0 )
+        "": Pref(preference=0, selectivity=0, goodness_of_fit=0),
+        "Mode2": Pref(preference=0, selectivity=0, goodness_of_fit=0),
+        "Modes": Pref(number=0)
     }
 
-    def _analyze_distr( self, d ):
+
+    def _analyze_distr(self, d):
         """
         Analyze the given distribution with von Mises bimodal fit.
 
@@ -1064,16 +1085,16 @@ class DSF_BimodalVonMisesFit( VonMisesStatisticFn ):
         mode is always the one with the largest selectivity (von Mises bandwith).
         """
         no1 = False
-        f   = self.fit_vm( d )
+        f = self.fit_vm(d)
         if self.fit_exit_code != 0:
             no1 = True
         p, s, g = f
-        f2  = self.fit_v2m( d )
-        if self.fit_exit_code != 0 or f2[ 2 ] > self.worst_fit:
-            if no1 or f[ -1 ] > self.worst_fit:
+        f2 = self.fit_v2m(d)
+        if self.fit_exit_code != 0 or f2[2] > self.worst_fit:
+            if no1 or f[-1] > self.worst_fit:
                 return None
             return p, s, g, 0, 0, 0, 1
-        p1, s1, g1, p2, s2, g2  = f2
+        p1, s1, g1, p2, s2, g2 = f2
         if g1 > g:
             return p, s, g, 0, 0, 0, 1
 
@@ -1083,20 +1104,20 @@ class DSF_BimodalVonMisesFit( VonMisesStatisticFn ):
         return p1, s1, g1, p2, s2, g2, 2
 
 
-    def __call__( self, distribution ):
-        f   = self._analyze_distr( distribution )
+    def __call__(self, distribution):
+        f = self._analyze_distr(distribution)
         if f is None:
             return self.null_result
 
-        results             = {}
-        p, s, g             = f[ : 3 ]
-        p                   = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s                   = self.selectivity_scale[ 1 ] * ( s + self.selectivity_scale[ 0 ] )
-        results[ "" ]       = Pref( preference=p, selectivity=s, goodness_of_fit=g )
-        p, s, g, n          = f[ 3 : ]
-        p                   = self.value_scale[ 1 ] * ( p + self.value_scale[ 0 ] )
-        s                   = self.selectivity_scale[ 1 ] * ( s + self.selectivity_scale[ 0 ] )
-        results[ "Mode2" ]  = Pref( preference=p, selectivity=s, goodness_of_fit=g )
-        results[ "Modes" ]  = Pref( number=n )
+        results = {}
+        p, s, g = f[: 3]
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (s + self.selectivity_scale[0])
+        results[""] = Pref(preference=p, selectivity=s, goodness_of_fit=g)
+        p, s, g, n = f[3:]
+        p = self.value_scale[1] * (p + self.value_scale[0])
+        s = self.selectivity_scale[1] * (s + self.selectivity_scale[0])
+        results["Mode2"] = Pref(preference=p, selectivity=s, goodness_of_fit=g)
+        results["Modes"] = Pref(number=n)
 
         return results
