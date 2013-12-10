@@ -1131,7 +1131,7 @@ class measure_orientation_contrast(UnitCurveCommand):
     """
 
     metafeature_fns = param.HookList(
-        default=[contrast2centersurroundscale.instance('weber_contrast')])
+        default=[contrast2centersurroundscale.instance(contrast_parameter='weber_contrast')])
 
     pattern_generator = param.Callable(
         default=OrientationContrast(surround_orientation_relative=True))
