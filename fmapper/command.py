@@ -802,9 +802,6 @@ class measure_corner_angle_pref(PositionMeasurementCommand):
     num_angle = param.Integer(default=4, bounds=(1, None), softbounds=(1, 12),
                               doc="Number of angles to test.")
 
-    key_img_fname = param.Filename(default='command/key_angles.png', doc="""
-        Name of the file with the image used to code angles with hues.""")
-
     pattern_generator = param.Callable(
         default=GaussiansCorner(aspect_ratio=4.0, cross=0.85))
 
