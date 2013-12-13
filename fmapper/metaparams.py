@@ -220,3 +220,10 @@ class ocular2leftrightscale(param.ParameterizedFunction):
                 else:
                     self.warning('Skipping input region %s; Ocularity is defined '
                                  'only for Left and Right retinas.' % name)
+
+__all__ = ['contrast2centersurroundscale',
+           'contrast2scale',
+           'hue2rgbscale',
+           'phasedisparity2leftrightphase',
+           'direction2translation',
+           'ocular2leftrightscale']

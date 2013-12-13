@@ -16,7 +16,9 @@ superclasses for the rest of the parameters and code.
 
 import copy
 import Image, ImageDraw
+import numpy as np
 
+import param
 from param import ParameterizedFunction, ParamOverrides
 
 from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
