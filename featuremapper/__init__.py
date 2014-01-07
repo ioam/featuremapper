@@ -686,10 +686,9 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             timestamp = self.metadata['timestamp']
-            view = ProjectionGrid(label=p.measurement_prefix + 'RFs',
-                                  timestamp=timestamp,
-                                  bounds=output_metadata['bounds'],
-                                  shape=output_metadata['shape'])
+            view = ProjectionGrid(output_metadata['bounds'], output_metadata['shape'],
+                                  label=p.measurement_prefix + 'RFs',
+                                  timestamp=timestamp)
             metadata = dict(measurement_src=output_metadata['src_name'],
                             dimension_labels=['Duration'], **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
