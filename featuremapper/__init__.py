@@ -686,7 +686,8 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             timestamp = self.metadata['timestamp']
-            view = ProjectionGrid(output_metadata['bounds'], output_metadata['shape'],
+            view = ProjectionGrid(bounds=output_metadata['bounds'],
+                                  shape=output_metadata['shape'],
                                   label=p.measurement_prefix + 'RFs',
                                   timestamp=timestamp)
             metadata = dict(measurement_src=output_metadata['src_name'],
@@ -694,7 +695,7 @@ class ReverseCorrelation(FeatureResponses):
             rc_response = self._featureresponses[in_label][out_label][duration]
             for ii in range(rows):
                 for jj in range(cols):
-                    coord = view.matrixidx2coord(ii, jj)
+                    coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'])
                     rf_metadata = dict(coord=coord, **metadata)
                     view[coord] = SheetStack((duration, sv), **rf_metadata)
