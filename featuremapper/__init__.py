@@ -198,12 +198,6 @@ class FeatureResponses(PatternDrivenAnalysis):
     inputs = param.String(default=[], doc="""Names of the input supplied to
         the metadata_fns to filter out desired inputs.""")
 
-    info_format = param.String(default="{label}={value} ", doc="""
-        Defines the label format for the info string, which is generated from
-        the indexed dimensions and values, e.g. by default, if the indexed
-        feature is time and the measurement time is 1000 the info string will
-        be 'Time = 1000'.""")
-
     metadata_fns = param.HookList(default=[], instantiate=False, doc="""
         Interface functions for metadata. Should return a dictionary that at a
         minimum must contain the name and dimensions of the inputs and outputs
@@ -493,11 +487,12 @@ class FeatureMaps(FeatureResponses):
                         sv = SheetView(map_view, output_metadata['bounds'],
                                        cyclic_range=cr)
                         data = (duration, sv)
-                        metadata = dict(dimension_labels=['Duration'],
-                                        timestamp=timestamp,
-                                        info_format=p.info_format,
-                                        **output_metadata)
                         map_name = base_name + k + map_name.capitalize()
+                        title = map_name + ' - {label0} = {value0}'
+                        metadata = dict(dimension_labels=['Duration'],
+                                        key_type=[float], title=title,
+                                        timestamp=timestamp,
+                                        **output_metadata)
                         if map_name not in results[name]:
                             results[name][map_name] = SheetStack(data, **metadata)
                         else:
@@ -569,15 +564,13 @@ class FeatureCurves(FeatureResponses):
             rows, cols = output_metadata['shape']
             metadata = dict(dimension_labels=[p.x_axis.capitalize()],
                             label=p.label, prefix=p.measurement_prefix,
-                            curve_params=p.curve_params,
-                            info_format=p.info_format, **output_metadata)
+                            curve_params=p.curve_params, **output_metadata)
 
             # Create top level NdMapping indexing over time and duration
             if name not in results:
                 results[name] = NdMapping(dimension_labels=['Duration'],
-                                          timestamp=time, info_format=p.info_format,
-                                          curve_label=curve_label)
-
+                                          key_type=[float],
+                                          timestamp=time, curve_label=curve_label)
             # Create NdMapping for each feature name and populate it with an
             # entry of for the specified features
             results[name][duration] = NdMapping(dimension_labels=list(f_names))
@@ -694,11 +687,10 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             timestamp = self.metadata['timestamp']
-            info_string = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
+            title = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
             view = ProjectionGrid(output_metadata['bounds'], output_metadata['shape'],
-                                  timestamp=timestamp, info_format=self.info_format,
-                                  info=info_string)
-            metadata = dict(dimension_labels=['Duration'], info_format=self.info_format,
+                                  timestamp=timestamp, title=title)
+            metadata = dict(dimension_labels=['Duration'], key_type=[float],
                             **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
             for ii in range(rows):
