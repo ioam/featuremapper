@@ -154,7 +154,7 @@ class FullMatrix(param.Parameterized):
             for ff, value in feature_value_permutation:
                 if (ff == f.name):
                     index = index + (f.values.index(value),)
-        self.full_matrix[index] = new_values
+        self.full_matrix[index] = new_values.copy()
 
 
 
@@ -245,7 +245,7 @@ class FeatureResponses(PatternDrivenAnalysis):
 
     metadata = {}
 
-    _fullmatrix = {}
+    _fullmatrix = defaultdict(dict)
 
     __abstract = True
 
