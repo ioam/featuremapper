@@ -350,8 +350,9 @@ class measure_response(FeatureResponses):
     def __call__(self, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self._apply_cmd_overrides(p)
+        self.metadata = AttrDict(p.metadata)
         for fn in p.metadata_fns:
-            self.metadata = AttrDict(p.metadata, **fn(p.inputs, p.outputs))
+            self.metadata.update(fn(p.inputs, p.outputs))
 
         output_names = self.metadata['outputs'].keys()
         input_names = self.metadata.inputs.keys()
@@ -371,15 +372,20 @@ class measure_response(FeatureResponses):
 
 
     def _collate_results(self, responses):
+        time = self.metadata.timestamp
+        time_type = param.Dynamic.time_fn.time_type
+
         results = {}
         for label, response in responses.items():
             name, duration = label
             metadata = self.metadata['outputs'][name]
+            title = name + ' Response: {label0} = {value0}, {label1} = {value1}'
             if name not in results:
-                results[name] = SheetStack(dimension_labels=['Duration'],
-                                           timestamp=self.metadata.timestamp)
+                results[name] = SheetStack(dimension_labels=['Time', 'Duration'],
+                                           key_type=[time_type, time_type],
+                                           title=title, **metadata)
             sv = SheetView(response, metadata['bounds'])
-            results[name][duration] = sv
+            results[name][(time, duration)] = sv
         return results
 
 
