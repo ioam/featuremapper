@@ -340,7 +340,7 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 
 
-class measure_activity(FeatureResponses):
+class measure_response(FeatureResponses):
     pattern_generator = param.Callable(default=Gaussian(), instantiate=True,
                                        doc="""
         Callable object that will generate input patterns coordinated
@@ -384,7 +384,7 @@ class measure_activity(FeatureResponses):
 
 
     def _apply_cmd_overrides(self, p):
-        super(measure_activity, self)._apply_cmd_overrides(p)
+        super(measure_response, self)._apply_cmd_overrides(p)
         for override, value in p.extra_keywords():
             if override in p.pattern_response_fn.params():
                 p.pattern_response_fn.set_param(override, value)
@@ -1230,7 +1230,6 @@ class test_measure(UnitCurveCommand):
 
 
 __all__ = [
-    "measure_activity",
     "measure_corner_angle_pref",
     "measure_corner_or_pref",
     "measure_dr_pref",
@@ -1238,6 +1237,7 @@ __all__ = [
     "measure_od_pref",
     "measure_or_pref",
     "measure_phasedisparity",
+    "measure_response",
     "measure_rfs",
     "measure_second_or_pref",
     "measure_sine_pref",
