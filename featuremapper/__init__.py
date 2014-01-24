@@ -256,8 +256,9 @@ class FeatureResponses(PatternDrivenAnalysis):
         requested, the full matrix.
         """
         self._apply_cmd_overrides(p)
+        self.metadata = AttrDict(p.metadata)
         for fn in p.metadata_fns:
-            self.metadata = AttrDict(p.metadata, **fn(p.inputs, p.outputs))
+            self.metadata.update(fn(p.inputs, p.outputs))
 
         self._featureresponses = defaultdict(lambda: defaultdict(dict))
         self._activities = defaultdict(dict)
