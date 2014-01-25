@@ -384,7 +384,7 @@ class measure_response(FeatureResponses):
                 results[name] = SheetStack(dimension_labels=['Time', 'Duration'],
                                            key_type=[time_type, time_type],
                                            title=title, **metadata)
-            sv = SheetView(response, metadata['bounds'])
+            sv = SheetView(response, metadata['bounds'], AttrDict(timestamp=time))
             results[name][(time, duration)] = sv
         return results
 

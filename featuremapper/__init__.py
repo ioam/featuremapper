@@ -486,8 +486,8 @@ class FeatureMaps(FeatureResponses):
                 for k, maps in response.items():
                     for map_name, map_view in maps.items():
                         cr = None if map_name == 'selectivity' else cyclic_range
-                        sv = SheetView(map_view, output_metadata['bounds'],
-                                       cyclic_range=cr)
+                        sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=cr,
+                                       metadata=AttrDict(timestamp=timestamp))
                         data = ((timestamp, duration), sv)
                         map_name = base_name + k + map_name.capitalize()
                         title = map_name + ': {label0} = {value0}, {label1} = {value1}'
@@ -554,7 +554,7 @@ class FeatureCurves(FeatureResponses):
         results = {}
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
 
-        time = self.metadata.timestamp
+        timestamp = self.metadata.timestamp
         time_type = param.Dynamic.time_fn.time_type
         curve_label = p.measurement_prefix + p.x_axis.capitalize()
 
@@ -564,20 +564,22 @@ class FeatureCurves(FeatureResponses):
 
             output_metadata = self.metadata.outputs[name]
             rows, cols = output_metadata['shape']
-            metadata = dict(dimension_labels=[p.x_axis.capitalize()],
-                            label=p.label, prefix=p.measurement_prefix,
-                            curve_params=p.curve_params, **output_metadata)
+            metadata = AttrDict(label=p.label, prefix=p.measurement_prefix,
+                                timestamp=timestamp,
+                                curve_params=p.curve_params, **output_metadata)
 
             # Create top level NdMapping indexing over time and duration
-            key = (time, duration)
+            key = (timestamp, duration)
             if name not in results:
                 results[name] = NdMapping(dimension_labels=['Time', 'Duration'],
                                           key_type=[time_type, time_type],
-                                          curve_label=curve_label)
+                                          curve_label=curve_label, **metadata)
             # Create NdMapping for each feature name and populate it with an
             # entry of for the specified features
-            results[name][key] = NdMapping(dimension_labels=list(f_names))
-            results[name][key][f_vals] = SheetStack(**metadata)
+            results[name][key] = NdMapping(dimension_labels=list(f_names),
+                                           **metadata)
+            results[name][key][f_vals] = SheetStack(dimension_labels=[p.x_axis.capitalize()],
+                                                    **metadata)
 
             curve_responses = self._featureresponses[name][duration][p.x_axis].distribution_matrix
             r = results[name][key][f_vals]
@@ -587,7 +589,8 @@ class FeatureCurves(FeatureResponses):
                 for i in range(rows):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
-                sv = SheetView(y_axis_values, output_metadata['bounds'])
+                sv = SheetView(y_axis_values, output_metadata['bounds'],
+                               metadata=AttrDict(timestamp=timestamp))
                 r[x] = sv
 
         return results
@@ -685,12 +688,13 @@ class ReverseCorrelation(FeatureResponses):
         results = defaultdict(dict)
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
         time_type = param.Dynamic.time_fn.time_type
+        timestamp = self.metadata.timestamp
         for labels in self.measurement_labels:
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
-            time_key = (self.metadata['timestamp'], duration)
+            time_key = (timestamp, duration)
             title = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
             view = ProjectionGrid(output_metadata['bounds'], output_metadata['shape'],
                                   title=title)
@@ -702,7 +706,8 @@ class ReverseCorrelation(FeatureResponses):
             for ii in range(rows):
                 for jj in range(cols):
                     coord = view.matrixidx2sheet(ii, jj)
-                    sv = SheetView(rc_response[ii, jj], input_metadata['bounds'])
+                    sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
+                                   metadata=AttrDict(timestamp=timestamp))
                     view[coord] = SheetStack((time_key, sv), **metadata)
             results[out_label][in_label] = view
         return results
