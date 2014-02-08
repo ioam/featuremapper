@@ -6,18 +6,15 @@ on measuring responses while varying features of an input pattern.
 """
 
 import copy
-
 from collections import defaultdict
+from itertools import product
 
 import numpy as np
-from itertools import product
 
 import param
 from param.parameterized import ParamOverrides, bothmethod
-
-from imagen.ndmapping import AttrDict
-from imagen.views import SheetView, SheetStack, ProjectionGrid, NdMapping
-
+from dataviews.ndmapping import AttrDict, NdMapping
+from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 
 activity_dtype = np.float64
@@ -218,7 +215,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         Names of the output source supplied to metadata_fns to filter out
         desired outputs.""")
 
-    param_dict = param.Dict(default={}, doc="""
+    static_features = param.Dict(default={}, doc="""
         Dictionary containing name value pairs of a feature, which is to be
         varied across measurements.""")
 
@@ -245,8 +242,6 @@ class FeatureResponses(PatternDrivenAnalysis):
 
     metadata = {}
 
-    _fullmatrix = defaultdict(dict)
-
     __abstract = True
 
     def _initialize_featureresponses(self, p):
@@ -260,24 +255,39 @@ class FeatureResponses(PatternDrivenAnalysis):
         for fn in p.metadata_fns:
             self.metadata.update(fn(p.inputs, p.outputs))
 
-        self._featureresponses = defaultdict(lambda: defaultdict(dict))
-        self._activities = defaultdict(dict)
+        # Features are split depending on whether a preference_fn is supplied
+        # to collapse them
+        self.outer = [f for f in self.features if f.preference_fn is None]
+        self.inner = [f for f in self.features if f.preference_fn is not None]
+        self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
+            else zip(*[(f.name, f.values) for f in self.outer])
+        self.outer_types = [float for vals in self.outer_vals]
+        dim_labels = ['Duration'] + list(self.outer_names)
 
-        self.measurement_labels = [label for label in product(self.metadata.outputs.keys(),
-                                                              p.durations)]
+        self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
+                                                         p.durations, *self.outer_vals)]
 
-        for label in self.measurement_labels:
-            out_label, d = label
+        ndmapping_fn = lambda: NdMapping(dimension_labels=dim_labels)
+        self._featureresponses = defaultdict(ndmapping_fn)
+        self._activities = defaultdict(ndmapping_fn)
+        if p.store_fullmatrix:
+            self._fullmatrix = dict(ndmapping_fn)
+
+        for label in self.measurement_product:
+            out_label = label[0]
             output_metadata = self.metadata.outputs[out_label]
-            self._activities[out_label][d] = np.zeros(output_metadata['shape'])
-            for f in self.features:
-                self._featureresponses[out_label][d][f.name] = \
-                    DistributionMatrix(output_metadata['shape'],
-                                       axis_range=f.range,
+            f_vals = label[1:]
+
+            self._activities[out_label][f_vals] = np.zeros(output_metadata['shape'])
+
+            self._featureresponses[out_label][f_vals] = {}
+            for f in self.inner:
+                self._featureresponses[out_label][f_vals][f.name] = \
+                    DistributionMatrix(output_metadata['shape'], axis_range=f.range,
                                        cyclic=f.cyclic)
             if p.store_fullmatrix:
-                self._fullmatrix[out_label][d] = FullMatrix(output_metadata['shape'],
-                                                            self.features)
+                self._fullmatrix[out_label][f_vals] = FullMatrix(output_metadata['shape'],
+                                                                 self.inner)
 
 
 
@@ -289,16 +299,19 @@ class FeatureResponses(PatternDrivenAnalysis):
         # Run hooks before the analysis session
         for f in p.pre_analysis_session_hooks: f()
 
-        features_to_permute = [f for f in self.features if f.compute_fn is None]
-        self.features_to_compute = [f for f in self.features
-                                    if f.compute_fn is not None]
+        features_to_permute = [f for f in self.inner if f.compute_fn is None]
+        self.features_to_compute = [f for f in self.inner if f.compute_fn is not None]
 
-        self.feature_names = [f.name for f in features_to_permute]
-        values_lists = [f.values for f in features_to_permute]
+        self.feature_names, values_lists = zip(*[(f.name, f.values) for f in features_to_permute])
 
         self.permutations = [permutation for permutation in product(*values_lists)]
 
-        self.total_steps = len(self.permutations) * p.repetitions - 1
+        # Permute outer or non-collapsed features
+        self.outer_permutations = [permutation for permutation in product(*self.outer_vals)]
+        if not self.outer_permutations: self.outer_permutations.append(())
+        self.n_outer = len(self.outer_permutations)
+
+        self.total_steps = len(self.permutations) * len(self.outer_permutations) * p.repetitions - 1
         for permutation_num, permutation in enumerate(self.permutations):
             try:
                 self._present_permutation(p, permutation, permutation_num)
@@ -315,9 +328,10 @@ class FeatureResponses(PatternDrivenAnalysis):
     def _present_permutation(self, p, permutation, permutation_num):
         """Present a pattern with the specified set of feature values."""
         output_names = self.metadata['outputs'].keys()
-        for label in self.measurement_labels:
-            out_label, d = label
-            self._activities[out_label][d] *= 0
+        for label in self.measurement_product:
+            out_label = label[0]
+            f_vals = label[1:]
+            self._activities[out_label][f_vals] *= 0
 
         # Calculate complete set of settings
         permuted_settings = zip(self.feature_names, permutation)
@@ -325,28 +339,30 @@ class FeatureResponses(PatternDrivenAnalysis):
                             [(f.name, f.compute_fn(permuted_settings))
                              for f in self.features_to_compute]
 
-        for i in xrange(0, p.repetitions):
+        for i, op in enumerate(self.outer_permutations):
+            for j in xrange(0, p.repetitions):
+                permutation = dict(permuted_settings)
+                permutation.update(zip(self.outer_names, op))
 
-            for f in p.pre_presentation_hooks: f()
+                for f in p.pre_presentation_hooks: f()
 
-            presentation_num = p.repetitions * permutation_num+i
+                presentation_num = p.repetitions*((self.n_outer*permutation_num)+i) + j
 
-            inputs = self._coordinate_inputs(p, dict(permuted_settings))
+                inputs = self._coordinate_inputs(p, permutation)
 
-            responses = p.pattern_response_fn(inputs, output_names,
-                                              presentation_num, self.total_steps,
-                                              durations=p.durations)
+                responses = p.pattern_response_fn(inputs, output_names,
+                                                  presentation_num, self.total_steps,
+                                                  durations=p.durations)
 
-            for f in p.post_presentation_hooks:
-                f()
+                for f in p.post_presentation_hooks: f()
 
-            for response_labels, response in responses.items():
+                for response_labels, response in responses.items():
+                    name, duration = response_labels
+                    self._activities[name][(duration,)+op] += response
+
+            for response_labels in responses.keys():
                 name, duration = response_labels
-                self._activities[name][duration] += response
-
-        for response_labels in responses.keys():
-            name, duration = response_labels
-            self._activities[name][duration] /= p.repetitions
+                self._activities[name][(duration,)+op] /= p.repetitions
 
         self._update(p, complete_settings)
 
@@ -358,7 +374,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         coordinating complex features.
         """
         input_names = self.metadata.inputs.keys()
-        feature_values = dict(feature_values, **p.param_dict)
+        feature_values = dict(feature_values, **p.static_features)
 
         for feature, value in feature_values.iteritems():
             setattr(p.pattern_generator, feature, value)
@@ -383,13 +399,16 @@ class FeatureResponses(PatternDrivenAnalysis):
         Update each DistributionMatrix with (activity,bin) and
         populate the full matrix, if enabled.
         """
-        for label in self.measurement_labels:
-            name, d = label
-            act = self._activities[name][d]
+        for mvals in self.measurement_product:
+            name = mvals[0]
+            f_vals = mvals[1:]
+            act = self._activities[name][f_vals]
             for feature, value in current_values:
-                self._featureresponses[name][d][feature].update(act,value)
+                self._featureresponses[name][f_vals][feature].update(act, value)
             if p.store_fullmatrix:
-                self._fullmatrix[name][d].update(act, current_values)
+                cn, cv = zip(*current_values)
+                current_vals = zip(self.outer_names+cn, self.outer_vals+cv)
+                self._fullmatrix[name][f_vals].update(act, current_vals)
 
 
     @bothmethod
@@ -464,40 +483,60 @@ class FeatureMaps(FeatureResponses):
     def _collate_results(self, p):
         results = defaultdict(dict)
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
+
         timestamp = self.metadata.timestamp
         time_type = param.Dynamic.time_fn.time_type
 
-        for label in self.measurement_labels:
-            name, duration = label
+        # Generate dimension info dictionary from features
+        dimension_info = dict([(f.name.capitalize(), {'cyclic_range': f.range[1] if f.cyclic else None,
+                                                      'type': type(f.range[1]),
+                                                      'unit': f.unit}) for f in self.features])
+        dimension_info.update({'Time': {'type': time_type}, 'Duration':{'type': time_type}})
+
+        for label in self.measurement_product:
+            name = label[0] # Measurement source
+            f_vals = label[1:] # Duration and outer feature values
+
+            #Metadata
             output_metadata = self.metadata.outputs[name]
-            feature_responses = self._featureresponses[name][duration]
-            for feature in feature_responses:
-                fp = filter(lambda f: f.name == feature, self.features)[0]
-                fr = feature_responses[feature]
-                ar = fr.distribution_matrix[0, 0].axis_range
-                cyclic_range = ar if fp.cyclic else None
+
+            # Iterate over inner features
+            fr = self._featureresponses[name][f_vals]
+            for fname, fdist in fr.items():
+                feature = fname.capitalize()
+                base_name = self.measurement_prefix + fname.capitalize()
+
+                # Get information from the feature
+                fp = filter(lambda f: f.name == fname, self.features)[0]
+                cyclic_range = dimension_info[feature].get('cyclic_range')
                 pref_fn = fp.preference_fn if fp.preference_fn is not None\
                     else self.preference_fn
                 if p.selectivity_multiplier is not None:
                     pref_fn.selectivity_scale = (pref_fn.selectivity_scale[0],
                                                  p.selectivity_multiplier)
-                response = fr.apply_DSF(pref_fn)
-                base_name = self.measurement_prefix + feature.capitalize()
+
+                # Get maps and iterate over them
+                response = fdist.apply_DSF(pref_fn)
                 for k, maps in response.items():
                     for map_name, map_view in maps.items():
+                        # Set labels and metadata
                         cr = None if map_name == 'selectivity' else cyclic_range
+                        dim_info = dimension_info.copy()
+                        dim_info[fname.capitalize()].update({'cylic_range': cr})
+                        map_title = base_name + k + map_name.capitalize()
+                        title = map_name + ': {label0} = {value0}, {label1} = {value1}'
+                        dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names]
+                        metadata = dict(dimension_labels=dim_labels, dim_info=dim_info,
+                                        title=title, ylabel=map_title, **output_metadata)
+
+                        # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=cr,
                                        metadata=AttrDict(timestamp=timestamp))
-                        data = ((timestamp, duration), sv)
-                        map_name = base_name + k + map_name.capitalize()
-                        title = map_name + ': {label0} = {value0}, {label1} = {value1}'
-                        metadata = dict(dimension_labels=['Time', 'Duration'],
-                                        key_type=[time_type, time_type], title=title,
-                                        **output_metadata)
-                        if map_name not in results[name]:
-                            results[name][map_name] = SheetStack(data, **metadata)
+                        data = ((timestamp,)+f_vals, sv)
+                        if map_title not in results[name]:
+                            results[name][map_title] = SheetStack(data, **metadata)
                         else:
-                            results[name][map_name][(timestamp, duration)] = sv
+                            results[name][map_title][(timestamp,)+f_vals] = sv
 
         return results
 
@@ -527,14 +566,6 @@ class FeatureCurves(FeatureResponses):
     x_axis = param.String(default=None, doc="""
         Parameter to use for the x axis of tuning curves.""")
 
-    curve_params = param.String(default=None, doc="""
-        Curve label, specifying the value along some feature dimension.""")
-
-    label = param.String(default='', doc="""
-        Units for labeling the curve_parameters in figure legends.
-        The default is %, for use with contrast, but could be any
-        units (or the empty string).""")
-
 
     def __call__(self, features, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
@@ -556,43 +587,52 @@ class FeatureCurves(FeatureResponses):
 
         timestamp = self.metadata.timestamp
         time_type = param.Dynamic.time_fn.time_type
-        curve_label = p.measurement_prefix + p.x_axis.capitalize()
+        axis_name = p.x_axis.capitalize()
+        dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names] + [axis_name]
+        curve_label = p.measurement_prefix + axis_name
 
-        for label in self.measurement_labels:
-            name, duration = label
-            f_names, f_vals = zip(*p.curve_params.items())
+        # feature_names = list(self.outer_names) + [p.x_axis]
+        # features = [f for fname in feature_names for f in self.features if f.name == fname]
+        dim_info = dict([(f.name.capitalize(), {'cyclic_range': f.range[1] if f.cyclic else None,
+                                                'type': type(f.range[1]),
+                                                'unit': f.unit}) for f in self.features])
+        dim_info.update({'Time': {'type': time_type}, 'Duration':{'type': time_type}})
+
+        for label in self.measurement_product:
+            # Deconstruct label into source name and feature_values
+            name = label[0]
+            f_vals = label[1:]
+
+            # Get data and metadata from the DistributionMatrix objects
+            dist_matrix = self._featureresponses[name][f_vals][p.x_axis]
+            curve_responses = dist_matrix.distribution_matrix
 
             output_metadata = self.metadata.outputs[name]
             rows, cols = output_metadata['shape']
-            metadata = AttrDict(label=p.label, prefix=p.measurement_prefix,
-                                timestamp=timestamp,
-                                curve_params=p.curve_params, **output_metadata)
 
-            # Create top level NdMapping indexing over time and duration
-            key = (timestamp, duration)
+            # Create top level NdMapping indexing over time, duration, the outer
+            # feature dimensions and the x_axis dimension
             if name not in results:
-                results[name] = NdMapping(dimension_labels=['Time', 'Duration'],
-                                          key_type=[time_type, time_type],
-                                          curve_label=curve_label, **metadata)
-            # Create NdMapping for each feature name and populate it with an
-            # entry of for the specified features
-            results[name][key] = NdMapping(dimension_labels=list(f_names),
-                                           **metadata)
-            results[name][key][f_vals] = SheetStack(dimension_labels=[p.x_axis.capitalize()],
-                                                    **metadata)
 
-            curve_responses = self._featureresponses[name][duration][p.x_axis].distribution_matrix
-            r = results[name][key][f_vals]
-            # Populate the deepest NdMapping with measurements for each x value
+                results[name] = SheetStack(dimension_labels=dim_labels, dim_info=dim_info,
+                                           label=axis_name, timestamp=timestamp,
+                                           ylabel='Response', **output_metadata)
+
+            metadata = AttrDict(features=dict(zip(dim_labels[1:], list(f_vals)+[0])),
+                                timestamp=timestamp, **output_metadata)
+
+            # Populate the SheetStack with measurements for each x value
             for x in curve_responses[0, 0]._data.iterkeys():
                 y_axis_values = np.zeros(output_metadata['shape'], activity_dtype)
                 for i in range(rows):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
-                sv = SheetView(y_axis_values, output_metadata['bounds'],
-                               metadata=AttrDict(timestamp=timestamp))
-                r[x] = sv
-
+                key = (timestamp,)+f_vals+(x,)
+                metadata.features[axis_name] = x
+                results[name][key] = SheetView(y_axis_values, output_metadata['bounds'],
+                                               cyclic_range=dim_info[axis_name]['cyclic_range'],
+                                               metadata=metadata.copy())
+            
         return results
 
 
@@ -626,13 +666,20 @@ class ReverseCorrelation(FeatureResponses):
             self.metadata = AttrDict(self.metadata, **fn(p.inputs, p.outputs))
 
         # Create cross product of all sources and durations
-        self.measurement_labels = [label for label in product(self.metadata.inputs.keys(),
+        self.measurement_product = [label for label in product(self.metadata.inputs.keys(),
                                                               self.metadata.outputs.keys(),
                                                               p.durations)]
 
+
+        self.inner = [f for f in self.features if f.preference_fn is not None]
+
+        self.outer = [f for f in self.features if f.preference_fn is None]
+        self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
+            else zip(*[(f.name, f.values) for f in self.outer])
+
         # Set up the featureresponses measurement dict
         self._featureresponses = defaultdict(lambda: defaultdict(dict))
-        for labels in self.measurement_labels:
+        for labels in self.measurement_product:
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
 
@@ -687,20 +734,22 @@ class ReverseCorrelation(FeatureResponses):
         """
         results = defaultdict(dict)
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
+
         time_type = param.Dynamic.time_fn.time_type
         timestamp = self.metadata.timestamp
-        for labels in self.measurement_labels:
+        dim_info = dict(Time={'type': time_type}, Duration={'type': time_type})
+
+        for labels in self.measurement_product:
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             time_key = (timestamp, duration)
             title = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
-            view = ProjectionGrid(output_metadata['bounds'], output_metadata['shape'],
+            view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
                                   title=title)
-            metadata = dict(dimension_labels=['Time', 'Duration'],
-                            key_type=[time_type, time_type],
-                            title='RF: {label0} = {value0}, {label1} = {value1}'
+            metadata = dict(dimension_labels=['Time', 'Duration'], dim_info=dim_info,
+                            title='RF: {label0} = {value0}, {label1} = {value1}',
                             **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
             for ii in range(rows):
@@ -730,7 +779,7 @@ class Feature(param.Parameterized):
         If non-None, a function that when given a list of other parameter
         values, computes and returns the value for this feature.""")
 
-    preference_fn = param.ClassSelector(DistributionStatisticFn,
+    preference_fn = param.ClassSelector(DistributionStatisticFn, allow_None=True,
                                         default=DSF_WeightedAverage(), doc="""
         Function that will be used to analyze the distributions of unit response
         to this feature.""")
@@ -744,6 +793,8 @@ class Feature(param.Parameterized):
 
     offset = param.Number(default=0.0, doc="""
         Offset to add to the values for this feature""")
+
+    unit = param.String(default="", doc="Unit string associated with the Feature")
 
     values = param.List(default=[], doc="""
         Explicit list of values for this feature, used in alternative to the

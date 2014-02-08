@@ -15,17 +15,17 @@ superclasses for the rest of the parameters and code.
 """
 
 import copy
-import Image, ImageDraw
+import Image
+import ImageDraw
+
 import numpy as np
 
 import param
 from param import ParameterizedFunction, ParamOverrides
-
 from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     GaussiansCorner, OrientationContrast
-from imagen.ndmapping import AttrDict
-from imagen.views import SheetStack, SheetView
-
+from dataviews.ndmapping import AttrDict
+from dataviews.sheetviews import SheetStack, SheetView
 from metaparams import *
 from distribution import DSF_MaxValue, DistributionStatisticFn, \
     DSF_WeightedAverage, DSF_BimodalPeaks
@@ -116,7 +116,7 @@ class MeasureResponseCommand(PatternPresentingCommand):
                               inputs=p.inputs,
                               metafeature_fns=p.metafeature_fns,
                               measurement_prefix=p.measurement_prefix,
-                              outputs=p.outputs, param_dict=static_params,
+                              outputs=p.outputs, static_features=static_params,
                               pattern_generator=p.pattern_generator,
                               pattern_response_fn=p.pattern_response_fn)
 
@@ -245,25 +245,15 @@ class SingleInputResponseCommand(MeasureResponseCommand):
 class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
     """A callable Parameterized command for measuring tuning curves."""
 
-    num_orientation = param.Integer(default=12)
+    contrasts = param.List(default=[30, 60, 80, 90])
 
-    units = param.String(default='%', doc="""
-        Units for labeling the curve_parameters in figure legends.
-        The default is %, for use with contrast, but could be any
-        units (or the empty string).""")
+    num_orientation = param.Integer(default=12)
 
     # Make constant in subclasses?
     x_axis = param.String(default='orientation', doc="""
         Parameter to use for the x axis of tuning curves.""")
 
     static_parameters = param.List(default=[])
-
-    # JABALERT: Might want to accept a list of values for a given
-    # parameter to make the simple case easier; then maybe could do
-    # the crossproduct of them?
-    curve_parameters = param.Parameter([{"contrast": 30}, {"contrast": 60},
-                                        {"contrast": 80}, {"contrast": 90}],
-                                       doc="""List of parameter values for which to measure a curve.""")
 
     __abstract = True
 
@@ -278,36 +268,20 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
         return results
 
 
-    def _compute_curves(self, p, val_format='%s'):
+    def _compute_curves(self, p):
         """
         Compute a set of curves for the specified sheet, using the
         specified val_format to print a label for each value of a
         curve_parameter.
         """
-        measurements = {}
-        for curve in p.curve_parameters:
-            static_params = dict([(s, p[s]) for s in p.static_parameters])
-            static_params.update(curve)
-            curve_label = "; ".join([
-                ('%s = ' + val_format + '%s') % (n.capitalize(), v, p.units)
-                for n, v in curve.items()])
-            results = FeatureCurves(self._feature_list(p),
-                                    curve_params=curve, durations=p.durations,
-                                    inputs=p.inputs,
-                                    label=curve_label,
-                                    measurement_prefix=p.measurement_prefix,
-                                    metafeature_fns=p.metafeature_fns,
-                                    outputs=p.outputs,
-                                    param_dict=static_params,
-                                    pattern_generator=p.pattern_generator,
-                                    pattern_response_fn=p.pattern_response_fn,
-                                    x_axis=p.x_axis)
-            for src, data in results.items():
-                if src not in measurements:
-                    measurements[src] = data
-                else:
-                    measurements[src].update(data)
-        return measurements
+        static_params = dict([(s, p[s]) for s in p.static_parameters])
+
+        return FeatureCurves(self._feature_list(p), durations=p.durations,
+                             inputs=p.inputs, measurement_prefix=p.measurement_prefix,
+                             metafeature_fns=p.metafeature_fns, outputs=p.outputs,
+                             pattern_generator=p.pattern_generator,
+                             pattern_response_fn=p.pattern_response_fn,
+                             static_features=static_params, x_axis=p.x_axis)
 
 
     def _feature_list(self, p):
@@ -315,7 +289,9 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
                         steps=p.num_orientation, cyclic=True),
                 Feature(name="phase", range=(0.0, 2 * np.pi),
                         steps=p.num_phase, cyclic=True),
-                Feature(name="frequency", values=p.frequencies)]
+                Feature(name="frequency", values=p.frequencies),
+                Feature(name="contrast", values=p.contrasts, preference_fn=None,
+                        unit=" %")]
 
 
 
@@ -374,6 +350,8 @@ class measure_response(FeatureResponses):
     def _collate_results(self, responses):
         time = self.metadata.timestamp
         time_type = param.Dynamic.time_fn.time_type
+        dims = ['Time', 'Duration']
+        dim_info = dict([(dim, {'type': time_type}) for dim in dims])
 
         results = {}
         for label, response in responses.items():
@@ -381,10 +359,11 @@ class measure_response(FeatureResponses):
             metadata = self.metadata['outputs'][name]
             title = name + ' Response: {label0} = {value0}, {label1} = {value1}'
             if name not in results:
-                results[name] = SheetStack(dimension_labels=['Time', 'Duration'],
-                                           key_type=[time_type, time_type],
-                                           title=title, **metadata)
-            sv = SheetView(response, metadata['bounds'], AttrDict(timestamp=time))
+                results[name] = SheetStack(dimension_labels=dims, dim_info=dim_info,
+                                           title=title, ylabel='Response',
+                                           **metadata)
+            sv = SheetView(response, metadata['bounds'],
+                           metadata=AttrDict(timestamp=time))
             results[name][(time, duration)] = sv
         return results
 
@@ -432,7 +411,7 @@ class measure_rfs(SingleInputResponseCommand):
         results = ReverseCorrelation(self._feature_list(p),
                                      durations=p.durations, inputs=p.inputs,
                                      outputs=p.outputs,
-                                     param_dict=static_params,
+                                     static_features=static_params,
                                      pattern_response_fn=p.pattern_response_fn,
                                      pattern_generator=p.pattern_generator)
         self._restore_presenter_defaults()
@@ -441,9 +420,9 @@ class measure_rfs(SingleInputResponseCommand):
 
 
     def _feature_list(self, p):
-        return [
-            Feature(name="presentation", range=(0, p.presentations-1), steps=p.presentations),
-            Feature(name="scale", values=[p.scale])]
+        return [Feature(name="presentation", range=(0, p.presentations-1),
+                        steps=p.presentations),
+                Feature(name="scale", values=[p.scale])]
 
 
 
@@ -1000,7 +979,8 @@ class measure_size_response(UnitCurveCommand):
                         steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="size", range=(0.0, p.max_size),
-                        steps=p.num_sizes, cyclic=False)]
+                        steps=p.num_sizes, cyclic=False),
+                Feature(name="contrast", values=p.contrasts, preference_fn=None)]
 
 
 class measure_contrast_response(UnitCurveCommand):
@@ -1034,25 +1014,21 @@ class measure_contrast_response(UnitCurveCommand):
 
     x_axis = param.String(default='contrast', constant=True)
 
-    units = param.String(default=" rad")
-
 
     def __call__(self, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self._set_presenter_overrides(p)
         results = {}
         for coord in p.coords:
-            orientation = p.preference_lookup_fn('orientation', p.outputs[0],
-                                                 coord)
-            self.curve_parameters = [{"orientation": orientation + ro}
-                                     for ro in p.relative_orientations]
+            p.orientation = p.preference_lookup_fn('orientation', p.outputs[0],
+                                                   coord)
 
             p.x = p.preference_lookup_fn('x', p.outputs[0], coord,
                                          default=coord[0])
             p.y = p.preference_lookup_fn('y', p.outputs[0], coord,
                                          default=coord[1])
 
-            results[coord] = self._compute_curves(p, val_format="%.4f")
+            results[coord] = self._compute_curves(p)
         self._restore_presenter_defaults()
         return results
 
@@ -1061,7 +1037,10 @@ class measure_contrast_response(UnitCurveCommand):
         return [Feature(name="phase", range=(0.0, 2 * np.pi),
                         steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
-                Feature(name="contrast", values=p.contrasts, cyclic=False)]
+                Feature(name="contrast", values=p.contrasts, cyclic=False),
+                Feature(name="orientation", preference_fn=None,
+                        values=[p.orientation+ro for ro in p.relative_orientations],
+                        unit=' rad')]
 
 
 class measure_frequency_response(UnitCurveCommand):
@@ -1121,7 +1100,9 @@ class measure_frequency_response(UnitCurveCommand):
                     steps=p.num_phase, cyclic=True),
             Feature(name="frequency", range=(0.0, p.max_freq),
                     steps=p.num_freq, cyclic=False),
-            Feature(name="size", values=[p.size])]
+            Feature(name="size", values=[p.size]),
+            Feature(name="contrast", values=p.contrasts, preference_fn=None,
+                    unit=" %")]
 
 
 class measure_orientation_contrast(UnitCurveCommand):
@@ -1153,8 +1134,8 @@ class measure_orientation_contrast(UnitCurveCommand):
     thickness = param.Number(default=0.5, bounds=(0, None), softbounds=(0, 1.5),
                              doc="""Ring thickness.""")
 
-    contrastsurround = param.Number(default=100, bounds=(0, 100),
-                                    doc="""Contrast of the surround.""")
+    contrastsurround = param.List(default=[30, 60, 80, 90],
+                                  doc="Contrast of the surround.")
 
     contrastcenter = param.Number(default=100, bounds=(0, 100),
                                   doc="""Contrast of the center.""")
@@ -1166,16 +1147,11 @@ class measure_orientation_contrast(UnitCurveCommand):
 
     num_orientation = param.Integer(default=9)
 
-    units = param.String(default="%")
-
     static_parameters = param.List(
         default=["x", "y", "sizecenter", "sizesurround", "orientationcenter",
                  "thickness", "contrastcenter"])
 
-    curve_parameters = param.Parameter(
-        [{"contrastsurround": 30}, {"contrastsurround": 60},
-         {"contrastsurround": 80}, {"contrastsurround": 90}], doc="""
-        List of parameter values for which to measure a curve.""")
+
 
     or_surrounds = []
 
@@ -1211,7 +1187,9 @@ class measure_orientation_contrast(UnitCurveCommand):
                         steps=p.num_phase, cyclic=True),
                 Feature(name="frequency", values=p.frequencies),
                 Feature(name="orientationsurround", values=self.or_surrounds,
-                        cyclic=True)]
+                        cyclic=True),
+                Feature(name="contrastsurround", values=p.contrastsurround,
+                        preference_fn=None, unit=" %")]
 
 
 class test_measure(UnitCurveCommand):
@@ -1226,12 +1204,12 @@ class test_measure(UnitCurveCommand):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self.x = 0.0
         self.y = 0.0
-        for coord in p.coords:
-            self._compute_curves(p, val_format="%.4f")
+        self._compute_curves(p)
 
 
     def _feature_list(self, p):
-        return [Feature(name="orientation", values=[1.0] * 22, cyclic=True),
+        return [Feature(name="orientation", values=[1.0] * 22, cyclic=True,
+                        preference_fn=None),
                 Feature(name="contrast", values=[100], cyclic=False)]
 
 
