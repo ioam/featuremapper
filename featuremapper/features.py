@@ -4,6 +4,8 @@ import param
 
 from distribution import DistributionStatisticFn, DSF_WeightedAverage
 
+
+
 class Feature(param.Parameterized):
     """
     Specifies several parameters required for generating a map of one input
@@ -35,7 +37,7 @@ class Feature(param.Parameterized):
     offset = param.Number(default=0.0, doc="""
         Offset to add to the values for this feature""")
 
-    unit = param.String(default="", doc="Unit string associated with the Feature")
+    unit = param.String(default=None, doc="Unit string associated with the Feature")
 
     values = param.List(default=[], doc="""
         Explicit list of values for this feature, used in alternative to the
@@ -81,6 +83,8 @@ class Feature(param.Parameterized):
     def __call__(self, **params):
         settings = dict(self.get_param_values(onlychanged=True), **params)
         return self.__class__(**settings)
+
+
 
 # Cyclic features
 Cyclic              = Feature(cyclic=True, unit="rad")
