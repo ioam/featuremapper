@@ -593,8 +593,6 @@ class FeatureCurves(FeatureResponses):
         dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names] + [axis_name]
         curve_label = p.measurement_prefix + axis_name
 
-        # feature_names = list(self.outer_names) + [p.x_axis]
-        # features = [f for fname in feature_names for f in self.features if f.name == fname]
         dim_info = dict([(f.name.capitalize(), {'cyclic_range': f.range[1] if f.cyclic else None,
                                                 'type': type(f.range[1]),
                                                 'unit': f.unit}) for f in self.features])
@@ -617,7 +615,7 @@ class FeatureCurves(FeatureResponses):
             if name not in results:
 
                 results[name] = SheetStack(dimension_labels=dim_labels, dim_info=dim_info,
-                                           label=axis_name, timestamp=timestamp,
+                                           label=curve_label, timestamp=timestamp,
                                            ylabel='Response', **output_metadata)
 
             metadata = AttrDict(features=dict(zip(dim_labels[1:], list(f_vals)+[0])),
