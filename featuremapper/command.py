@@ -373,7 +373,7 @@ class measure_response(FeatureResponses):
 
     def _apply_cmd_overrides(self, p):
         super(measure_response, self)._apply_cmd_overrides(p)
-        for override, value in p.extra_keywords():
+        for override, value in p.extra_keywords().items():
             if override in p.pattern_response_fn.params():
                 p.pattern_response_fn.set_param(override, value)
 
