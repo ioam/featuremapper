@@ -320,6 +320,7 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 
 class measure_response(FeatureResponses):
+
     pattern_generator = param.Callable(default=Gaussian(), instantiate=True,
                                        doc="""
         Callable object that will generate input patterns coordinated
@@ -339,8 +340,12 @@ class measure_response(FeatureResponses):
         for k in inputs.keys():
             inputs[k] = copy.deepcopy(p.pattern_generator)
 
+        for f in p.pre_presentation_hooks: f()
+
         responses = p.pattern_response_fn(inputs, output_names,
                                           durations=p.durations)
+
+        for f in p.post_presentation_hooks: f()
 
         results = self._collate_results(responses)
 
