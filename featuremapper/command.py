@@ -27,7 +27,7 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
 from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView
 
-from featuremapper import Feature, FeatureResponses, FeatureMaps, FeatureCurves, \
+from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
 import features as f
 from metaparams import *
@@ -288,13 +288,10 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [Feature(name="orientation", range=(0, np.pi),
-                        steps=p.num_orientation, cyclic=True),
-                Feature(name="phase", range=(0.0, 2 * np.pi),
-                        steps=p.num_phase, cyclic=True),
-                Feature(name="frequency", values=p.frequencies),
-                Feature(name="contrast", values=p.contrasts, preference_fn=None,
-                        unit=" %")]
+        return [f.Orientation(steps=p.num_orientation),
+                f.Phase(steps=p.num_phase),
+                f.Frequency(values=p.frequencies),
+                f.Contrast(values=p.contrasts, preference_fn=None)]
 
 
 
@@ -631,8 +628,7 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
 
     def _feature_list(self, p):
         # orientation is computed from direction
-        dr = Feature(name="direction", range=(0.0, 2 * np.pi),
-                     steps=p.num_direction, cyclic=True)
+        dr = f.Direction(steps=p.num_direction)
         or_values = list(set(
             [compute_orientation_from_direction([("direction", v)]) for v in
              dr.values]))
@@ -689,7 +685,7 @@ class measure_second_or_pref(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        fs = [Feature(name="frequency", values=p.frequencies)]
+        fs = [f.Frequency(values=p.frequencies)]
         if p.true_peak:
             fs.append(f.Orientation(steps=p.num_orientation,
                                     preference_fn=DSF_BimodalPeaks()))
