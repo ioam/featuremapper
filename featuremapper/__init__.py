@@ -524,9 +524,10 @@ class FeatureMaps(FeatureResponses):
                         # Set labels and metadata
                         cr = None if map_name == 'selectivity' else cyclic_range
                         dim_info = dimension_info.copy()
-                        dim_info[fname.capitalize()].update({'cylic_range': cr})
+                        dim_info[feature].update({'cylic_range': cr})
                         map_title = base_name + k + map_name.capitalize()
-                        title = map_name + ': {label0} = {value0}, {label1} = {value1}'
+                        title = ' '.join([feature, map_name.capitalize()]) +\
+                                ': {label0} = {value0:.2f}, {label1} = {value1:.2f}'
                         dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names]
                         metadata = dict(dimension_labels=dim_labels, dim_info=dim_info,
                                         title=title, ylabel=map_title, **output_metadata)
