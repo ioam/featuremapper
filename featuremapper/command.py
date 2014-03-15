@@ -27,6 +27,7 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
 from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView
 
+import imagen
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
 import features as f
@@ -318,6 +319,12 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 class measure_response(FeatureResponses):
 
+    input_patterns = param.Dict(default={}, doc="""
+        Assigns patterns to different inputs overriding the
+        pattern_generator parameter. If all inputs have not been
+        assigned a pattern, remaining inputs will be presented a
+        blank pattern.""")
+
     pattern_generator = param.Callable(default=Gaussian(), instantiate=True,
                                        doc="""
         Callable object that will generate input patterns coordinated
@@ -331,11 +338,20 @@ class measure_response(FeatureResponses):
         for fn in p.metadata_fns:
             self.metadata.update(fn(p.inputs, p.outputs))
 
-        output_names = self.metadata['outputs'].keys()
+        output_names = self.metadata.outputs.keys()
         input_names = self.metadata.inputs.keys()
         inputs = dict.fromkeys(input_names)
-        for k in inputs.keys():
-            inputs[k] = copy.deepcopy(p.pattern_generator)
+        if p.input_patterns:
+            for k, ip in p.input_patterns.items():
+                inputs[k] = ip
+            for name in [k for k, ip in inputs.items() if ip is None]:
+                self.warning("No pattern specified for input %s, defaulting"
+                             "to blank Constant pattern." % name)
+                inputs[name] = imagen.Constant(scale=0)
+        else:
+            for k in inputs.keys():
+                inputs[k] = copy.deepcopy(p.pattern_generator)
+
 
         for f in p.pre_presentation_hooks: f()
 
