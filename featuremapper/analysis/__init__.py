@@ -1,6 +1,6 @@
 import param
 
-from distribution import Distribution, DSF_WeightedAverage, DSF_MaxValue
+from featuremapper.distribution import Distribution, DSF_WeightedAverage, DSF_MaxValue
 
 def decode_feature(sheet, preference_map = "OrientationPreference", axis_bounds=(0.0,1.0), cyclic=True, weighted_average=True, cropfn=lambda(x):x):
     """
