@@ -1,22 +1,17 @@
 import numpy as np
 
 import param
+from dataviews.ndmapping import Dimension
 
 from distribution import DistributionStatisticFn, DSF_WeightedAverage
 
 
 
-class Feature(param.Parameterized):
+class Feature(Dimension):
     """
     Specifies several parameters required for generating a map of one input
     feature.
     """
-
-    name = param.String(default="", doc="Name of the feature to test")
-
-    cyclic = param.Boolean(default=False, doc="""
-        Whether the range of this feature is cyclic (wraps around at the high
-        end).""")
 
     compute_fn = param.Callable(default=None, doc="""
         If non-None, a function that when given a list of other parameter
@@ -27,17 +22,11 @@ class Feature(param.Parameterized):
         Function that will be used to analyze the distributions of unit response
         to this feature.""")
 
-    range = param.NumericTuple(default=(0, 0), doc="""
-        Lower and upper values for a feature,used to build a list of values,
-        together with the step parameter.""")
-
     steps = param.Integer(default=0, doc="""
         Number of steps, between lower and upper range value, to be presented.""")
 
     offset = param.Number(default=0.0, doc="""
         Offset to add to the values for this feature""")
-
-    unit = param.String(default=None, doc="Unit string associated with the Feature")
 
     values = param.List(default=[], doc="""
         Explicit list of values for this feature, used in alternative to the
@@ -45,6 +34,7 @@ class Feature(param.Parameterized):
 
     _init = False # Allows creation of default Features in the file
 
+    definitions = {}
 
     def _init_values(self):
         if len(self.values):
@@ -60,7 +50,7 @@ class Feature(param.Parameterized):
             self.values = list(values % (up_bound - low_bound) if self.cyclic else values)
 
         
-    def __init__(self, **params):
+    def __init__(self, name, **params):
         """
         Users can provide either a range and a step size, or a list of
         values.  If a list of values is supplied, the range can be
@@ -75,43 +65,48 @@ class Feature(param.Parameterized):
         values to allow the starting value to be specified.
 
         """
-        super(Feature, self).__init__(**params)
+        super(Feature, self).__init__(name, **params)
         if self._init:
             self._init_values()
-            
 
-    def __call__(self, **params):
-        settings = dict(self.get_param_values(onlychanged=True), **params)
-        return self.__class__(**settings)
+        Feature.definitions[self.name] = self
 
+
+# Basic features
+Float   = Feature("float", type=float)
+Integer = Feature("float", type=int)
 
 
 # Cyclic features
-Cyclic              = Feature(cyclic=True, unit="rad")
-Hue                 = Cyclic(name="hue", range=(0.0, 1.0))
+Cyclic              = Float("cyclic", cyclic=True, unit="rad")
+Hue                 = Cyclic("hue", range=(0.0, 1.0))
 
-FullCycle           = Cyclic(range=(0, 2*np.pi))
-Angle               = FullCycle(name="angle")
-Direction           = FullCycle(name="direction")
-Phase               = FullCycle(name="phase")
-PhaseDisparity      = FullCycle(name="phasedisparity")
+FullCycle           = Cyclic("full cycle", range=(0, 2*np.pi))
+Angle               = FullCycle("angle")
+Direction           = FullCycle("direction")
+Phase               = FullCycle("phase")
+PhaseDisparity      = FullCycle("phasedisparity")
 
-HalfCycle           = Cyclic(range=(0, np.pi))
-Orientation         = HalfCycle(name="orientation")
-OrientationSurround = HalfCycle(name="orientationsurround")
+HalfCycle           = Cyclic("half cycle", range=(0, np.pi))
+Orientation         = HalfCycle("orientation")
+OrientationSurround = HalfCycle("orientationsurround")
 
 # Non-cyclic features
-Frequency    = Feature(name="frequency", unit="cycles per unit distance")
-Presentation = Feature(name="presentation")
-Size         = Feature(name="size", unit="Diameter")
-Scale        = Feature(name="scale")
-X            = Feature(name="x")
-Y            = Feature(name="y")
+Frequency    = Float("frequency", unit="cycles per unit distance")
+Presentation = Integer("presentation")
+Size         = Float("size", unit="Diameter")
+Scale        = Float("scale")
+X            = Float("x")
+Y            = Float("y")
 
 # Complex features
-Contrast         = Feature(name="contrast", range=(0, 100), unit="%")
-ContrastSurround = Contrast(name="contrastsurround", preference_fn=None)
-Ocular           = Feature(name="ocular")
-Speed            = Feature(name="speed")
+Contrast         = Float("contrast", range=(0, 100), unit="%")
+ContrastSurround = Contrast("contrastsurround", preference_fn=None)
+Ocular           = Integer("ocular")
+Speed            = Float("speed")
+
+# Time features
+Time     = Dimension("time", type=param.Dynamic.time_fn.time_type)
+Duration = Time("duration")
 
 Feature._init = True # All Features created externally have to supply range or values

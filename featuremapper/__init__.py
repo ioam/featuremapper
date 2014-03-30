@@ -17,6 +17,7 @@ from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
+import features
 from features import Feature # pyflakes:ignore (API import)
 
 activity_dtype = np.float64
@@ -263,13 +264,12 @@ class FeatureResponses(PatternDrivenAnalysis):
         self.inner = [f for f in self.features if f.preference_fn is not None]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
             else zip(*[(f.name, f.values) for f in self.outer])
-        self.outer_types = [float for vals in self.outer_vals]
-        dim_labels = ['Duration'] + list(self.outer_names)
+        dimensions = [features.Duration] + list(self.outer)
 
         self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
                                                          p.durations, *self.outer_vals)]
 
-        ndmapping_fn = lambda: NdMapping(dimension_labels=dim_labels)
+        ndmapping_fn = lambda: NdMapping(dimensions=dimensions)
         self._featureresponses = defaultdict(ndmapping_fn)
         self._activities = defaultdict(ndmapping_fn)
         if p.store_fullmatrix:
@@ -487,30 +487,26 @@ class FeatureMaps(FeatureResponses):
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
 
         timestamp = self.metadata.timestamp
-        time_type = param.Dynamic.time_fn.time_type
 
         # Generate dimension info dictionary from features
-        dimension_info = dict([(f.name.capitalize(), {'cyclic_range': f.range[1] if f.cyclic else None,
-                                                      'type': type(f.range[1]),
-                                                      'unit': f.unit}) for f in self.features])
-        dimension_info.update({'Time': {'type': time_type}, 'Duration':{'type': time_type}})
+        dimensions = [features.Time, features.Duration] + self.outer
 
         for label in self.measurement_product:
             name = label[0] # Measurement source
             f_vals = label[1:] # Duration and outer feature values
 
             #Metadata
-            output_metadata = self.metadata.outputs[name]
+            inner_features = dict([(f.name, f) for f in self.inner])
+            output_metadata = dict(self.metadata.outputs[name], inner_features=inner_features)
 
             # Iterate over inner features
             fr = self._featureresponses[name][f_vals]
             for fname, fdist in fr.items():
                 feature = fname.capitalize()
-                base_name = self.measurement_prefix + fname.capitalize()
+                base_name = self.measurement_prefix + feature
 
                 # Get information from the feature
-                fp = filter(lambda f: f.name == fname, self.features)[0]
-                cyclic_range = dimension_info[feature].get('cyclic_range')
+                fp = [f for f in self.features if f.name == fname][0]
                 pref_fn = fp.preference_fn if fp.preference_fn is not None\
                     else self.preference_fn
                 if p.selectivity_multiplier is not None:
@@ -522,18 +518,18 @@ class FeatureMaps(FeatureResponses):
                 for k, maps in response.items():
                     for map_name, map_view in maps.items():
                         # Set labels and metadata
-                        cr = None if map_name == 'selectivity' else cyclic_range
-                        dim_info = dimension_info.copy()
-                        dim_info[feature].update({'cylic_range': cr})
+                        period = fp.range[1] if (map_name != 'selectivity' and fp.cyclic) else None
+
                         map_title = base_name + k + map_name.capitalize()
                         title = ' '.join([feature, map_name.capitalize()]) +\
                                 ': {label0} = {value0:.2f}, {label1} = {value1:.2f}'
-                        dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names]
-                        metadata = dict(dimension_labels=dim_labels, dim_info=dim_info,
+
+
+                        metadata = dict(dimensions=dimensions, #collapsed_dimensions=coll_dims,
                                         title=title, ylabel=map_title, **output_metadata)
 
                         # Create views and stacks
-                        sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=cr,
+                        sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
                                        metadata=AttrDict(timestamp=timestamp))
                         data = ((timestamp,)+f_vals, sv)
                         if map_title not in results[name]:
@@ -589,15 +585,11 @@ class FeatureCurves(FeatureResponses):
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
 
         timestamp = self.metadata.timestamp
-        time_type = param.Dynamic.time_fn.time_type
         axis_name = p.x_axis.capitalize()
-        dim_labels = ['Time', 'Duration'] + [n.capitalize() for n in self.outer_names] + [axis_name]
+        axis_feature = [f for f in self.features if f.name == p.x_axis][0]
         curve_label = p.measurement_prefix + axis_name
 
-        dim_info = dict([(f.name.capitalize(), {'cyclic_range': f.range[1] if f.cyclic else None,
-                                                'type': type(f.range[1]),
-                                                'unit': f.unit}) for f in self.features])
-        dim_info.update({'Time': {'type': time_type}, 'Duration':{'type': time_type}})
+        dimensions = [features.Time, features.Duration] + [f for f in self.outer] + [axis_feature]
 
         for label in self.measurement_product:
             # Deconstruct label into source name and feature_values
@@ -615,11 +607,12 @@ class FeatureCurves(FeatureResponses):
             # feature dimensions and the x_axis dimension
             if name not in results:
 
-                results[name] = SheetStack(dimension_labels=dim_labels, dim_info=dim_info,
+                results[name] = SheetStack(dimensions=dimensions,
                                            label=curve_label, timestamp=timestamp,
                                            ylabel='Response', **output_metadata)
 
-            metadata = AttrDict(features=dict(zip(dim_labels[1:], list(f_vals)+[0])),
+            metadata = AttrDict(features=dict(zip([d.name for d in dimensions[1:]],
+                                                  list(f_vals)+[0])),
                                 timestamp=timestamp, **output_metadata)
 
             # Populate the SheetStack with measurements for each x value
@@ -630,9 +623,9 @@ class FeatureCurves(FeatureResponses):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
                 metadata.features[axis_name] = x
+                cr = axis_feature.range[0] if axis_feature.cyclic else None
                 results[name][key] = SheetView(y_axis_values, output_metadata['bounds'],
-                                               cyclic_range=dim_info[axis_name]['cyclic_range'],
-                                               metadata=metadata.copy())
+                                               cyclic_range=cr, metadata=metadata.copy())
             
         return results
 
@@ -736,9 +729,8 @@ class ReverseCorrelation(FeatureResponses):
         results = defaultdict(dict)
         results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
 
-        time_type = param.Dynamic.time_fn.time_type
         timestamp = self.metadata.timestamp
-        dim_info = dict(Time={'type': time_type}, Duration={'type': time_type})
+        dimensions = [features.Time(), features.Duration()]
 
         for labels in self.measurement_product:
             in_label, out_label, duration = labels
@@ -749,7 +741,7 @@ class ReverseCorrelation(FeatureResponses):
             title = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
             view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
                                   title=title)
-            metadata = dict(dimension_labels=['Time', 'Duration'], dim_info=dim_info,
+            metadata = dict(dimensions=dimensions,
                             title='RF: {label0} = {value0}, {label1} = {value1}',
                             **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
