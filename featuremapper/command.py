@@ -370,9 +370,7 @@ class measure_response(FeatureResponses):
 
     def _collate_results(self, responses):
         time = self.metadata.timestamp
-        time_type = param.Dynamic.time_fn.time_type
-        dims = ['Time', 'Duration']
-        dim_info = dict([(dim, {'type': time_type}) for dim in dims])
+        dims = [f.Time, f.Duration]
 
         results = {}
         for label, response in responses.items():
@@ -380,9 +378,8 @@ class measure_response(FeatureResponses):
             metadata = self.metadata['outputs'][name]
             title = name + ' Response: {label0} = {value0:.2f}, {label1} = {value1:.2f}'
             if name not in results:
-                results[name] = SheetStack(dimension_labels=dims, dim_info=dim_info,
-                                           title=title, ylabel='Response',
-                                           **metadata)
+                results[name] = SheetStack(dimensions=dims, title=title,
+                                           ylabel='Response', **metadata)
             sv = SheetView(response, metadata['bounds'],
                            metadata=AttrDict(timestamp=time))
             results[name][(time, duration)] = sv
