@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 import param
-from imagen.analysis import SheetOperation
+from imagen.analysis import ViewOperation
 from dataviews import SheetLines, SheetPoints
 
 
@@ -40,7 +40,7 @@ class WarningCounter(object):
 
 
 
-class PinwheelAnalysis(SheetOperation):
+class PinwheelAnalysis(ViewOperation):
     """
     Given a SheetView or SheetStack of a cyclic feature preference,
     compute the position of all pinwheel singularities in the
@@ -84,9 +84,9 @@ class PinwheelAnalysis(SheetOperation):
         if self.p.include_contours:
             re_lines = SheetLines(re_contours, bounds, style=self.p.real_contour_style)
             im_lines = SheetLines(im_contours, bounds, style=self.p.imag_contour_style)
-            return sheetview * re_lines * im_lines * pinwheels
+            return [sheetview * re_lines * im_lines * pinwheels]
         else:
-            return sheetview * pinwheels
+            return [sheetview * pinwheels]
 
     def polar_preference(self, pref):
         """
