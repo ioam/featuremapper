@@ -380,7 +380,7 @@ class measure_response(FeatureResponses):
             if name not in results:
                 results[name] = SheetStack(dimensions=dims, title=title,
                                            ylabel='Response', **metadata)
-            sv = SheetView(response, metadata['bounds'],
+            sv = SheetView(response, metadata['bounds'], label='Activity',
                            metadata=AttrDict(timestamp=time))
             results[name][(time, duration)] = sv
         return results

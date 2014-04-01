@@ -524,13 +524,13 @@ class FeatureMaps(FeatureResponses):
                         title = ' '.join([feature, map_name.capitalize()]) +\
                                 ': {label0} = {value0:.2f}, {label1} = {value1:.2f}'
 
-
-                        metadata = dict(dimensions=dimensions, #collapsed_dimensions=coll_dims,
-                                        title=title, ylabel=map_title, **output_metadata)
+                        metadata = dict(dimensions=dimensions,
+                                        title=title, ylabel=map_title,
+                                        **output_metadata)
 
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
-                                       metadata=AttrDict(timestamp=timestamp))
+                                       label=map_title, metadata=AttrDict(timestamp=timestamp))
                         data = ((timestamp,)+f_vals, sv)
                         if map_title not in results[name]:
                             results[name][map_title] = SheetStack(data, **metadata)
@@ -625,7 +625,8 @@ class FeatureCurves(FeatureResponses):
                 metadata.features[axis_name] = x
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
                 results[name][key] = SheetView(y_axis_values, output_metadata['bounds'],
-                                               cyclic_range=cr, metadata=metadata.copy())
+                                               cyclic_range=cr, metadata=metadata.copy(),
+                                               label=axis_name+'Tuning')
             
         return results
 
@@ -749,7 +750,8 @@ class ReverseCorrelation(FeatureResponses):
                 for jj in range(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
-                                   metadata=AttrDict(timestamp=timestamp))
+                                   metadata=AttrDict(timestamp=timestamp),
+                                   label='ReverseCorrelation')
                     view[coord] = SheetStack((time_key, sv), **metadata)
             results[out_label][in_label] = view
         return results
