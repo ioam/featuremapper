@@ -78,7 +78,7 @@ class decode_feature(ViewOperation):
         decoded_value = res['']['preference']
         ret = {decoded_label: decoded_value}
 
-        if self.p.feature_estimate is not None:
+        if self.p.reference_value is not None:
             difference = abs(decoded_value - self.p.reference_value)
             difference = cr - difference if difference >= 0.5*cr else difference
             if cyclic: difference = difference % cr
