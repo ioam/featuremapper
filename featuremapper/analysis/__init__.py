@@ -72,7 +72,7 @@ class decode_feature(ViewOperation):
         for (p, a, s) in zip(preference.data.ravel(), activity.data.ravel(), selectivity.data.ravel()):
             d.add({p: a*s})
 
-        decoded_label = "Decoded " + fname
+        decoded_label = "Decoded " + fname.strip()
 
         res = DSF_WeightedAverage()(d) if self.p.weighted_average else DSF_MaxValue()(d)
         decoded_value = res['']['preference']

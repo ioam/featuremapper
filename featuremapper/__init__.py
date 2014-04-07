@@ -520,22 +520,18 @@ class FeatureMaps(FeatureResponses):
                         # Set labels and metadata
                         period = fp.range[1] if (map_name != 'selectivity' and fp.cyclic) else None
 
-                        map_title = base_name + k + map_name.capitalize()
-                        title = ' '.join([feature, map_name.capitalize()]) +\
-                                ': {label0} = {value0:.2f}, {label1} = {value1:.2f}'
-
-                        metadata = dict(dimensions=dimensions,
-                                        title=title, ylabel=map_title,
-                                        **output_metadata)
+                        map_index = base_name + k + map_name.capitalize()
+                        map_title = ' '.join([base_name, map_name.capitalize()])
+                        metadata = dict(dimensions=dimensions, **output_metadata)
 
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
                                        label=map_title, metadata=AttrDict(timestamp=timestamp))
                         data = ((timestamp,)+f_vals, sv)
                         if map_title not in results[name]:
-                            results[name][map_title] = SheetStack(data, **metadata)
+                            results[name][map_index] = SheetStack(data, **metadata)
                         else:
-                            results[name][map_title][(timestamp,)+f_vals] = sv
+                            results[name][map_index][(timestamp,)+f_vals] = sv
 
         return results
 
@@ -587,7 +583,7 @@ class FeatureCurves(FeatureResponses):
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
         axis_feature = [f for f in self.features if f.name == p.x_axis][0]
-        curve_label = p.measurement_prefix + axis_name
+        curve_label = ''.join([p.measurement_prefix, axis_name, 'Tuning'])
 
         dimensions = [features.Time, features.Duration] + [f for f in self.outer] + [axis_feature]
 
@@ -606,14 +602,10 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
+                results[name] = SheetStack(dimensions=dimensions, timestamp=timestamp,
+                                           label=curve_label, **output_metadata)
 
-                results[name] = SheetStack(dimensions=dimensions,
-                                           label=curve_label, timestamp=timestamp,
-                                           ylabel='Response', **output_metadata)
-
-            metadata = AttrDict(features=dict(zip([d.name for d in dimensions[1:]],
-                                                  list(f_vals)+[0])),
-                                timestamp=timestamp, **output_metadata)
+            metadata = AttrDict(timestamp=timestamp, **output_metadata)
 
             # Populate the SheetStack with measurements for each x value
             for x in curve_responses[0, 0]._data.iterkeys():
@@ -622,11 +614,10 @@ class FeatureCurves(FeatureResponses):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                metadata.features[axis_name] = x
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
                 results[name][key] = SheetView(y_axis_values, output_metadata['bounds'],
                                                cyclic_range=cr, metadata=metadata.copy(),
-                                               label=axis_name+'Tuning')
+                                               label='Response')
             
         return results
 
@@ -739,19 +730,18 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             time_key = (timestamp, duration)
-            title = p.measurement_prefix + output_metadata['src_name'] + ' RFs'
+            title = ' '.join([p.measurement_prefix, out_label, 'RFs'])
             view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
                                   title=title)
-            metadata = dict(dimensions=dimensions,
-                            title='RF: {label0} = {value0}, {label1} = {value1}',
-                            **input_metadata)
+            metadata = dict(dimensions=dimensions, **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
             for ii in range(rows):
                 for jj in range(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
                                    metadata=AttrDict(timestamp=timestamp),
-                                   label='ReverseCorrelation')
+                                   label='{inl}-{outl} RF'.format(inl=in_label,
+                                                                  outl=out_label))
                     view[coord] = SheetStack((time_key, sv), **metadata)
             results[out_label][in_label] = view
         return results

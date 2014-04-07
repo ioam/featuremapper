@@ -376,11 +376,10 @@ class measure_response(FeatureResponses):
         for label, response in responses.items():
             name, duration = label
             metadata = self.metadata['outputs'][name]
-            title = name + ' Response: {label0} = {value0:.2f}, {label1} = {value1:.2f}'
             if name not in results:
-                results[name] = SheetStack(dimensions=dims, title=title,
-                                           ylabel='Response', **metadata)
-            sv = SheetView(response, metadata['bounds'], label='Activity',
+                results[name] = SheetStack(dimensions=dims, **metadata)
+            sv = SheetView(response, metadata['bounds'],
+                           label=' '.join([name.capitalize(), 'Activity']),
                            metadata=AttrDict(timestamp=time))
             results[name][(time, duration)] = sv
         return results
