@@ -154,7 +154,7 @@ class phasedisparity2leftrightphase(param.ParameterizedFunction):
     """
 
     def __call__(self, inputs, features):
-        if "contrast" in features:
+        if "phasedisparity" in features:
             temp_phase1 = features['phase'] - features['phasedisparity']/2.0
             temp_phase2 = features['phase'] + features['phasedisparity']/2.0
             for name in inputs.keys():
