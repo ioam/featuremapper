@@ -6,6 +6,7 @@ import param
 from imagen.analysis import ViewOperation
 from dataviews import SheetLines, SheetPoints
 
+from dataviews.styles import Styles, Style
 
 __author__ = "Jean-Luc Stevens"
 
@@ -60,16 +61,6 @@ class PinwheelAnalysis(ViewOperation):
       Whether or not to include the computed contours for the real and
       imaginary components of the map.""")
 
-    imag_contour_style = param.Dict(default={'color': 'k'}, doc="""
-       Matplotlib style hints for plotting the imaginary contour lines.""")
-
-    real_contour_style = param.Dict(default={'color': 'w'}, doc="""
-       Matplotlib style hints for plotting the real contour lines.""")
-
-    pinwheel_style = param.Dict(default={'color': 'w', 'marker': 'o',
-                                         'edgecolor': 'k'}, doc="""
-       Matplotlib style hints for plotting the pinwheel points.""")
-
 
     def _process(self, sheetview):
 
@@ -79,11 +70,14 @@ class PinwheelAnalysis(ViewOperation):
         (re_contours, im_contours, intersections) = contour_info
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
-        pinwheels = SheetPoints(np.array(pinwheels), bounds, style=self.p.pinwheel_style)
+        pinwheels = SheetPoints(np.array(pinwheels), bounds,
+                                label = sheetview.label+' Pinwheels')
 
         if self.p.include_contours:
-            re_lines = SheetLines(re_contours, bounds, style=self.p.real_contour_style)
-            im_lines = SheetLines(im_contours, bounds, style=self.p.imag_contour_style)
+            re_lines = SheetLines(re_contours, bounds,
+                                  label = sheetview.label+' Real Contours')
+            im_lines = SheetLines(im_contours, bounds,
+                                  label = sheetview.label+' Imaginary Contours')
             return [sheetview * re_lines * im_lines * pinwheels]
         else:
             return [sheetview * pinwheels]
@@ -236,3 +230,9 @@ class PinwheelAnalysis(ViewOperation):
 
         warning_counter.warn()
         return pinwheels
+
+
+
+Styles.Pinwheels =          Style(color= 'w', marker= 'o', edgecolor= 'k')
+Styles.Imaginary_Contours = Style(color= 'k')
+Styles.Real_Contours =      Style(color= 'w')
