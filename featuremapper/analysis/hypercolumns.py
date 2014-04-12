@@ -16,7 +16,7 @@ import param
 from imagen.analysis  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
-from dataviews import DataCurves, SheetPoints, TableView, DataHistogram
+from dataviews import DataCurves, SheetPoints, TableView, Annotation, DataHistogram
 from dataviews.styles import Styles, Style, GrayNearest
 
 try: # 2.7+
@@ -99,8 +99,9 @@ class PowerSpectrumAnalysis(ViewOperation):
         power_spectrum = fft_power_spectrum(pref).data
         (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum)
 
+        kmax = info['kmax']
         if pinwheel_views != []:
-            info['rho'] = pinwheel_count / (info['kmax'] ** 2)
+            info['rho'] = pinwheel_count / (kmax ** 2)
             info['rho_metric'] = self.gamma_metric(info['rho'])
 
         info_table = TableView(info)
@@ -112,8 +113,9 @@ class PowerSpectrumAnalysis(ViewOperation):
 
         curve = DataCurves(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
         hist = DataHistogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Histogram')
+        annotation = Annotation(vlines=[kmax], label='KMax VLine')
 
-        views = [hist * curve  , info_table]
+        views = [hist * curve * annotation , info_table]
         if self.p.fit_table and fit is None:
             fit = dict(('a%i' % i,'-') for i in range(6))
 
@@ -240,4 +242,5 @@ class PowerSpectrumAnalysis(ViewOperation):
 # Defining styles
 Styles.FFTPowerSpectrum = GrayNearest
 Styles.Histogram_Fit = Style(color='r', linewidth=3)
-Styles.Histogram = Style(color='k', width=0.85)
+Styles.KMax_VLine =    Style(color='g', linewidth=3)
+Styles.Histogram =     Style(color='k', width=0.85)
