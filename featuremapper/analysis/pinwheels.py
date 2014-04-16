@@ -6,7 +6,7 @@ import param
 from imagen.analysis import ViewOperation
 from dataviews import SheetLines, SheetPoints
 
-from dataviews.styles import Styles, Style
+from dataviews.options import options, StyleOpts
 
 __author__ = "Jean-Luc Stevens"
 
@@ -233,6 +233,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-Styles.Pinwheels =          Style(color= 'w', marker= 'o', edgecolor= 'k')
-Styles.Imaginary_Contours = Style(color= 'k')
-Styles.Real_Contours =      Style(color= 'w')
+options.Pinwheels =          StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
+options.Imaginary_Contours = StyleOpts(color= 'k')
+options.Real_Contours =      StyleOpts(color= 'w')

@@ -17,7 +17,7 @@ from imagen.analysis  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
 from dataviews import DataCurves, SheetPoints, TableView, Annotation, DataHistogram
-from dataviews.styles import Styles, Style, GrayNearest
+from dataviews.options import options, StyleOpts, GrayNearest
 
 try: # 2.7+
     gamma = math.gamma
@@ -240,7 +240,6 @@ class PowerSpectrumAnalysis(ViewOperation):
 
 
 # Defining styles
-Styles.FFTPowerSpectrum = GrayNearest
-Styles.Histogram_Fit = Style(color='r', linewidth=3)
-Styles.KMax_VLine =    Style(color='g', linewidth=3)
-Styles.Histogram =     Style(color='k', width=0.85)
+options.Histogram_Fit = StyleOpts(color='r', linewidth=3)
+options.KMax_VLine =    StyleOpts(color='g', linewidth=3)
+options.Histogram =     StyleOpts(color='k', width=0.85)
