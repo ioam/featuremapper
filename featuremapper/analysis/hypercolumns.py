@@ -13,7 +13,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 import param
-from imagen.analysis  import ViewOperation
+from dataviews.operation  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
 from dataviews import DataCurves, SheetPoints, TableView, Annotation, DataHistogram
