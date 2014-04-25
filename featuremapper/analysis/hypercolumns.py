@@ -109,7 +109,7 @@ class PowerSpectrumAnalysis(ViewOperation):
         if fit is not None:
             samples = [self.fit_samples(dim1/2, 100, fit)]
         else:
-            samples = [zip([0, dim1/2],[0.0, 0.0])] #[]]
+            samples = [zip([0, dim1/2], [0.0, 0.0])]
 
         curve = DataCurves(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
         hist = DataHistogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Histogram')
@@ -210,7 +210,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             if self.p.init_fit is None:
                 init_fit = [height, kmax_argmax, 4.0, baseline, 0, 0]
             else:
-               self.p.init_fit = init_fit
+                init_fit = self.p.init_fit
 
             fit_vals, _ = curve_fit(self.KaschubeFit,
                                     ks, np.array(amplitudes),
@@ -242,4 +242,4 @@ class PowerSpectrumAnalysis(ViewOperation):
 # Defining styles
 options.Histogram_Fit = StyleOpts(color='r', linewidth=3)
 options.KMax_VLine =    StyleOpts(color='g', linewidth=3)
-options.Histogram =     StyleOpts(color='k', width=0.85)
+options.Histogram =     StyleOpts(fc='w', ec='k')
