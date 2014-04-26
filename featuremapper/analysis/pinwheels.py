@@ -62,8 +62,8 @@ class PinwheelAnalysis(ViewOperation):
       imaginary components of the map.""")
 
 
-    def _process(self, sheetview):
-
+    def _process(self, view):
+        [sheetview] = self.get_views(view, 'Preference')
         bounds = sheetview.bounds
         polar_map = self.polar_preference(sheetview.N.data)
         contour_info = self.polarmap_contours(polar_map, bounds)
