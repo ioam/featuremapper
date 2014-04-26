@@ -320,8 +320,8 @@ class Collector(ViewContainer):
 
     def analyze(self, reference, analysis_fn, **kwargs):
         """
-        A deferred analysis that applies the given analysis
-        function_fn with the supplied keywords.
+        A deferred analysis that applies the given analysis function
+        with the supplied keywords.
         """
         return lambda : analysis_fn(reference.resolve(self), **kwargs)
 
@@ -402,8 +402,8 @@ class Collector(ViewContainer):
             else:
                 type_error = True
             if type_error:
-                print "Collector cannot process %s %s measurement " \
-                  "result of type %s" % (src, label, str(type(measurement)))
+                self.warning("Collector cannot process %s %s measurement " \
+                  "result of type %s" % (src, label, str(type(measurement))))
             else:
                 self.add(src, label, stack)
 
