@@ -418,7 +418,11 @@ class measure_rfs(SingleInputResponseCommand):
 
     static_parameters = param.List(default=["scale", "offset"])
 
-    presentations = param.Number(default=100)
+    pattern_generator = param.Callable(default=imagen.random.UniformRandom(),
+       doc="""Presented pattern for reverse correlation, usually white noise.""")
+
+    presentations = param.Number(default=100, doc="""
+       Number of presentations to run the reverse correlation for.""")
 
     __abstract = True
 
@@ -439,8 +443,7 @@ class measure_rfs(SingleInputResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Presentation(range=(0, p.presentations-1), steps=p.presentations),
-                f.Scale(values=[p.scale])]
+        return [f.Presentation(range=(0, p.presentations-1), steps=p.presentations)]
 
 
 
