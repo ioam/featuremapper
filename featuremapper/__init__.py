@@ -16,6 +16,7 @@ from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 
+from collector import ViewContainer
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 import features
 from features import Feature # pyflakes:ignore (API import)
@@ -239,9 +240,9 @@ class FeatureResponses(PatternDrivenAnalysis):
         increased so that results will be an average over the specified number
         of repetitions.""")
 
-    store_fullmatrix = param.Boolean(default=False, doc="""
-        Determines whether or not store the full matrix of feature
-        responses as a class attribute.""")
+    store_responses = param.Boolean(default=False, doc="""
+        Determines whether or not to return the full set of responses to the
+        presented patterns.""")
 
     metadata = {}
 
@@ -272,8 +273,10 @@ class FeatureResponses(PatternDrivenAnalysis):
         ndmapping_fn = lambda: NdMapping(dimensions=dimensions)
         self._featureresponses = defaultdict(ndmapping_fn)
         self._activities = defaultdict(ndmapping_fn)
-        if p.store_fullmatrix:
-            self._fullmatrix = dict(ndmapping_fn)
+        if p.store_responses:
+            response_dimensions = [features.Time]+dimensions+list(self.inner)
+            response_stack_fn = lambda: SheetStack(dimensions=response_dimensions)
+            self._responses = defaultdict(response_stack_fn)
 
         for label in self.measurement_product:
             out_label = label[0]
@@ -287,9 +290,6 @@ class FeatureResponses(PatternDrivenAnalysis):
                 self._featureresponses[out_label][f_vals][f.name] = \
                     DistributionMatrix(output_metadata['shape'], axis_range=f.range,
                                        cyclic=f.cyclic)
-            if p.store_fullmatrix:
-                self._fullmatrix[out_label][f_vals] = FullMatrix(output_metadata['shape'],
-                                                                 self.inner)
 
 
 
@@ -401,16 +401,19 @@ class FeatureResponses(PatternDrivenAnalysis):
         Update each DistributionMatrix with (activity,bin) and
         populate the full matrix, if enabled.
         """
+        timestamp = self.metadata['timestamp']
         for mvals in self.measurement_product:
             name = mvals[0]
+            bounds = self.metadata.outputs[name]['bounds']
             f_vals = mvals[1:]
             act = self._activities[name][f_vals]
             for feature, value in current_values:
                 self._featureresponses[name][f_vals][feature].update(act, value)
-            if p.store_fullmatrix:
+            if p.store_responses:
                 cn, cv = zip(*current_values)
-                current_vals = zip(self.outer_names+cn, self.outer_vals+cv)
-                self._fullmatrix[name][f_vals].update(act, current_vals)
+                key = (timestamp,)+f_vals+cv
+                self._responses[name][key] = SheetView(act.copy(), bounds,
+                                                       label='Response')
 
 
     @bothmethod
@@ -483,13 +486,14 @@ class FeatureMaps(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = defaultdict(dict)
-        results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
+        results = ViewContainer()
 
         timestamp = self.metadata.timestamp
 
         # Generate dimension info dictionary from features
         dimensions = [features.Time, features.Duration] + self.outer
+        pattern_dimensions = self.outer + self.inner
+        pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
 
         for label in self.measurement_product:
             name = label[0] # Measurement source
@@ -527,11 +531,14 @@ class FeatureMaps(FeatureResponses):
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
                                        label=map_title, metadata=AttrDict(timestamp=timestamp))
-                        data = ((timestamp,)+f_vals, sv)
-                        if map_title not in results[name]:
-                            results[name][map_index] = SheetStack(data, **metadata)
+                        key = (timestamp,)+f_vals
+                        if (name, map_title) not in results:
+                            results.add(name, map_index, SheetStack((key, sv), **metadata))
                         else:
-                            results[name][map_index][(timestamp,)+f_vals] = sv
+                            results.add(name, map_index, sv, key)
+                if p.store_responses:
+                    info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
+                    results.add(name, '%s_%s_%s' % info, self._responses[name])
 
         return results
 
@@ -577,8 +584,7 @@ class FeatureCurves(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = {}
-        results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
+        results = ViewContainer()
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
@@ -586,6 +592,8 @@ class FeatureCurves(FeatureResponses):
         curve_label = ''.join([p.measurement_prefix, axis_name, 'Tuning'])
 
         dimensions = [features.Time, features.Duration] + [f for f in self.outer] + [axis_feature]
+        pattern_dimensions = self.outer + self.inner
+        pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
 
         for label in self.measurement_product:
             # Deconstruct label into source name and feature_values
@@ -602,8 +610,9 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
-                results[name] = SheetStack(dimensions=dimensions, timestamp=timestamp,
-                                           label=curve_label, **output_metadata)
+                stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
+                                   label=curve_label, **output_metadata)
+                results.add(name, curve_label, stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
 
@@ -615,9 +624,13 @@ class FeatureCurves(FeatureResponses):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
-                results[name][key] = SheetView(y_axis_values, output_metadata['bounds'],
-                                               cyclic_range=cr, metadata=metadata.copy(),
-                                               label='Response')
+                sv = SheetView(y_axis_values, output_metadata['bounds'],
+                               cyclic_range=cr, metadata=metadata.copy(),
+                               label=p.x_axis+' Response')
+                results.add(name, curve_label, sv, key)
+            if p.store_responses:
+                info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
+                results.add(name, '%s_%s_%s' % info, self._responses[name])
             
         return results
 
@@ -633,6 +646,7 @@ class ReverseCorrelation(FeatureResponses):
     def __call__(self, features, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self.features = features
+        self.n_permutation = 0
 
         self._initialize_featureresponses(p)
         self._measure_responses(p)
@@ -662,6 +676,11 @@ class ReverseCorrelation(FeatureResponses):
         self.outer = [f for f in self.features if f.preference_fn is None]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
             else zip(*[(f.name, f.values) for f in self.outer])
+
+        if p.store_responses:
+            response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
+            response_stack_fn = lambda: SheetStack(dimensions=response_dimensions)
+            self._responses = defaultdict(response_stack_fn)
 
         # Set up the featureresponses measurement dict
         self._featureresponses = defaultdict(lambda: defaultdict(dict))
@@ -694,12 +713,14 @@ class ReverseCorrelation(FeatureResponses):
         for f in p.post_presentation_hooks: f()
 
         self._update(p, responses)
+        self.n_permutation += 1
 
 
     def _update(self, p, responses):
         """
         Updates featureresponses object with latest reverse correlation data.
         """
+        timestamp = self.metadata['timestamp']
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
                 for d in p.durations:
@@ -711,6 +732,11 @@ class ReverseCorrelation(FeatureResponses):
                         for jj in range(cols):
                             delta_rf = out_response[ii, jj] * in_response
                             feature_responses[ii, jj] += delta_rf
+                    if p.store_responses:
+                        key = (timestamp, d, self.n_permutation)
+                        bounds = output_metadata['bounds']
+                        self._responses[out_label][key] = SheetView(out_response.copy(), bounds,
+                                                                    label='Response')
 
 
     def _collate_results(self, p):
@@ -718,11 +744,12 @@ class ReverseCorrelation(FeatureResponses):
         Collate responses into the results dictionary containing a
         ProjectionGrid for each measurement source.
         """
-        results = defaultdict(dict)
-        results['fullmatrix'] = self._fullmatrix if self.store_fullmatrix else None
+        results = ViewContainer()
 
         timestamp = self.metadata.timestamp
         dimensions = [features.Time(), features.Duration()]
+        pattern_dimensions = self.outer + self.inner
+        pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
 
         for labels in self.measurement_product:
             in_label, out_label, duration = labels
@@ -735,15 +762,19 @@ class ReverseCorrelation(FeatureResponses):
                                   title=title)
             metadata = dict(dimensions=dimensions, **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
+
             for ii in range(rows):
                 for jj in range(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
                                    metadata=AttrDict(timestamp=timestamp),
-                                   label='{inl}-{outl} RF'.format(inl=in_label,
-                                                                  outl=out_label))
+                                   label='Receptive Field')
                     view[coord] = SheetStack((time_key, sv), **metadata)
-            results[out_label][in_label] = view
+            label = '%s_Reverse_Correlation' % out_label
+            results.add(in_label, label, view)
+            if p.store_responses:
+                info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
+                results.add(out_label, '%s_%s_%s' % info, self._responses[out_label])
         return results
 
 ##############################################################################

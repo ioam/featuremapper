@@ -28,8 +28,10 @@ from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView
 
 import imagen
+
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
+from collector import ViewContainer
 import features as f
 from metaparams import *
 from distribution import DSF_MaxValue, DistributionStatisticFn, \
@@ -372,16 +374,16 @@ class measure_response(FeatureResponses):
         time = self.metadata.timestamp
         dims = [f.Time, f.Duration]
 
-        results = {}
+        results = ViewContainer()
         for label, response in responses.items():
             name, duration = label
             metadata = self.metadata['outputs'][name]
             if name not in results:
-                results[name] = SheetStack(dimensions=dims, **metadata)
+                results.add(name, 'Response', SheetStack(dimensions=dims, **metadata))
             sv = SheetView(response, metadata['bounds'],
                            label=' '.join([name.capitalize(), 'Activity']),
                            metadata=AttrDict(timestamp=time))
-            results[name][(time, duration)] = sv
+            results.add(name, 'Response', sv, (time, duration))
         return results
 
 
