@@ -85,7 +85,9 @@ class Container(object):
         return self.items[label]
 
 
-    def __repr__(self):
+    def __str__(self):
+        if len(self.labels) == 0:
+            return "Empty %s" % self.__class__.__name__
         return ", ".join(self.labels)
 
 
@@ -191,7 +193,7 @@ class ViewContainer(param.Parameterized):
         return self._keys
 
 
-    def __repr__(self):
+    def __str__(self):
         repr_str = ''
         for src, container in self.containers.items():
             repr_str += '%s: \n' % src
