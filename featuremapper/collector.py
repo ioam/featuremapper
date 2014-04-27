@@ -428,6 +428,16 @@ class Collector(ViewContainer):
         return self.__dict__['containers'][key]
 
 
+    def _declare_collection(self, source):
+        collections = self.__dict__['containers']
+        assert source[0].isupper()
+        collection = Collection(self, source)
+        setattr(self, source, collection)
+        collections[source] = collection
+        return collection
+
+
+
     def __getattr__(self, source):
         """
         Access the collection with the given source label.
@@ -436,10 +446,8 @@ class Collector(ViewContainer):
         if source in collections:
             collection = collections[source]
         else:
-            assert source[0].isupper()
-            collection = Collection(self, source)
-            setattr(self, source, collection)
-            collections[source] = collection
+            collection = self._declare_collection(source)
+
         return collection
 
 
