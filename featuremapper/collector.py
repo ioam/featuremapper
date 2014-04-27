@@ -319,6 +319,8 @@ class Collector(ViewContainer):
         self.measurements = OrderedDict()
         super(Collector, self).__init__(**kwargs)
 
+        self._declare_collection('Analysis')
+
 
     def analyze(self, reference, analysis_fn, **kwargs):
         """
