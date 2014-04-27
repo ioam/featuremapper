@@ -424,6 +424,9 @@ class Collector(ViewContainer):
                 self.add(src, label, stack)
 
 
+    def __getitem__(self, key):
+        return self.__dict__['containers'][key]
+
 
     def __getattr__(self, source):
         """
