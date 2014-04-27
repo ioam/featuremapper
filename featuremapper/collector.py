@@ -335,6 +335,13 @@ class Collector(ViewContainer):
                                                    kwargs=kwargs,
                                                    times=times)
 
+    def clear(self):
+        """"
+        Clear all scheduled definitions
+        """
+        self.measurements = OrderedDict()
+
+
     def run(self, durations, cycles=1):
         try:
             self.durations = list(durations) * cycles
@@ -348,16 +355,23 @@ class Collector(ViewContainer):
 
 
     def __exit__(self, exc, *args):
-        self._progress_hook = self.progress_hook() if self.progress_hook else None
-        self._execute(self.durations)
+        self(self.durations)
+        self.durations = []
+        self.clear()
 
 
-    def _execute(self, durations):
+    def __call__(self, durations, cycles=1):
         """
         Repeatedly advance time between measurement blocks and launch
         the scheduled measurements until the full set of durations is
         completed.
         """
+        try:
+            durations = list(durations) * cycles
+        except:
+            durations = [durations] * cycles
+
+        self._progress_hook = self.progress_hook() if self.progress_hook else None
         total_duration = sum(durations)
         completed = 0.
         for i, duration in enumerate(durations):
