@@ -3,7 +3,7 @@ import numpy as np
 import param
 
 from imagen.analysis import ViewOperation
-from dataviews import TableView, SheetView
+from dataviews import Table, SheetView
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
@@ -84,5 +84,5 @@ class decode_feature(ViewOperation):
             if cyclic: difference = difference % cr
             ret.update({"Decoding Error": difference})
 
-        return [TableView(ret)]
+        return [Table(ret)]
 

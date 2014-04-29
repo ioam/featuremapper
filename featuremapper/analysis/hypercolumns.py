@@ -16,7 +16,7 @@ import param
 from dataviews.operation  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
-from dataviews import DataCurves, SheetPoints, TableView, Annotation, DataHistogram
+from dataviews import Curve, Points, Table, Annotation, Histogram
 from dataviews.options import options, StyleOpts, GrayNearest
 
 try: # 2.7+
@@ -82,7 +82,7 @@ class PowerSpectrumAnalysis(ViewOperation):
     def _process(self, view):
 
         [pref] = self.get_views(view, 'Preference')
-        pinwheel_views = self.get_views(view, 'Pinwheels', SheetPoints)
+        pinwheel_views = self.get_views(view, 'Pinwheels', Points)
         pinwheel_count = sum([pw_view.data.shape[0] for pw_view in pinwheel_views], 0)
 
         xlabel, ylabel ='Wavenumber (k)', 'Power'
@@ -104,15 +104,15 @@ class PowerSpectrumAnalysis(ViewOperation):
             info['rho'] = pinwheel_count / (kmax ** 2)
             info['rho_metric'] = self.gamma_metric(info['rho'])
 
-        info_table = TableView(info)
+        info_table = Table(info)
 
         if fit is not None:
             samples = [self.fit_samples(dim1/2, 100, fit)]
         else:
             samples = [zip([0, dim1/2], [0.0, 0.0])]
 
-        curve = DataCurves(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
-        hist = DataHistogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Histogram')
+        curve = Curve(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
+        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Histogram')
         annotation = Annotation(vlines=[kmax], label='KMax VLine')
 
         views = [hist * curve * annotation , info_table]
@@ -120,7 +120,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             fit = dict(('a%i' % i,'-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = TableView(fit)
+            fit_table = Table(fit)
             views.append(fit_table)
         return views
 

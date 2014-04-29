@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 import param
 from imagen.analysis import ViewOperation
-from dataviews import SheetLines, SheetPoints
+from dataviews import Contours, Points
 
 from dataviews.options import options, StyleOpts
 
@@ -49,9 +49,9 @@ class PinwheelAnalysis(ViewOperation):
     components of the preference map used to determine the pinwheel
     locations.
 
-    Returns the original SheetView input overlayed with a SheetPoints
+    Returns the original SheetView input overlayed with a Points
     object containing the computed pinwheel locations and (optionally)
-    SheetLines overlays including the real and imaginary contour lines
+    Contours overlays including the real and imaginary contour lines
     respectively.
     """
 
@@ -70,13 +70,13 @@ class PinwheelAnalysis(ViewOperation):
         (re_contours, im_contours, intersections) = contour_info
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
-        pinwheels = SheetPoints(np.array(pinwheels), bounds,
+        pinwheels = Points(np.array(pinwheels), bounds,
                                 label = sheetview.label+' Pinwheels')
 
         if self.p.include_contours:
-            re_lines = SheetLines(re_contours, bounds,
+            re_lines = Contours(re_contours, bounds,
                                   label = sheetview.label+' Real Contours')
-            im_lines = SheetLines(im_contours, bounds,
+            im_lines = Contours(im_contours, bounds,
                                   label = sheetview.label+' Imaginary Contours')
             return [sheetview * re_lines * im_lines * pinwheels]
         else:
