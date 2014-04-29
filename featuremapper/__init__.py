@@ -525,14 +525,15 @@ class FeatureMaps(FeatureResponses):
                         period = fp.range[1] if (map_name != 'selectivity' and fp.cyclic) else None
 
                         map_index = base_name + k + map_name.capitalize()
-                        map_title = ' '.join([base_name, map_name.capitalize()])
-                        metadata = dict(dimensions=dimensions, **output_metadata)
+                        map_label = ' '.join([base_name, map_name.capitalize()])
+                        title = name + ' {label} \n {dims}'
+                        metadata = dict(dimensions=dimensions, title=title, **output_metadata)
 
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
-                                       label=map_title, metadata=AttrDict(timestamp=timestamp))
+                                       label=map_label, metadata=AttrDict(timestamp=timestamp))
                         key = (timestamp,)+f_vals
-                        if (name, map_title) not in results:
+                        if (name, map_label) not in results:
                             results.add(name, map_index, SheetStack((key, sv), **metadata))
                         else:
                             results.add(name, map_index, sv, key)
@@ -610,8 +611,9 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
+                title = name + ' {label} {type} \n {dims}'
                 stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
-                                   label=curve_label, **output_metadata)
+                                   label=curve_label, title=title, **output_metadata)
                 results.add(name, curve_label, stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
@@ -626,7 +628,7 @@ class FeatureCurves(FeatureResponses):
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
                                cyclic_range=cr, metadata=metadata.copy(),
-                               label=p.x_axis+' Response')
+                               label='Tuning')
                 results.add(name, curve_label, sv, key)
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')

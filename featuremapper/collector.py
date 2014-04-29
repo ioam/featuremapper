@@ -402,15 +402,16 @@ class Collector(ViewContainer):
             src, label = key
             if isinstance(measurement, np.ndarray):
                 sv = SheetView(measurement.copy(), bounds=BoundingBox(), label=label)
-                stack = SheetStack(((time,), sv), dimensions=[f.Time])
+                title = src + ' {label} \n {dims}'
+                stack = SheetStack(((time,), sv), dimensions=[f.Time], title=title)
             elif callable(measurement) and not isinstance(measurement, GridLayout):
                 measurement = measurement()
                 if callable(measurement) or isinstance(measurement, np.ndarray):
                     self._process_measurement(key, measurement, time)
                     return None
                 if isinstance(measurement, SheetView):
-                    stack = SheetStack(((time,), measurement),
-                                       dimensions=[f.Time])
+                    stack = SheetStack(((time,), measurement), dimensions=[f.Time],
+                                       title=src+' {label} \n {dims}')
                 elif isinstance(measurement, (Stack, CoordinateGrid)):
                     stack = measurement
                 else:
