@@ -380,11 +380,11 @@ class Collector(ViewContainer):
         completed = 0.
         for i, duration in enumerate(durations):
             self.duration_hook(duration)
+            for key, measurement in self.measurements.items():
+                self._process_measurement(key, measurement, self.time_fn())
             completed += duration
             if self._progress_hook:
                 self._progress_hook(completed/total_duration*100)
-            for key, measurement in self.measurements.items():
-                self._process_measurement(key, measurement, self.time_fn())
 
 
     def _process_measurement(self, key, measurement, time):
