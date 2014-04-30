@@ -640,7 +640,7 @@ class FeatureCurves(FeatureResponses):
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
                                cyclic_range=cr, metadata=metadata.copy(),
-                               label='Tuning')
+                               label='Tuning Response')
                 results.add(name, curve_label, sv, key)
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')

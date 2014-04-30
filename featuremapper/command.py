@@ -25,7 +25,7 @@ from param import ParameterizedFunction, ParamOverrides
 from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     GaussiansCorner, OrientationContrast
 from dataviews.ndmapping import AttrDict
-from dataviews.sheetviews import SheetStack, SheetView
+from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
 
 import imagen
 
@@ -290,6 +290,7 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
                              static_features=static_params, x_axis=p.x_axis)
 
 
+
     def _feature_list(self, p):
         return [f.Orientation(steps=p.num_orientation),
                 f.Phase(steps=p.num_phase),
@@ -316,6 +317,17 @@ class UnitCurveCommand(FeatureCurveCommand):
         List of coordinates of units to measure.""")
 
     __abstract = True
+
+
+    def _populate_grid(self, results):
+        grid_container = ViewContainer()
+        for coord, container in results.items():
+            for src, group in container.containers.items():
+                for label, stack in group.items.items():
+                    coord_stack = stack.add_dimension(f.Y, 0, coord[1])
+                    coord_stack = coord_stack.add_dimension(f.X, 0, coord[0])
+                    grid_container.add(src, label, coord_stack)
+        return grid_container
 
 
 
@@ -904,8 +916,11 @@ class measure_or_tuning(UnitCurveCommand):
             p.y = p.preference_lookup_fn('y', p.outputs[0], coord,
                                          default=coord[1])
             results[coord] = self._compute_curves(p)
+        results = self._populate_grid(results)
+
         self._restore_presenter_defaults()
         return results
+
 
 
 class measure_size_response(UnitCurveCommand):
@@ -954,6 +969,8 @@ class measure_size_response(UnitCurveCommand):
             p.y = p.preference_lookup_fn('y', p.outputs[0], coord,
                                          default=coord[1])
             results[coord] = self._compute_curves(p)
+        results = self._populate_grid(results)
+
         self._restore_presenter_defaults()
         return results
 
@@ -1013,6 +1030,8 @@ class measure_contrast_response(UnitCurveCommand):
                                          default=coord[1])
 
             results[coord] = self._compute_curves(p)
+        results = self._populate_grid(results)
+
         self._restore_presenter_defaults()
         return results
 
@@ -1072,6 +1091,8 @@ class measure_frequency_response(UnitCurveCommand):
                                          default=coord[1])
 
             results[coord] = self._compute_curves(p)
+        results = self._populate_grid(results)
+
         self._restore_presenter_defaults()
         return results
 
@@ -1158,6 +1179,8 @@ class measure_orientation_contrast(UnitCurveCommand):
                                          default=coord[1])
 
             results[coord] = self._compute_curves(p)
+        results = self._populate_grid(results)
+
         self._restore_presenter_defaults()
         return results
 

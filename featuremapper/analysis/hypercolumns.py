@@ -17,7 +17,7 @@ from dataviews.operation  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
 from dataviews import Curve, Points, Table, Annotation, Histogram
-from dataviews.options import options, StyleOpts, GrayNearest
+from dataviews.options import options, StyleOpts
 
 try: # 2.7+
     gamma = math.gamma
@@ -107,9 +107,9 @@ class PowerSpectrumAnalysis(ViewOperation):
         info_table = Table(info)
 
         if fit is not None:
-            samples = [self.fit_samples(dim1/2, 100, fit)]
+            samples = self.fit_samples(dim1/2, 100, fit)
         else:
-            samples = [zip([0, dim1/2], [0.0, 0.0])]
+            samples = zip([0, dim1/2], [0.0, 0.0])
 
         curve = Curve(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
         hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='HistogramFit')
