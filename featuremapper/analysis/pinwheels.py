@@ -75,9 +75,9 @@ class PinwheelAnalysis(ViewOperation):
 
         if self.p.include_contours:
             re_lines = Contours(re_contours, bounds,
-                                  label = sheetview.label+' Real Contours')
+                                label = sheetview.label+' Real')
             im_lines = Contours(im_contours, bounds,
-                                  label = sheetview.label+' Imaginary Contours')
+                                  label = sheetview.label+' Imaginary')
             return [sheetview * re_lines * im_lines * pinwheels]
         else:
             return [sheetview * pinwheels]
@@ -233,6 +233,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-options.Pinwheels =          StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
+options.Pinwheel_Points =    StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
 options.Imaginary_Contours = StyleOpts(color= 'k')
 options.Real_Contours =      StyleOpts(color= 'w')

@@ -14,6 +14,7 @@ import numpy as np
 import param
 from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
+from dataviews.options import options, StyleOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 
 from collector import ViewContainer
@@ -485,6 +486,15 @@ class FeatureMaps(FeatureResponses):
         return results
 
 
+    def _set_style(self, feature, map_type):
+        fname = feature.name.capitalize()
+        type_str = 'SheetView'
+        style_str = '_'.join([fname, map_type.capitalize(), type_str])
+        if style_str not in options.keys():
+            cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
+            options[style_str] = StyleOpts(**(dict(cmap='hsv') if cyclic else dict()))
+
+
     def _collate_results(self, p):
         results = ViewContainer()
 
@@ -528,6 +538,8 @@ class FeatureMaps(FeatureResponses):
                         map_label = ' '.join([base_name, map_name.capitalize()])
                         title = name + ' {label} \n {dims}'
                         metadata = dict(dimensions=dimensions, title=title, **output_metadata)
+
+                        self._set_style(fp, map_name)
 
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
@@ -779,83 +791,11 @@ class ReverseCorrelation(FeatureResponses):
                 results.add(out_label, '%s_%s_%s' % info, self._responses[out_label])
         return results
 
-##############################################################################
-###############################################################################
-###############################################################################
-#
-# 20081017 JABNOTE: This implementation could be improved.
-#
-# It currently requires every subclass to implement the feature_list
-# method, which constructs a list of features using various parameters
-# to determine how many and which values each feature should have.  It
-# would be good to replace the feature_list method with a Parameter or
-# set of Parameters, since it is simply a special data structure, and
-# this would make more detailed control feasible for users. For
-# instance, instead of something like num_orientations being used to
-# construct the orientation Feature, the user could specify the
-# appropriate Feature directly, so that they could e.g. supply a
-# specific list of orientations instead of being limited to a fixed
-# spacing.
-#
-# However, when we implemented this, we ran into two problems:
-#
-# 1. It's difficult for users to modify an open-ended list of
-#     Features.  E.g., if features is a List:
-#
-#      features=param.List(doc="List of Features to vary""",default=[
-#          Feature(name="frequency",values=[2.4]),
-#          Feature(name="orientation",range=(0.0,pi),step=pi/4,cyclic=True),
-#          Feature(name="phase",range=(0.0,2*pi),step=2*pi/18,cyclic=True)])
-#
-#    then it it's easy to replace the entire list, but tough to
-#    change just one Feature.  Of course, features could be a
-#    dictionary, but that doesn't help, because when the user
-#    actually calls the function, they want the arguments to
-#    affect only that call, whereas looking up the item in a
-#    dictionary would only make permanent changes easy, not
-#    single-call changes.
-#
-#    Alternatively, one could make each feature into a separate
-#    parameter, and then collect them using a naming convention like:
-#
-#     def feature_list(self,p):
-#         fs=[]
-#         for n,v in self.get_param_values():
-#             if n in p: v=p[n]
-#             if re.match('^[^_].*_feature$',n):
-#                 fs+=[v]
-#         return fs
-#
-#    But that's quite hacky, and doesn't solve problem 2.
-#
-# 2. Even if the users can somehow access each Feature, the same
-#    problem occurs for the individual parts of each Feature.  E.g.
-#    using the separate feature parameters above, Spatial Frequency
-#    map measurement would require:
-#
-#      from topo.command.analysis import Feature
-#      from math import pi
-#      pre_plot_hooks=[measure_or_pref.instance(\
-#         frequency_feature=Feature(name="frequency",values=frange(1.0,6.0,
-# 0.2)), \
-#         phase_feature=Feature(name="phase",range=(0.0,2*pi),step=2*pi/15,
-# cyclic=True), \
-#         orientation_feature=Feature(name="orientation",range=(0.0,pi),
-# step=pi/4,cyclic=True)])
-#
-#    rather than the current, much more easily controllable implementation:
-#
-#      pre_plot_hooks=[measure_or_pref.instance(frequencies=frange(1.0,6.0,
-# 0.2),\
-#         num_phase=15,num_orientation=4)]
-#
-#    I.e., to change anything about a Feature, one has to supply an
-#    entirely new Feature, because otherwise the original Feature
-#    would be changed for all future calls.  Perhaps there's some way
-#    around this by copying objects automatically at the right time,
-#    but if so it's not obvious.  Meanwhile, the current
-#    implementation is reasonably clean and easy to use, if not as
-#    flexible as it could be.
+#Default styles
+options.Preference_SheetView = StyleOpts(cmap='jet')
+options.Selectivity_SheetView = StyleOpts(cmap='gray')
+options.Activity_SheetView = StyleOpts(cmap='jet')
+options.Response_SheetView = StyleOpts(cmap='jet')
 
 
 __all__ = [
