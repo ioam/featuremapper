@@ -112,8 +112,8 @@ class PowerSpectrumAnalysis(ViewOperation):
             samples = [zip([0, dim1/2], [0.0, 0.0])]
 
         curve = Curve(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
-        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='FFT Histogram')
-        annotation = Annotation(vlines=[kmax], label='KMax VLine')
+        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='HistogramFit')
+        annotation = Annotation(vlines=[kmax], label='KMax Line')
 
         views = [hist * curve * annotation , info_table]
         if self.p.fit_table and fit is None:
@@ -240,6 +240,6 @@ class PowerSpectrumAnalysis(ViewOperation):
 
 
 # Defining styles
-options.Histogram_Fit_Curve = StyleOpts(color='r', linewidth=3)
-options.KMax_VLine =    StyleOpts(color='g', linewidth=3)
-options.FFT_Histogram =     StyleOpts(fc='w', ec='k')
+options.HistogramFit_Curve = StyleOpts(color='r', linewidth=3)
+options.KMaxLine_Annotation =    StyleOpts(color='g', linewidth=3)
+options.FFTPower_Histogram =     StyleOpts(fc='w', ec='k')

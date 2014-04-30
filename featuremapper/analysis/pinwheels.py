@@ -71,7 +71,7 @@ class PinwheelAnalysis(ViewOperation):
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
         pinwheels = Points(np.array(pinwheels), bounds,
-                                label = sheetview.label+' Pinwheels')
+                                label = sheetview.label+' Pinwheel')
 
         if self.p.include_contours:
             re_lines = Contours(re_contours, bounds,
