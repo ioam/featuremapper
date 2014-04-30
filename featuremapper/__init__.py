@@ -489,7 +489,7 @@ class FeatureMaps(FeatureResponses):
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
         type_str = 'SheetView'
-        style_str = '_'.join([fname, map_type.capitalize(), type_str])
+        style_str = options.normalize_key(fname + map_type.capitalize()) +'_' + type_str
         if style_str not in options.keys():
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
             options[style_str] = StyleOpts(**(dict(cmap='hsv') if cyclic else dict()))
