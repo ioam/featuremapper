@@ -33,7 +33,7 @@ class decode_feature(ViewOperation):
 
        act = measure_response(pattern_generator=imagen.Gaussian(),
                               durations=[0.1, 0.5, 1.0])['V1']
-       pref = measure_or_pref()['V1'].top
+       pref = measure_or_pref()['V1'].last
        ActivityPreferenceStack = act * pref
 
        decode_feature(ActivityPreferenceStack)
