@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.metaparams &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
+    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper.metaparams</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Metaparameter functions allow for the presentation of complex patterns that are</span>
+<span class="sd">coordinated across different inputs (controlled via the input name) or</span>
+<span class="sd">controlled by a higher-level parameter.</span>
+
+<span class="sd">Current examples are transformations of contrast between the stimulus and the</span>
+<span class="sd">background based on a contrast parameter, which can be set to implement</span>
+<span class="sd">Michelson or Weber contrast or the coordinated presentation of input patterns</span>
+<span class="sd">to each eye, which assigns the correct input pattern based on whether an input</span>
+<span class="sd">source contains &#39;left&#39; or &#39;right&#39;.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">colorsys</span> <span class="kn">import</span> <span class="n">hsv_to_rgb</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">Translator</span><span class="p">,</span> <span class="n">Sweeper</span>
+
+<div class="viewcode-block" id="contrast2centersurroundscale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.contrast2centersurroundscale">[docs]</a><span class="k">class</span> <span class="nc">contrast2centersurroundscale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Allows controlling the contrast in orientation contrast patterns, where the</span>
+<span class="sd">    contrast of the central stimulus has to be set independently from the</span>
+<span class="sd">    surround annulus and the background. Can be controlled with the</span>
+<span class="sd">    contrast_parameter, which can be set to one of three values:</span>
+<span class="sd">    &#39;michelson_contrast&#39;, &#39;weber_contrast&#39; or simply &#39;scale&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">contrast_parameter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;weber_contrast&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot;contrastcenter&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;michelson_contrast&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetcenter</span> <span class="o">=</span> <span class="mf">0.5</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalecenter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offsetcenter</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastcenter</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;weber_contrast&#39;</span><span class="p">:</span>
+                <span class="c"># Weber_contrast is currently only well defined for</span>
+                <span class="c"># the special case where the background offset is equal</span>
+                <span class="c"># to the target offset in the pattern type</span>
+                <span class="c"># SineGrating(mask_shape=Disk())</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetcenter</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c">#In this case this is the offset of</span>
+                    <span class="c"># both the background and the sine grating</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalecenter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offsetcenter</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastcenter</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;scale&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetcenter</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalecenter</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastcenter</span>
+
+        <span class="k">if</span> <span class="s">&quot;contrastsurround&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;michelson_contrast&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetsurround</span> <span class="o">=</span> <span class="mf">0.5</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalesurround</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offsetsurround</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastsurround</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;weber_contrast&#39;</span><span class="p">:</span>
+                <span class="c"># Weber_contrast is currently only well defined for</span>
+                <span class="c"># the special case where the background offset is equal</span>
+                <span class="c"># to the target offset in the pattern type</span>
+                <span class="c"># SineGrating(mask_shape=Disk())</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetsurround</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c">#In this case this is the offset</span>
+                    <span class="c"># of both the background and the sine grating</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalesurround</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offsetsurround</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastsurround</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;scale&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offsetsurround</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scalesurround</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">contrastsurround</span>
+
+
+</div>
+<div class="viewcode-block" id="contrast2scale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.contrast2scale">[docs]</a><span class="k">class</span> <span class="nc">contrast2scale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates complex contrast values in single and compound patterns.</span>
+<span class="sd">    To change the contrast behavior change the contrast_parameter to one of</span>
+<span class="sd">    three values: &#39;michelson_contrast&#39;, &#39;weber_contrast&#39; or simply &#39;scale&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">contrast_parameter</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;michelson_contrast&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="s">&quot;contrast&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;michelson_contrast&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mf">0.5</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offset</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrast</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;weber_contrast&#39;</span><span class="p">:</span>
+                <span class="c"># Weber_contrast is currently only well defined for</span>
+                <span class="c"># the special case where the background offset is equal</span>
+                <span class="c"># to the target offset in the pattern type</span>
+                <span class="c"># SineGrating(mask_shape=Disk())</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c">#In this case this is the offset of both</span>
+                    <span class="c"># the background and the sine grating</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="o">.</span><span class="n">offset</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">contrast</span><span class="o">/</span><span class="mf">100.0</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_parameter</span> <span class="o">==</span> <span class="s">&#39;scale&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">itervalues</span><span class="p">():</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="mf">0.0</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">contrast</span>
+
+
+</div>
+<div class="viewcode-block" id="direction2translation"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.direction2translation">[docs]</a><span class="k">class</span> <span class="nc">direction2translation</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates the presentation of moving patterns. Currently</span>
+<span class="sd">    supports an old and new motion model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;direction&#39;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">__main__</span> <span class="kn">as</span> <span class="nn">main</span>
+
+            <span class="k">if</span> <span class="s">&#39;_new_motion_model&#39;</span> <span class="ow">in</span> <span class="n">main</span><span class="o">.</span><span class="n">__dict__</span> <span class="ow">and</span> <span class="n">main</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span>
+                <span class="s">&#39;_new_motion_model&#39;</span><span class="p">]:</span>
+            <span class="c">#### new motion model ####</span>
+
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Translator</span><span class="p">(</span><span class="n">generator</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                                              <span class="n">direction</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;direction&#39;</span><span class="p">],</span>
+                                              <span class="n">speed</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;speed&#39;</span><span class="p">],</span>
+                                              <span class="n">reset_period</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;duration&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+            <span class="c">#### old motion model ####</span>
+                <span class="n">orientation</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;direction&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
+
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">speed</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;speed&#39;</span><span class="p">]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;direction_warned&#39;</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Assuming step is zero; no input lag&#39;</span>
+                                         <span class="s">&#39; number specified at the end of the&#39;</span>
+                                         <span class="s">&#39; input sheet name.&#39;</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">direction_warned</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">speed</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;speed&#39;</span><span class="p">]</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Sweeper</span><span class="p">(</span><span class="n">generator</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+                                           <span class="n">speed</span><span class="o">=</span><span class="n">speed</span><span class="p">)</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="s">&#39;orientation&#39;</span><span class="p">,</span> <span class="n">orientation</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="phasedisparity2leftrightphase"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.phasedisparity2leftrightphase">[docs]</a><span class="k">class</span> <span class="nc">phasedisparity2leftrightphase</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates phase disparity between two eyes, by looking for</span>
+<span class="sd">    the keywords Left and Right in the input names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot;phasedisparity&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">temp_phase1</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;phase&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;phasedisparity&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.0</span>
+            <span class="n">temp_phase2</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;phase&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;phasedisparity&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.0</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Right&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">temp_phase1</span> <span class="o">%</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Left&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">temp_phase2</span> <span class="o">%</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;disparity_warned&#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Unable to measure disparity preference, &#39;</span>
+                                     <span class="s">&#39;because disparity is defined only when &#39;</span>
+                                     <span class="s">&#39;there are inputs for Right and Left &#39;</span>
+                                     <span class="s">&#39;retinas.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">disparity_warned</span> <span class="o">=</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="hue2rgbscale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.hue2rgbscale">[docs]</a><span class="k">class</span> <span class="nc">hue2rgbscale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates hue between inputs with Red, Green or Blue in their</span>
+<span class="sd">    name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;hue&#39;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">hsv_to_rgb</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;hue&#39;</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Red&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Green&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">g</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Blue&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">b</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># Note: this warning will be skipped if any retina</span>
+                    <span class="c"># has &#39;Red&#39;, &#39;Green&#39;, or &#39;Blue&#39; in its</span>
+                    <span class="c"># name. E.g. if there is only a &#39;RedRetina&#39;, the</span>
+                    <span class="c"># warning will be skipped and a hue map will be</span>
+                    <span class="c"># measured without error.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;hue_warned&#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Unable to measure hue preference,&#39;</span>
+                                     <span class="s">&#39; because hue is defined only when&#39;</span>
+                                     <span class="s">&#39; there are different input sheets&#39;</span>
+                                     <span class="s">&#39; with names with Red, Green or Blue&#39;</span>
+                                     <span class="s">&#39; substrings.&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">hue_warned</span> <span class="o">=</span> <span class="bp">True</span>
+
+
+</div>
+<div class="viewcode-block" id="ocular2leftrightscale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.metaparams-module.html#featuremapper.metaparams.ocular2leftrightscale">[docs]</a><span class="k">class</span> <span class="nc">ocular2leftrightscale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates patterns between two eyes, by looking for the</span>
+<span class="sd">    keywords Left and Right in the input names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot;ocular&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Right&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;ocular&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Left&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;ocular&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Skipping input region </span><span class="si">%s</span><span class="s">; Ocularity is defined &#39;</span>
+                                 <span class="s">&#39;only for Left and Right retinas.&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+</div>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;contrast2centersurroundscale&#39;</span><span class="p">,</span>
+           <span class="s">&#39;contrast2scale&#39;</span><span class="p">,</span>
+           <span class="s">&#39;hue2rgbscale&#39;</span><span class="p">,</span>
+           <span class="s">&#39;phasedisparity2leftrightphase&#39;</span><span class="p">,</span>
+           <span class="s">&#39;direction2translation&#39;</span><span class="p">,</span>
+           <span class="s">&#39;ocular2leftrightscale&#39;</span><span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../../index.html">Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper/metaparams.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+***************
+featuremapper.command
+***************
+
+.. inheritance-diagram:: featuremapper.command
+
+
+
+Module
+======
+
+.. automodule:: featuremapper.command
+   :members:
+   :show-inheritance:

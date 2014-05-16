@@ -1,0 +1,7 @@
+<map id="inheritance1698fe547f" name="inheritance1698fe547f">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="414,30,548,45"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Given a SheetView or SheetStack of a cyclic feature preference," alt="" coords="575,30,765,45"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="217,30,387,45"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.pinwheels.WarningCounter" title="A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;" alt="" coords="4,3,190,18"/>
+<area shape="rect" id="node7" title="Base class for named objects that support Parameters and message" alt="" coords="26,30,167,45"/>
+</map>

@@ -1,0 +1,14 @@
+***************
+featuremapper.distribution
+***************
+
+.. inheritance-diagram:: featuremapper.distribution
+
+
+
+Module
+======
+
+.. automodule:: featuremapper.distribution
+   :members:
+   :show-inheritance:

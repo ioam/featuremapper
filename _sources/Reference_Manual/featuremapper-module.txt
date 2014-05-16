@@ -1,0 +1,24 @@
+***************
+featuremapper
+***************
+
+.. inheritance-diagram:: featuremapper
+
+Submodules
+==========
+* `featuremapper.collector <featuremapper.collector-module.html>`_
+* `featuremapper.command <featuremapper.command-module.html>`_
+* `featuremapper.distribution <featuremapper.distribution-module.html>`_
+* `featuremapper.metaparams <featuremapper.metaparams-module.html>`_
+* `featuremapper.features <featuremapper.features-module.html>`_
+* `featuremapper.analysis <featuremapper.analysis-module.html>`_
+* `featuremapper.analysis.hypercolumns <featuremapper.analysis.hypercolumns-module.html>`_
+* `featuremapper.analysis.pinwheels <featuremapper.analysis.pinwheels-module.html>`_
+
+
+Module
+======
+
+.. automodule:: featuremapper
+   :members:
+   :show-inheritance:

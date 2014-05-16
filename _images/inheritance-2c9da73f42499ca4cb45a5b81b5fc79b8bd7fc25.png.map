@@ -1,0 +1,10 @@
+<map id="inheritance8cffae34ce" name="inheritance8cffae34ce">
+<area shape="rect" id="node1" href="#featuremapper.metaparams.contrast2centersurroundscale" title="Allows controlling the contrast in orientation contrast patterns, where the" alt="" coords="479,3,764,23"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="222,94,445,114"/>
+<area shape="rect" id="node4" href="#featuremapper.metaparams.contrast2scale" title="Coordinates complex contrast values in single and compound patterns." alt="" coords="514,39,729,59"/>
+<area shape="rect" id="node6" href="#featuremapper.metaparams.direction2translation" title="Coordinates the presentation of moving patterns. Currently" alt="" coords="501,76,742,96"/>
+<area shape="rect" id="node8" href="#featuremapper.metaparams.hue2rgbscale" title="Coordinates hue between inputs with Red, Green or Blue in their" alt="" coords="517,112,726,132"/>
+<area shape="rect" id="node10" href="#featuremapper.metaparams.ocular2leftrightscale" title="Coordinates patterns between two eyes, by looking for the" alt="" coords="502,148,741,168"/>
+<area shape="rect" id="node12" href="#featuremapper.metaparams.phasedisparity2leftrightphase" title="Coordinates phase disparity between two eyes, by looking for" alt="" coords="480,184,763,204"/>
+<area shape="rect" id="node14" title="Base class for named objects that support Parameters and message" alt="" coords="4,94,188,114"/>
+</map>

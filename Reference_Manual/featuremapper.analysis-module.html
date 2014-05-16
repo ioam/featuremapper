@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-analysis">
+<h1>featuremapper.analysis<a class="headerlink" href="#featuremapper-analysis" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-ba2c1b52292a9285599baef02260e8f8ffce82b5.png" alt="Inheritance diagram of featuremapper.analysis" usemap="#inheritanceed6e039036" class="inheritance"/>
+<map id="inheritanceed6e039036" name="inheritanceed6e039036">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="413,3,564,20"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.decode_feature" title="Estimate the value of a feature from the current activity pattern" alt="" coords="595,3,764,20"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="192,3,383,20"/>
+<area shape="rect" id="node6" title="Base class for named objects that support Parameters and message" alt="" coords="3,3,162,20"/>
+</map>
+</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="featuremapper.analysis.hypercolumns-module.html">featuremapper.analysis.hypercolumns</a></li>
+<li><a class="reference external" href="featuremapper.analysis.pinwheels-module.html">featuremapper.analysis.pinwheels</a></li>
+</ul>
+</div>
+<div class="section" id="module-featuremapper.analysis">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper.analysis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="featuremapper.analysis.decode_feature">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.</tt><tt class="descname">decode_feature</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis.html#decode_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.decode_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/dataviews/Reference_Manual/dataviews.operation-module.html#dataviews.operation.ViewOperation" title="(in DataViews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">dataviews.operation.ViewOperation</span></tt></a></p>
+<p>Estimate the value of a feature from the current activity pattern
+on a sheet and a preference map of the sheet. The activity and
+preference should be supplied as an Overlay or a Stack of Overlay
+objects.</p>
+<p>If weighted_average is False, the feature value returned is the
+value of the preference_map at the maximally active location.</p>
+<p>If weighted_average is True, the feature value is estimated by
+weighting the preference_map by the current activity level, and
+averaging the result across all units in the sheet.</p>
+<p>For instance, if preference_map is OrientationPreference (a cyclic
+quantity), then the result will be the vector average of the
+activated orientations.  For an orientation map this value should
+be an estimate of the orientation present on the input.</p>
+<p>Record the V1 activity in response to an oriented Gaussian and the
+orientation preference as follows and overlay them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">act</span> <span class="o">=</span> <span class="n">measure_response</span><span class="p">(</span><span class="n">pattern_generator</span><span class="o">=</span><span class="n">imagen</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(),</span>
+                       <span class="n">durations</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])[</span><span class="s">&#39;V1&#39;</span><span class="p">]</span>
+<span class="n">pref</span> <span class="o">=</span> <span class="n">measure_or_pref</span><span class="p">()[</span><span class="s">&#39;V1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">last</span>
+<span class="n">ActivityPreferenceStack</span> <span class="o">=</span> <span class="n">act</span> <span class="o">*</span> <span class="n">pref</span>
+
+<span class="n">decode_feature</span><span class="p">(</span><span class="n">ActivityPreferenceStack</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">reference_value</span></tt> (<em>allow_None=True, bounds=None, constant=False, default=None, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Allows specifying a reference value, to compute the error of the
+        decoded value.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Decode as vector average if True or by maximal responding unit.</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.analysis</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-featuremapper.analysis">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.analysis-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

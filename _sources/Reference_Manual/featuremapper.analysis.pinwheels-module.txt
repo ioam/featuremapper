@@ -1,0 +1,14 @@
+***************
+featuremapper.analysis.pinwheels
+***************
+
+.. inheritance-diagram:: featuremapper.analysis.pinwheels
+
+
+
+Module
+======
+
+.. automodule:: featuremapper.analysis.pinwheels
+   :members:
+   :show-inheritance:

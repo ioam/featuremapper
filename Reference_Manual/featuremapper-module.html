@@ -1,0 +1,547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="#">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper">
+<h1>featuremapper<a class="headerlink" href="#featuremapper" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-8ea21c41ce9822541e6388f067bde66cc421f0e5.png" alt="Inheritance diagram of featuremapper" usemap="#inheritancebd34ebd041" class="inheritance"/>
+<map id="inheritancebd34ebd041" name="inheritancebd34ebd041">
+<area shape="rect" id="node1" href="#featuremapper.DistributionMatrix" title="Maintains a matrix of Distributions (each of which is a dictionary" alt="" coords="182,2,299,16"/>
+<area shape="rect" id="node2" title="Base class for named objects that support Parameters and message" alt="" coords="5,28,135,42"/>
+<area shape="rect" id="node11" href="#featuremapper.FullMatrix" title="Records the output of every unit in a sheet, for every combination" alt="" coords="195,28,285,42"/>
+<area shape="rect" id="node14" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="161,53,319,68"/>
+<area shape="rect" id="node4" href="#featuremapper.FeatureCurves" title="Measures and collects the responses to a set of features, for calculating" alt="" coords="650,28,758,42"/>
+<area shape="rect" id="node5" href="#featuremapper.FeatureResponses" title="Systematically vary input pattern feature values and collate the" alt="" coords="499,53,619,68"/>
+<area shape="rect" id="node7" href="#featuremapper.FeatureMaps" title="Measure and collect the responses to a set of features, for" alt="" coords="653,53,755,68"/>
+<area shape="rect" id="node16" href="#featuremapper.ReverseCorrelation" title="Calculate the receptive fields for all neurons using reverse correlation." alt="" coords="644,79,765,93"/>
+<area shape="rect" id="node9" title="Abstract base class for various stimulus&#45;response types of analysis." alt="" coords="344,53,474,68"/>
+<area shape="rect" id="node13" title="Exception raised when a measurement is stopped before" alt="" coords="3,2,137,16"/>
+</map>
+</p>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="featuremapper.collector-module.html">featuremapper.collector</a></li>
+<li><a class="reference external" href="featuremapper.command-module.html">featuremapper.command</a></li>
+<li><a class="reference external" href="featuremapper.distribution-module.html">featuremapper.distribution</a></li>
+<li><a class="reference external" href="featuremapper.metaparams-module.html">featuremapper.metaparams</a></li>
+<li><a class="reference external" href="featuremapper.features-module.html">featuremapper.features</a></li>
+<li><a class="reference external" href="featuremapper.analysis-module.html">featuremapper.analysis</a></li>
+<li><a class="reference external" href="featuremapper.analysis.hypercolumns-module.html">featuremapper.analysis.hypercolumns</a></li>
+<li><a class="reference external" href="featuremapper.analysis.pinwheels-module.html">featuremapper.analysis.pinwheels</a></li>
+</ul>
+</div>
+<div class="section" id="module-featuremapper">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper" title="Permalink to this headline">¶</a></h2>
+<p>FeatureResponses and associated functions and classes.</p>
+<p>These classes implement map and tuning curve measurement based
+on measuring responses while varying features of an input pattern.</p>
+<dl class="class">
+<dt id="featuremapper.DistributionMatrix">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">DistributionMatrix</tt><big>(</big><em>matrix_shape</em>, <em>axis_range=(0.0</em>, <em>1.0)</em>, <em>cyclic=False</em>, <em>keep_peak=True</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#DistributionMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.DistributionMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.Parameterized</span></tt></p>
+<p>Maintains a matrix of Distributions (each of which is a dictionary
+of (feature value: activity) pairs).</p>
+<p>The matrix contains one Distribution for each unit in a
+rectangular matrix (given by the matrix_shape constructor
+argument).  The contents of each Distribution can be updated for a
+given bin value all at once by providing a matrix of new values to
+update().</p>
+<p>The results can then be accessed as a matrix of weighted averages
+(which can be used as a preference map) and/or a selectivity map
+(which measures the peakedness of each distribution).</p>
+<dl class="method">
+<dt id="featuremapper.DistributionMatrix.apply_DSF">
+<tt class="descname">apply_DSF</tt><big>(</big><em>dsf</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#DistributionMatrix.apply_DSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.DistributionMatrix.apply_DSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the given dsf DistributionStatisticFn on each element of
+the distribution_matrix</p>
+<p>Return a dictionary of dictionaries, with the same structure
+of the called DistributionStatisticFn, but with matrices as
+values, instead of scalars</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.DistributionMatrix.update">
+<tt class="descname">update</tt><big>(</big><em>new_values</em>, <em>bin</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#DistributionMatrix.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.DistributionMatrix.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new matrix of histogram values for a given bin value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.FullMatrix">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">FullMatrix</tt><big>(</big><em>matrix_shape</em>, <em>features</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#FullMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FullMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.Parameterized</span></tt></p>
+<p>Records the output of every unit in a sheet, for every combination
+of feature values.  Useful for collecting data for later analysis
+while presenting many input patterns.</p>
+<dl class="method">
+<dt id="featuremapper.FullMatrix.update">
+<tt class="descname">update</tt><big>(</big><em>new_values</em>, <em>feature_value_permutation</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#FullMatrix.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FullMatrix.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new matrix of histogram values for a given bin value.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.FeatureResponses">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">FeatureResponses</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#FeatureResponses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FeatureResponses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.PatternDrivenAnalysis</span></tt></p>
+<p>Systematically vary input pattern feature values and collate the
+responses.</p>
+<p>A DistributionMatrix for each measurement source and feature is
+created.  The DistributionMatrix stores the distribution of
+activity values for that feature.  For instance, if the features
+to be tested are orientation and phase, we will create a
+DistributionMatrix for orientation and a DistributionMatrix for
+phase for each measurement source.  The orientation and phase of
+the input are then systematically varied (when measure_responses
+is called), and the responses of all units from a measurement
+source to each pattern are collected into the DistributionMatrix.</p>
+<p>The resulting data can then be used to plot feature maps and
+tuning curves, or for similar types of feature-based analyses.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Presenter command responsible for presenting the input patterns provided
+        to it and returning the response for the requested measurement sources.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before each pattern is presented.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Prefix to add to the name under which results are stored.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after each pattern is presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after an analysis session ends.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before an analysis session begins.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">store_responses</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Determines whether or not to return the full set of responses to the
+        presented patterns.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the output source supplied to metadata_fns to filter out
+        desired outputs.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>bounds=(0, None), constant=False, default=[1.0], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation,
+        when a measurement is taken.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">repetitions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>How many times each stimulus will be presented.
+
+        Each stimulus is specified by a particular feature combination, and
+        need only be presented once if the network has no other source of
+        variability.  If results differ for each presentation of an identical
+        stimulus (e.g. due to intrinsic noise), then this parameter can be
+        increased so that results will be an average over the specified number
+        of repetitions.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">measurement_storage_hook</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface to store measurements after they have been completed.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the input supplied to
+        the metadata_fns to filter out desired inputs.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">cmd_overrides</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary used to overwrite parameters on the pattern_response_fn.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Defines the input pattern to be presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature functions can be used to coordinate lower level features
+        across input devices or depending on a metafeature set on the function
+        itself.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metadata_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface functions for metadata. Should return a dictionary that at a
+        minimum must contain the name and dimensions of the inputs and outputs
+        for pattern presentation and response measurement.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">static_features</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary containing name value pairs of a feature, which is to be
+        varied across measurements.</dd>
+</dl>
+<dl class="attribute">
+<dt id="featuremapper.FeatureResponses.set_cmd_overrides">
+<tt class="descname">set_cmd_overrides</tt><em class="property"> = &lt;functools.partial object at 0x64a40a8&gt;</em><a class="reference internal" href="../_modules/featuremapper.html#FeatureResponses.set_cmd_overrides"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FeatureResponses.set_cmd_overrides" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.ReverseCorrelation">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">ReverseCorrelation</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#ReverseCorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.ReverseCorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.FeatureResponses" title="featuremapper.FeatureResponses"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.FeatureResponses</span></tt></a></p>
+<p>Calculate the receptive fields for all neurons using reverse correlation.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Presenter command responsible for presenting the input patterns provided
+        to it and returning the response for the requested measurement sources.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before each pattern is presented.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Prefix to add to the name under which results are stored.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after each pattern is presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after an analysis session ends.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before an analysis session begins.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">store_responses</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Determines whether or not to return the full set of responses to the
+        presented patterns.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the output source supplied to metadata_fns to filter out
+        desired outputs.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>bounds=(0, None), constant=False, default=[1.0], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation,
+        when a measurement is taken.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">repetitions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>How many times each stimulus will be presented.
+
+        Each stimulus is specified by a particular feature combination, and
+        need only be presented once if the network has no other source of
+        variability.  If results differ for each presentation of an identical
+        stimulus (e.g. due to intrinsic noise), then this parameter can be
+        increased so that results will be an average over the specified number
+        of repetitions.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">measurement_storage_hook</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface to store measurements after they have been completed.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the input supplied to
+        the metadata_fns to filter out desired inputs.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">cmd_overrides</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary used to overwrite parameters on the pattern_response_fn.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Defines the input pattern to be presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature functions can be used to coordinate lower level features
+        across input devices or depending on a metafeature set on the function
+        itself.</dd>
+</dl>
+<p><em>param Boolean</em> <tt class="docutils literal"><span class="pre">continue_measurement</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metadata_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface functions for metadata. Should return a dictionary that at a
+        minimum must contain the name and dimensions of the inputs and outputs
+        for pattern presentation and response measurement.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">static_features</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary containing name value pairs of a feature, which is to be
+        varied across measurements.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.FeatureMaps">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">FeatureMaps</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#FeatureMaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FeatureMaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.FeatureResponses" title="featuremapper.FeatureResponses"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.FeatureResponses</span></tt></a></p>
+<p>Measure and collect the responses to a set of features, for
+calculating feature maps.</p>
+<p>For each feature and each measurement source, the results are
+stored as a preference matrix and selectivity matrix in the
+sheet&#8217;s sheet_views; these can then be plotted as preference or
+selectivity maps.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Presenter command responsible for presenting the input patterns provided
+        to it and returning the response for the requested measurement sources.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before each pattern is presented.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Prefix to add to the name under which results are stored.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after each pattern is presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after an analysis session ends.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before an analysis session begins.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">store_responses</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Determines whether or not to return the full set of responses to the
+        presented patterns.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the output source supplied to metadata_fns to filter out
+        desired outputs.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>bounds=(0, None), constant=False, default=[1.0], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation,
+        when a measurement is taken.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">repetitions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>How many times each stimulus will be presented.
+
+        Each stimulus is specified by a particular feature combination, and
+        need only be presented once if the network has no other source of
+        variability.  If results differ for each presentation of an identical
+        stimulus (e.g. due to intrinsic noise), then this parameter can be
+        increased so that results will be an average over the specified number
+        of repetitions.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">measurement_storage_hook</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface to store measurements after they have been completed.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the input supplied to
+        the metadata_fns to filter out desired inputs.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">cmd_overrides</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary used to overwrite parameters on the pattern_response_fn.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Defines the input pattern to be presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature functions can be used to coordinate lower level features
+        across input devices or depending on a metafeature set on the function
+        itself.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">selectivity_multiplier</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=17.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Scaling of the feature selectivity values, applied in all
+        feature dimensions.  The multiplier sets the output scaling.
+        The precise value is arbitrary, and set to match historical
+        usage.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00054&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function for computing a scalar-valued preference, selectivity,
+        etc. from the distribution of responses. Note that this default
+        is overridden by specific functions for individual features, if
+        specified in the Feature objects.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metadata_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface functions for metadata. Should return a dictionary that at a
+        minimum must contain the name and dimensions of the inputs and outputs
+        for pattern presentation and response measurement.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">static_features</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary containing name value pairs of a feature, which is to be
+        varied across measurements.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.FeatureCurves">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">FeatureCurves</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper.html#FeatureCurves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.FeatureCurves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.FeatureResponses" title="featuremapper.FeatureResponses"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.FeatureResponses</span></tt></a></p>
+<p>Measures and collects the responses to a set of features, for calculating
+tuning and similar curves.</p>
+<p>These curves represent the response of a measurement source to patterns
+that are controlled by a set of features.  This class can collect data for
+multiple curves, each with the same x axis. The x axis represents the main
+feature value that is being varied, such as orientation.  Other feature
+values can also be varied, such as contrast, which will result in multiple
+curves (one per unique combination of other feature values).</p>
+<p>A particular set of patterns is constructed using a user-specified
+pattern_generator by adding the parameters determining the curve
+(curve_param_dict) to a static list of parameters (param_dict),
+and then varying the specified set of features. The input patterns will then
+be passed to the pattern_response_fn, which should return the measured
+responses for each of the requested sheets. Once the responses to all
+feature permutations has been accumulated, the measured curves are passed to
+the storage_fn and are finally returned.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Presenter command responsible for presenting the input patterns provided
+        to it and returning the response for the requested measurement sources.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before each pattern is presented.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Prefix to add to the name under which results are stored.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_presentation_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after each pattern is presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">post_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run after an analysis session ends.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">pre_analysis_session_hooks</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of callable objects to be run before an analysis session begins.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">store_responses</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Determines whether or not to return the full set of responses to the
+        presented patterns.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the output source supplied to metadata_fns to filter out
+        desired outputs.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>bounds=(0, None), constant=False, default=[1.0], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation,
+        when a measurement is taken.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">repetitions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>How many times each stimulus will be presented.
+
+        Each stimulus is specified by a particular feature combination, and
+        need only be presented once if the network has no other source of
+        variability.  If results differ for each presentation of an identical
+        stimulus (e.g. due to intrinsic noise), then this parameter can be
+        increased so that results will be an average over the specified number
+        of repetitions.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">measurement_storage_hook</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface to store measurements after they have been completed.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>allow_None=False, constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Names of the input supplied to
+        the metadata_fns to filter out desired inputs.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">cmd_overrides</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary used to overwrite parameters on the pattern_response_fn.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Defines the input pattern to be presented.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature functions can be used to coordinate lower level features
+        across input devices or depending on a metafeature set on the function
+        itself.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metadata_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Interface functions for metadata. Should return a dictionary that at a
+        minimum must contain the name and dimensions of the inputs and outputs
+        for pattern presentation and response measurement.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=True, constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">static_features</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Dictionary containing name value pairs of a feature, which is to be
+        varied across measurements.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.Feature">
+<em class="property">class </em><tt class="descclassname">featuremapper.</tt><tt class="descname">Feature</tt><big>(</big><em>name</em>, <em>**params</em><big>)</big><a class="headerlink" href="#featuremapper.Feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dataviews.ndmapping.Dimension</span></tt></p>
+<p>Specifies several parameters required for generating a map of one input
+feature.</p>
+<dl class="docutils">
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=True, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00007&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit response
+        to this feature.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">cyclic</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether the range of this feature is cyclic (wraps around at the high
+        end).</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">compute_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>If non-None, a function that when given a list of other parameter
+        values, computes and returns the value for this feature.</dd>
+</dl>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">format_string</span></tt> (<em>allow_None=False, constant=False, default={name} = {val}{unit}, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">range</span></tt> (<em>constant=False, default=(0, 0), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Lower and upper values for a Dimension.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">values</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Explicit list of values for this feature, used in alternative to the
+        range and step parameters</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Offset to add to the values for this feature</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">steps</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of steps, between lower and upper range value, to be presented.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">type</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Type associated with Dimension values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">unit</span></tt> (<em>allow_None=True, constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Unit string associated with the Dimension.</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="#">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-featuremapper">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="#">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

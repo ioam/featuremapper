@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.collector &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-collector">
+<h1>featuremapper.collector<a class="headerlink" href="#featuremapper-collector" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-3b231dc93c988136f978277d558b94bcf480fa6c.png" alt="Inheritance diagram of featuremapper.collector" usemap="#inheritance592c2b7153" class="inheritance"/>
+<map id="inheritance592c2b7153" name="inheritance592c2b7153">
+<area shape="rect" id="node1" href="#featuremapper.collector.Collection" title="A Collection is a container that supports the creation of" alt="" coords="289,116,501,141"/>
+<area shape="rect" id="node2" href="#featuremapper.collector.Container" title="Container class for convenient attribute access used by" alt="" coords="13,116,225,141"/>
+<area shape="rect" id="node4" href="#featuremapper.collector.Collector" title="A Collector accumulates the output of arrays, measurements," alt="" coords="556,27,763,51"/>
+<area shape="rect" id="node5" href="#featuremapper.collector.ViewContainer" title="A ViewContainer is a collection of Containers organised by a" alt="" coords="276,27,514,51"/>
+<area shape="rect" id="node7" href="#featuremapper.collector.ProgressBar" title="A simple text progress bar suitable for the IPython notebook." alt="" coords="282,71,508,96"/>
+<area shape="rect" id="node8" title="Base class for named objects that support Parameters and message" alt="" coords="5,49,233,74"/>
+<area shape="rect" id="node10" href="#featuremapper.collector.Reference" title="A Reference object is a pointer to a view held by a Collector. A" alt="" coords="13,4,225,29"/>
+</map>
+</p>
+<div class="section" id="module-featuremapper.collector">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper.collector" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="featuremapper.collector.Collection">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">Collection</tt><big>(</big><em>parent</em>, <em>source</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.collector.Container" title="featuremapper.collector.Container"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.collector.Container</span></tt></a></p>
+<p>A Collection is a container that supports the creation of
+references to data not immediately accessible. This functionality
+is used by Collector to schedule analyses.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.collector.Collector">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">Collector</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Collector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Collector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.collector.ViewContainer" title="featuremapper.collector.ViewContainer"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.collector.ViewContainer</span></tt></a></p>
+<p>A Collector accumulates the output of arrays, measurements,
+analyses or miscellaneous View objects over time.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">duration_hook</span></tt> (<em>constant=False, default=&lt;built-in function sleep&gt;, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>A callable that is given a duration value that is executed
+       between blocks of measurements.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">progress_hook</span></tt> (<em>constant=False, default=&lt;class &#8216;featuremapper.collector.ProgressBar&#8217;&gt;, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>If set this should be an object with an empty constructor for
+       initialization and an update method which is given with the
+       completion percentage.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">time_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>A callable that returns the time where the time may be the
+        simulation time or wall-clock time. The time values are
+        recorded by the Stack keys.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.collector.Collector.analyze">
+<tt class="descname">analyze</tt><big>(</big><em>reference</em>, <em>analysis_fn</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Collector.analyze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Collector.analyze" title="Permalink to this definition">¶</a></dt>
+<dd><p>A deferred analysis that applies the given analysis function
+with the supplied keywords.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.collector.Collector.clear">
+<tt class="descname">clear</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Collector.clear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Collector.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8221;
+Clear all scheduled definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.collector.Collector.collect">
+<tt class="descname">collect</tt><big>(</big><em>measurement</em>, <em>times=</em>, <span class="optional">[</span><span class="optional">]</span><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Collector.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Collector.collect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schedules collection of measurement output containers returned
+by a MeasurementCommands.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.collector.Collector.container_class">
+<tt class="descname">container_class</tt><a class="headerlink" href="#featuremapper.collector.Collector.container_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#featuremapper.collector.Collection" title="featuremapper.collector.Collection"><tt class="xref py py-class docutils literal"><span class="pre">Collection</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.collector.Collector.duration_hook">
+<tt class="descname">duration_hook</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.collector.Collector.duration_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>sleep(seconds)</p>
+<p>Delay execution for a given number of seconds.  The argument may be
+a floating point number for subsecond precision.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.collector.Collector.progress_hook">
+<tt class="descname">progress_hook</tt><a class="headerlink" href="#featuremapper.collector.Collector.progress_hook" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#featuremapper.collector.ProgressBar" title="featuremapper.collector.ProgressBar"><tt class="xref py py-class docutils literal"><span class="pre">ProgressBar</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.collector.Container">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">Container</tt><big>(</big><em>parent</em>, <em>source</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Container class for convenient attribute access used by
+ViewContainer. Containers have single level attribute access of
+Views by a label identifier and may be merged together using the
+update method.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.collector.ProgressBar">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">ProgressBar</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#ProgressBar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.Parameterized</span></tt></p>
+<p>A simple text progress bar suitable for the IPython notebook.</p>
+<dl class="docutils">
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">width</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=70, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The width of the progress bar in multiples of &#8216;char&#8217;.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">fill_char</span></tt> (<em>allow_None=False, constant=False, default=#, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The character used to fill the progress bar.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.collector.Reference">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">Reference</tt><big>(</big><em>refs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#Reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.Reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A Reference object is a pointer to a view held by a Collector. A
+Reference allows data to be referenced when scheduling
+measurements before the data itself exists. For instance, this is
+useful to define the data to be input into an analysis
+ViewOperation.</p>
+<p>References compose in the same ways as GridLayouts to allow
+complex accessed to be defined ahead of time. In particular, the *
+operator and general indexing is supported.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.collector.ViewContainer">
+<em class="property">class </em><tt class="descclassname">featuremapper.collector.</tt><tt class="descname">ViewContainer</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#ViewContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.ViewContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.Parameterized</span></tt></p>
+<p>A ViewContainer is a collection of Containers organised by a
+source identifier. This allows two level attribute access, first
+by source and then by label.</p>
+<p>ViewContainers are designed to provide convenient access to large
+collections of dataview objects.</p>
+<dl class="method">
+<dt id="featuremapper.collector.ViewContainer.add">
+<tt class="descname">add</tt><big>(</big><em>src</em>, <em>label</em>, <em>view</em>, <em>key=None</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#ViewContainer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.ViewContainer.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the supplied view or stack to the ViewContainer indexed by
+source and label.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.collector.ViewContainer.container_class">
+<tt class="descname">container_class</tt><a class="headerlink" href="#featuremapper.collector.ViewContainer.container_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#featuremapper.collector.Container" title="featuremapper.collector.Container"><tt class="xref py py-class docutils literal"><span class="pre">Container</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.collector.ViewContainer.update">
+<tt class="descname">update</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/collector.html#ViewContainer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.collector.ViewContainer.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the current ViewContainer with the contents of another
+ViewContainer.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.collector</a><ul>
+<li><a class="reference internal" href="#module-featuremapper.collector">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.collector-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

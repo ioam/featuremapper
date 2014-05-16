@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.metaparams &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-metaparams">
+<h1>featuremapper.metaparams<a class="headerlink" href="#featuremapper-metaparams" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-2c9da73f42499ca4cb45a5b81b5fc79b8bd7fc25.png" alt="Inheritance diagram of featuremapper.metaparams" usemap="#inheritance8cffae34ce" class="inheritance"/>
+<map id="inheritance8cffae34ce" name="inheritance8cffae34ce">
+<area shape="rect" id="node1" href="#featuremapper.metaparams.contrast2centersurroundscale" title="Allows controlling the contrast in orientation contrast patterns, where the" alt="" coords="479,3,764,23"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="222,94,445,114"/>
+<area shape="rect" id="node4" href="#featuremapper.metaparams.contrast2scale" title="Coordinates complex contrast values in single and compound patterns." alt="" coords="514,39,729,59"/>
+<area shape="rect" id="node6" href="#featuremapper.metaparams.direction2translation" title="Coordinates the presentation of moving patterns. Currently" alt="" coords="501,76,742,96"/>
+<area shape="rect" id="node8" href="#featuremapper.metaparams.hue2rgbscale" title="Coordinates hue between inputs with Red, Green or Blue in their" alt="" coords="517,112,726,132"/>
+<area shape="rect" id="node10" href="#featuremapper.metaparams.ocular2leftrightscale" title="Coordinates patterns between two eyes, by looking for the" alt="" coords="502,148,741,168"/>
+<area shape="rect" id="node12" href="#featuremapper.metaparams.phasedisparity2leftrightphase" title="Coordinates phase disparity between two eyes, by looking for" alt="" coords="480,184,763,204"/>
+<area shape="rect" id="node14" title="Base class for named objects that support Parameters and message" alt="" coords="4,94,188,114"/>
+</map>
+</p>
+<div class="section" id="module-featuremapper.metaparams">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper.metaparams" title="Permalink to this headline">¶</a></h2>
+<p>Metaparameter functions allow for the presentation of complex patterns that are
+coordinated across different inputs (controlled via the input name) or
+controlled by a higher-level parameter.</p>
+<p>Current examples are transformations of contrast between the stimulus and the
+background based on a contrast parameter, which can be set to implement
+Michelson or Weber contrast or the coordinated presentation of input patterns
+to each eye, which assigns the correct input pattern based on whether an input
+source contains &#8216;left&#8217; or &#8216;right&#8217;.</p>
+<dl class="class">
+<dt id="featuremapper.metaparams.contrast2centersurroundscale">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">contrast2centersurroundscale</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#contrast2centersurroundscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.contrast2centersurroundscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Allows controlling the contrast in orientation contrast patterns, where the
+contrast of the central stimulus has to be set independently from the
+surround annulus and the background. Can be controlled with the
+contrast_parameter, which can be set to one of three values:
+&#8216;michelson_contrast&#8217;, &#8216;weber_contrast&#8217; or simply &#8216;scale&#8217;.</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">contrast_parameter</span></tt> (<em>allow_None=False, constant=False, default=weber_contrast, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.metaparams.contrast2scale">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">contrast2scale</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#contrast2scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.contrast2scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Coordinates complex contrast values in single and compound patterns.
+To change the contrast behavior change the contrast_parameter to one of
+three values: &#8216;michelson_contrast&#8217;, &#8216;weber_contrast&#8217; or simply &#8216;scale&#8217;.</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">contrast_parameter</span></tt> (<em>allow_None=False, constant=False, default=michelson_contrast, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.metaparams.hue2rgbscale">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">hue2rgbscale</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#hue2rgbscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.hue2rgbscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Coordinates hue between inputs with Red, Green or Blue in their
+name.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.metaparams.phasedisparity2leftrightphase">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">phasedisparity2leftrightphase</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#phasedisparity2leftrightphase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.phasedisparity2leftrightphase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Coordinates phase disparity between two eyes, by looking for
+the keywords Left and Right in the input names.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.metaparams.direction2translation">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">direction2translation</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#direction2translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.direction2translation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Coordinates the presentation of moving patterns. Currently
+supports an old and new motion model.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.metaparams.ocular2leftrightscale">
+<em class="property">class </em><tt class="descclassname">featuremapper.metaparams.</tt><tt class="descname">ocular2leftrightscale</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/metaparams.html#ocular2leftrightscale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.metaparams.ocular2leftrightscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">param.parameterized.ParameterizedFunction</span></tt></p>
+<p>Coordinates patterns between two eyes, by looking for the
+keywords Left and Right in the input names.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.metaparams</a><ul>
+<li><a class="reference internal" href="#module-featuremapper.metaparams">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.metaparams-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

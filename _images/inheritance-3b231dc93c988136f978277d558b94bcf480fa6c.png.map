@@ -1,0 +1,9 @@
+<map id="inheritance592c2b7153" name="inheritance592c2b7153">
+<area shape="rect" id="node1" href="#featuremapper.collector.Collection" title="A Collection is a container that supports the creation of" alt="" coords="289,116,501,141"/>
+<area shape="rect" id="node2" href="#featuremapper.collector.Container" title="Container class for convenient attribute access used by" alt="" coords="13,116,225,141"/>
+<area shape="rect" id="node4" href="#featuremapper.collector.Collector" title="A Collector accumulates the output of arrays, measurements," alt="" coords="556,27,763,51"/>
+<area shape="rect" id="node5" href="#featuremapper.collector.ViewContainer" title="A ViewContainer is a collection of Containers organised by a" alt="" coords="276,27,514,51"/>
+<area shape="rect" id="node7" href="#featuremapper.collector.ProgressBar" title="A simple text progress bar suitable for the IPython notebook." alt="" coords="282,71,508,96"/>
+<area shape="rect" id="node8" title="Base class for named objects that support Parameters and message" alt="" coords="5,49,233,74"/>
+<area shape="rect" id="node10" href="#featuremapper.collector.Reference" title="A Reference object is a pointer to a view held by a Collector. A" alt="" coords="13,4,225,29"/>
+</map>

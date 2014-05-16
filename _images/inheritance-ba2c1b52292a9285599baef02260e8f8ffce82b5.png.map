@@ -1,0 +1,6 @@
+<map id="inheritanceed6e039036" name="inheritanceed6e039036">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="413,3,564,20"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.decode_feature" title="Estimate the value of a feature from the current activity pattern" alt="" coords="595,3,764,20"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="192,3,383,20"/>
+<area shape="rect" id="node6" title="Base class for named objects that support Parameters and message" alt="" coords="3,3,162,20"/>
+</map>

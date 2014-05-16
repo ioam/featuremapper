@@ -1,0 +1,30 @@
+<map id="inheritance76707b6145" name="inheritance76707b6145">
+<area shape="rect" id="node1" href="featuremapper-module.html#featuremapper.FeatureResponses" title="Systematically vary input pattern feature values and collate the" alt="" coords="276,92,333,98"/>
+<area shape="rect" id="node2" title="Abstract base class for various stimulus&#45;response types of analysis." alt="" coords="174,92,235,98"/>
+<area shape="rect" id="node4" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="74,98,149,104"/>
+<area shape="rect" id="node10" title="Parameterized command for presenting input patterns" alt="" coords="160,104,249,110"/>
+<area shape="rect" id="node6" title="A callable Parameterized command for measuring tuning curves." alt="" coords="480,37,562,44"/>
+<area shape="rect" id="node18" title="Measures tuning curve(s) of particular unit(s)." alt="" coords="582,31,658,38"/>
+<area shape="rect" id="node38" href="#featuremapper.command.measure_or_tuning_fullfield" title="Measures orientation tuning curve(s) of a particular unit using a" alt="" coords="577,43,664,50"/>
+<area shape="rect" id="node7" title="Parameterized command for presenting sine gratings and measuring" alt="" coords="361,92,465,98"/>
+<area shape="rect" id="node26" href="#featuremapper.command.measure_dr_pref" title="Measure a direction preference map by collating the response to patterns." alt="" coords="485,49,557,56"/>
+<area shape="rect" id="node30" href="#featuremapper.command.measure_hue_pref" title="Measure a hue preference map by collating the response to patterns." alt="" coords="484,62,558,68"/>
+<area shape="rect" id="node32" href="#featuremapper.command.measure_od_pref" title="Measure an ocular dominance preference map by collating the response to patterns." alt="" coords="485,74,557,80"/>
+<area shape="rect" id="node34" href="#featuremapper.command.measure_or_pref" title="Measure an orientation preference map by collating the response to patterns." alt="" coords="485,86,557,92"/>
+<area shape="rect" id="node42" href="#featuremapper.command.measure_phasedisparity" title="Measure a phase disparity preference map by collating the response to patterns." alt="" coords="480,98,562,104"/>
+<area shape="rect" id="node50" href="#featuremapper.command.measure_second_or_pref" title="Measure the secondary &#160;orientation preference maps." alt="" coords="479,110,563,117"/>
+<area shape="rect" id="node52" href="#featuremapper.command.measure_sine_pref" title="Measure preferences for sine gratings in various combinations." alt="" coords="484,122,558,129"/>
+<area shape="rect" id="node9" title="Parameterized command for presenting input patterns and measuring" alt="" coords="260,128,349,135"/>
+<area shape="rect" id="node13" title="Parameterized command for measuring topographic position." alt="" coords="366,140,460,147"/>
+<area shape="rect" id="node15" title="A callable Parameterized command for measuring the response to" alt="" coords="367,158,459,165"/>
+<area shape="rect" id="node22" href="#featuremapper.command.measure_corner_angle_pref" title="Generate the preference map for angle shapes, by collating the response to patterns." alt="" coords="477,134,565,141"/>
+<area shape="rect" id="node24" href="#featuremapper.command.measure_corner_or_pref" title="Measure a corner preference map by collating the response to patterns." alt="" coords="480,146,562,153"/>
+<area shape="rect" id="node44" href="#featuremapper.command.measure_position_pref" title="Measure a position preference map by collating the response to patterns." alt="" coords="481,158,561,165"/>
+<area shape="rect" id="node48" href="#featuremapper.command.measure_rfs" title="Map receptive fields by reverse correlation." alt="" coords="489,170,553,177"/>
+<area shape="rect" id="node20" href="#featuremapper.command.measure_contrast_response" title="Measures contrast response curves for a particular unit." alt="" coords="676,1,765,8"/>
+<area shape="rect" id="node28" href="#featuremapper.command.measure_frequency_response" title="Measure spatial frequency preference of one unit of a sheet." alt="" coords="675,13,766,20"/>
+<area shape="rect" id="node36" href="#featuremapper.command.measure_or_tuning" title="Measures orientation tuning curve(s) of a particular unit." alt="" coords="683,25,758,32"/>
+<area shape="rect" id="node40" href="#featuremapper.command.measure_orientation_contrast" title="Measures the response to a center sine grating disk and a surround" alt="" coords="675,37,766,44"/>
+<area shape="rect" id="node54" href="#featuremapper.command.measure_size_response" title="Measure receptive field size of one unit of a sheet." alt="" coords="680,49,762,56"/>
+<area shape="rect" id="node58" title="Base class for named objects that support Parameters and message" alt="" coords="1,98,63,104"/>
+</map>

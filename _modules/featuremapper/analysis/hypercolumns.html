@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis.hypercolumns &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../../index.html" />
+    <link rel="up" title="featuremapper.analysis" href="../analysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
+          <li><a href="../analysis.html" accesskey="U">featuremapper.analysis</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper.analysis.hypercolumns</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module is used to analyse the hypercolumn structure of preference</span>
+<span class="sd">maps. Currently thsi file offers a means to estimate the hypercolumn</span>
+<span class="sd">distance from the Fourier power spectrum but different types of</span>
+<span class="sd">analysis (eg. wavelet analysis) may be introduced in future.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Jean-Luc Stevens&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">from</span> <span class="nn">dataviews.operation</span>  <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">imagen.analysis</span> <span class="kn">import</span> <span class="n">fft_power_spectrum</span>
+
+<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">Annotation</span><span class="p">,</span> <span class="n">Histogram</span>
+<span class="kn">from</span> <span class="nn">dataviews.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+
+<span class="k">try</span><span class="p">:</span> <span class="c"># 2.7+</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">scipy.special</span> <span class="kn">as</span> <span class="nn">ss</span>
+    <span class="n">gamma</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">gamma</span>
+
+
+
+<div class="viewcode-block" id="PowerSpectrumAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PowerSpectrumAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimation of hypercolumn distance in a cyclic preference map from</span>
+<span class="sd">    the size of the ring in the fourier power spectrum, following the</span>
+<span class="sd">    methods described in the in the supplementary materials of</span>
+<span class="sd">    ``Universality in the Evolution of Orientation Columns in the</span>
+<span class="sd">    Visual Cortex&#39;&#39;, Kaschube et al. 2010.</span>
+
+<span class="sd">    If supplied with a preference overlayed with pinwheels, the</span>
+<span class="sd">    pinwheel_density is computed from kmax (the wavenumber of highest</span>
+<span class="sd">    power) using the equation:</span>
+
+<span class="sd">    rho = pinwheel count/(kmax**2)</span>
+
+<span class="sd">    This is then used to generate a map quality estimate (with unit</span>
+<span class="sd">    range) based on the pi-pinwheel density criterion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">init_fit</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_None</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">       If set to None, an initial fit is automatically selected for</span>
+<span class="s">       the curve fitting procedure. Otherwise, this is a dictionary of</span>
+<span class="s">       the initial coefficients for equation (7) from the 2010 Science</span>
+<span class="s">       paper mentioned above (supplementary materials). For instance,</span>
+<span class="s">       the values used in the GCAL (Stevens et al. 2013):</span>
+
+<span class="s">       init_fit = dict(a0=0.35, a1=3.8, a2=1.3, a3=0.15, a4=-0.003, a5=0)</span>
+
+<span class="s">       These coefficients may be understood as follows:</span>
+
+<span class="s">        a0 =&gt; Gaussian height.</span>
+<span class="s">        a1 =&gt; Peak x-axis position.</span>
+<span class="s">        a2 =&gt; Gaussian spread (ie. variance).</span>
+<span class="s">        a3 =&gt; Baseline value (without falloff).</span>
+<span class="s">        a4 =&gt; Linear falloff.</span>
+<span class="s">        a5 =&gt; Quadratic falloff.</span>
+<span class="s">       &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">averaging_fn</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">      The averaging function used to collapse the power spectrum at each</span>
+<span class="s">      wavenumber down to a scalar value. By default, finds the mean</span>
+<span class="s">      power for each wavenumber.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">fit_table</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">      Whether or not to add table listing the fit coefficients at the</span>
+<span class="s">      end of the output layout.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">gamma_k</span><span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">      The degree to which the gamma kernel is heavily tailed when</span>
+<span class="s">      squashing the pinwheel density into a unit map metric.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+
+        <span class="p">[</span><span class="n">pref</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
+        <span class="n">pinwheel_views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Pinwheels&#39;</span><span class="p">,</span> <span class="n">Points</span><span class="p">)</span>
+        <span class="n">pinwheel_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">pw_view</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pw_view</span> <span class="ow">in</span> <span class="n">pinwheel_views</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span><span class="s">&#39;Wavenumber (k)&#39;</span><span class="p">,</span> <span class="s">&#39;Power&#39;</span>
+        <span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">lbrt</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">dim1</span><span class="p">,</span> <span class="n">dim2</span><span class="p">)</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">xdensity</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim1</span>
+        <span class="n">ydensity</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim2</span>
+
+        <span class="k">if</span> <span class="n">xdensity</span> <span class="o">!=</span> <span class="n">ydensity</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;SheetView must have matching x- and y-density&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_density</span> <span class="o">=</span> <span class="n">xdensity</span>
+
+        <span class="n">power_spectrum</span> <span class="o">=</span> <span class="n">fft_power_spectrum</span><span class="p">(</span><span class="n">pref</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+        <span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">edges</span><span class="p">),</span> <span class="n">fit</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimate_hypercolumn_distance</span><span class="p">(</span><span class="n">power_spectrum</span><span class="p">)</span>
+
+        <span class="n">kmax</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;kmax&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pinwheel_views</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">info</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pinwheel_count</span> <span class="o">/</span> <span class="p">(</span><span class="n">kmax</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">info</span><span class="p">[</span><span class="s">&#39;rho_metric&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma_metric</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">])</span>
+
+        <span class="n">info_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_samples</span><span class="p">(</span><span class="n">dim1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim1</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+        <span class="n">curve</span> <span class="o">=</span> <span class="n">Curve</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="n">ylabel</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Histogram Fit&#39;</span><span class="p">)</span>
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">Histogram</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="n">ylabel</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;HistogramFit&#39;</span><span class="p">)</span>
+        <span class="n">annotation</span> <span class="o">=</span> <span class="n">Annotation</span><span class="p">(</span><span class="n">vlines</span><span class="o">=</span><span class="p">[</span><span class="n">kmax</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;KMax Line&#39;</span><span class="p">)</span>
+
+        <span class="n">views</span> <span class="o">=</span> <span class="p">[</span><span class="n">hist</span> <span class="o">*</span> <span class="n">curve</span> <span class="o">*</span> <span class="n">annotation</span> <span class="p">,</span> <span class="n">info_table</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">fit_table</span> <span class="ow">and</span> <span class="n">fit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="s">&#39;a</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">fit_table</span><span class="p">:</span>
+            <span class="n">fit_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span>
+            <span class="n">views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_table</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">views</span>
+
+
+<div class="viewcode-block" id="PowerSpectrumAnalysis.gamma_dist"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_dist">[docs]</a>    <span class="k">def</span> <span class="nf">gamma_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+        <span class="s">&quot;The gamma distribution used for the gamma metric&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">theta</span><span class="o">**</span><span class="n">k</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">gamma</span><span class="p">(</span><span class="n">k</span><span class="p">))</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">theta</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="PowerSpectrumAnalysis.gamma_metric"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_metric">[docs]</a>    <span class="k">def</span> <span class="nf">gamma_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The heavily-tailed gamma kernel used to squash the pinwheel</span>
+<span class="sd">        density into unit range. The maximum value of unity is</span>
+<span class="sd">        attained when the input pinwheel density is pi.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">gamma_k</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c"># Mode: (k - 1)* theta</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma_dist</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">gamma_k</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">norm</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma_dist</span><span class="p">(</span><span class="n">pwd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">gamma_k</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PowerSpectrumAnalysis.wavenumber_spectrum"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.wavenumber_spectrum">[docs]</a>    <span class="k">def</span> <span class="nf">wavenumber_spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bins the power values in the 2D FFT power spectrum as a</span>
+<span class="sd">        function of wavenumber (1D). Requires square FFT spectra with</span>
+<span class="sd">        an odd dimension to work to ensure there is a central sample</span>
+<span class="sd">        corresponding to the DC component (wavenumber zero).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dim</span><span class="p">,</span> <span class="n">_dim</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">assert</span> <span class="n">dim</span> <span class="o">==</span> <span class="n">_dim</span><span class="p">,</span> <span class="s">&quot;This approach only supports square FFT spectra&quot;</span>
+        <span class="k">assert</span> <span class="n">dim</span> <span class="o">%</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;Odd dimensions necessary for properly centered FFT plot&quot;</span>
+
+        <span class="c"># Invert as power_spectrum returns black (low values) for high amplitude</span>
+        <span class="n">spectrum</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">spectrum</span>
+        <span class="n">pixel_bins</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">lower</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">upper</span> <span class="o">=</span> <span class="p">(</span><span class="n">dim</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c"># Grid of coordinates relative to central DC component (0,0)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">lower</span><span class="p">:</span><span class="n">upper</span><span class="p">,</span> <span class="n">lower</span><span class="p">:</span><span class="n">upper</span><span class="p">]</span>
+        <span class="n">flat_pixel_distances</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">flat_spectrum</span> <span class="o">=</span> <span class="n">spectrum</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="c"># Indices in pixel_bins to which the distances belong</span>
+        <span class="n">bin_allocation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">flat_pixel_distances</span><span class="p">,</span> <span class="n">pixel_bins</span><span class="p">)</span>
+        <span class="c"># The bin allocation zipped with actual fft power values</span>
+        <span class="n">spectrum_bins</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bin_allocation</span><span class="p">,</span> <span class="n">flat_spectrum</span><span class="p">)</span>
+        <span class="n">grouped_bins</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">spectrum_bins</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">hist_values</span> <span class="o">=</span> <span class="p">[([</span><span class="n">sval</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">sval</span><span class="p">)</span> <span class="ow">in</span> <span class="n">it</span><span class="p">],</span> <span class="nb">bin</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="p">(</span><span class="nb">bin</span><span class="p">,</span> <span class="n">it</span><span class="p">)</span> <span class="ow">in</span> <span class="n">grouped_bins</span><span class="p">]</span>
+        <span class="p">(</span><span class="n">power_values</span><span class="p">,</span> <span class="n">bin_boundaries</span><span class="p">)</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">hist_values</span><span class="p">)</span>
+        <span class="n">averaged_powers</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">averaging_fn</span><span class="p">(</span><span class="n">power</span><span class="p">)</span> <span class="k">for</span> <span class="n">power</span> <span class="ow">in</span> <span class="n">power_values</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bin_boundaries</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixel_bins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">averaged_powers</span><span class="p">,</span> <span class="n">pixel_bins</span>
+
+</div>
+<div class="viewcode-block" id="PowerSpectrumAnalysis.KaschubeFit"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.KaschubeFit">[docs]</a>    <span class="k">def</span> <span class="nf">KaschubeFit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">,</span> <span class="n">a4</span><span class="p">,</span> <span class="n">a5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fitting function used by Kaschube for finding the hypercolumn</span>
+<span class="sd">        distance from the Fourier power spectrum. These values should</span>
+<span class="sd">        match the init_fit defaults of pinwheel_analysis below.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span> <span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="n">a1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span> <span class="o">+</span> <span class="n">a3</span> <span class="o">+</span> <span class="n">a4</span><span class="o">*</span><span class="n">k</span> <span class="o">+</span> <span class="n">a5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PowerSpectrumAnalysis.fit_samples"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.fit_samples">[docs]</a>    <span class="k">def</span> <span class="nf">fit_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_k</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">fit</span><span class="p">):</span>
+        <span class="s">&quot;Compute a curve based from the fit coefficients&quot;</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_k</span><span class="p">,</span> <span class="n">max_k</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">KaschubeFit</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">fit</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ks</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span><span class="n">values</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="PowerSpectrumAnalysis.estimate_hypercolumn_distance"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.hypercolumns-module.html#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.estimate_hypercolumn_distance">[docs]</a>    <span class="k">def</span> <span class="nf">estimate_hypercolumn_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power_spectrum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimating the hypercolumn distance by fitting Equation 7 of</span>
+<span class="sd">        Kaschube et al. 2010 Equation 7 (supplementary</span>
+<span class="sd">        material). Returns the analysed values as a dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">amplitudes</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavenumber_spectrum</span><span class="p">(</span><span class="n">power_spectrum</span><span class="p">)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">)))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">wavenumber_power</span> <span class="o">=</span> <span class="n">amplitudes</span><span class="p">[:]</span>
+            <span class="n">kmax_argmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">wavenumber_power</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">baseline</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">wavenumber_power</span><span class="p">)</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">wavenumber_power</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">kmax_argmax</span><span class="p">)]</span> <span class="o">-</span> <span class="n">baseline</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">init_fit</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">init_fit</span> <span class="o">=</span> <span class="p">[</span><span class="n">height</span><span class="p">,</span> <span class="n">kmax_argmax</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">init_fit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">init_fit</span>
+
+            <span class="n">fit_vals</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">KaschubeFit</span><span class="p">,</span>
+                                    <span class="n">ks</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">),</span>
+                                    <span class="n">init_fit</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="s">&#39;a0&#39;</span><span class="p">,</span> <span class="s">&#39;a1&#39;</span><span class="p">,</span> <span class="s">&#39;a2&#39;</span><span class="p">,</span> <span class="s">&#39;a3&#39;</span><span class="p">,</span> <span class="s">&#39;a4&#39;</span><span class="p">,</span> <span class="s">&#39;a5&#39;</span><span class="p">],</span> <span class="n">fit_vals</span><span class="p">))</span>
+            <span class="n">valid_fit</span> <span class="o">=</span> <span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="s">&#39;a1&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">valid_fit</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="n">kmax_argmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">kmax</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="s">&#39;a1&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">valid_fit</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">kmax_argmax</span><span class="p">)</span>
+
+        <span class="c"># The amplitudes begins with k=0 (DC component), k=1 for one</span>
+        <span class="c"># period per map, k=2 for two periods per map etc. The units per</span>
+        <span class="c"># hypercolumn is the total number of units across the map divided</span>
+        <span class="c"># by kmax. If k &lt;= 1.0, the full map width is reported.</span>
+        <span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">power_spectrum</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">units_per_hypercolumn</span> <span class="o">=</span> <span class="n">dim</span> <span class="k">if</span> <span class="p">(</span><span class="n">kmax</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="k">else</span> <span class="n">dim</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">kmax</span><span class="p">)</span>
+        <span class="n">cycles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_density</span> <span class="o">/</span> <span class="n">units_per_hypercolumn</span>
+
+        <span class="k">return</span> <span class="p">((</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">edges</span><span class="p">),</span>
+                <span class="n">fit</span> <span class="k">if</span> <span class="n">valid_fit</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
+                <span class="p">{</span><span class="s">&#39;kmax&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">kmax</span><span class="p">),</span>
+                <span class="s">&#39;k_delta&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">kmax</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">kmax_argmax</span><span class="p">)),</span>
+                <span class="s">&#39;units_per_hc&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">units_per_hypercolumn</span><span class="p">),</span>
+                <span class="s">&#39;cycles&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">cycles</span><span class="p">)})</span>
+
+
+<span class="c"># Defining styles</span></div></div>
+<span class="n">options</span><span class="o">.</span><span class="n">HistogramFit_Curve</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">KMaxLine_Annotation</span> <span class="o">=</span>    <span class="n">StyleOpts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">FFTPower_Histogram</span> <span class="o">=</span>     <span class="n">StyleOpts</span><span class="p">(</span><span class="n">fc</span><span class="o">=</span><span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../../../index.html">Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../../../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper/analysis/hypercolumns.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
+          <li><a href="../analysis.html" >featuremapper.analysis</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

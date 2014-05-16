@@ -1,0 +1,14 @@
+***************
+featuremapper.analysis.hypercolumns
+***************
+
+.. inheritance-diagram:: featuremapper.analysis.hypercolumns
+
+
+
+Module
+======
+
+.. automodule:: featuremapper.analysis.hypercolumns
+   :members:
+   :show-inheritance:

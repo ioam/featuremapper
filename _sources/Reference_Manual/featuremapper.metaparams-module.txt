@@ -1,0 +1,14 @@
+***************
+featuremapper.metaparams
+***************
+
+.. inheritance-diagram:: featuremapper.metaparams
+
+
+
+Module
+======
+
+.. automodule:: featuremapper.metaparams
+   :members:
+   :show-inheritance:

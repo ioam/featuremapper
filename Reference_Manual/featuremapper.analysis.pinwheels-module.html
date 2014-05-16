@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis.pinwheels &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-analysis-pinwheels">
+<h1>featuremapper.analysis.pinwheels<a class="headerlink" href="#featuremapper-analysis-pinwheels" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-e4f35a1e0254a368e4c9726c29d12f8a01593893.png" alt="Inheritance diagram of featuremapper.analysis.pinwheels" usemap="#inheritance1698fe547f" class="inheritance"/>
+<map id="inheritance1698fe547f" name="inheritance1698fe547f">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="414,30,548,45"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Given a SheetView or SheetStack of a cyclic feature preference," alt="" coords="575,30,765,45"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="217,30,387,45"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.pinwheels.WarningCounter" title="A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;" alt="" coords="4,3,190,18"/>
+<area shape="rect" id="node7" title="Base class for named objects that support Parameters and message" alt="" coords="26,30,167,45"/>
+</map>
+</p>
+<div class="section" id="module-featuremapper.analysis.pinwheels">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper.analysis.pinwheels" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.pinwheels.</tt><tt class="descname">PinwheelAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/dataviews/Reference_Manual/dataviews.operation-module.html#dataviews.operation.ViewOperation" title="(in DataViews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">dataviews.operation.ViewOperation</span></tt></a></p>
+<p>Given a SheetView or SheetStack of a cyclic feature preference,
+compute the position of all pinwheel singularities in the
+map. Optionally includes the contours for the real and imaginary
+components of the preference map used to determine the pinwheel
+locations.</p>
+<p>Returns the original SheetView input overlayed with a Points
+object containing the computed pinwheel locations and (optionally)
+Contours overlays including the real and imaginary contour lines
+respectively.</p>
+<dl class="docutils">
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">include_contours</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether or not to include the computed contours for the real and
+      imaginary components of the map.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections">
+<tt class="descname">find_intersections</tt><big>(</big><em>contour1</em>, <em>contour2</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.find_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectorized code to find intersections between contours. All
+successive duplicate vertices along the input contours must be
+removed to help avoid division-by-zero errors.</p>
+<p>There are cases were no intersection exists (eg. parallel lines)
+where division by zero and invalid value exceptions occur. These
+exceptions should be caught as warnings: these edge cases are
+unavoidable with this algorithm and do not indicate that the
+output is erroneous.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">
+<tt class="descname">identify_pinwheels</tt><big>(</big><em>re_contours</em>, <em>im_contours</em>, <em>intersections</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.identify_pinwheels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locates the pinwheels from the intersection of the real and
+imaginary contours of of polar OR map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel">
+<tt class="descname">normalize_polar_channel</tt><big>(</big><em>polar_channel</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.normalize_polar_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions normalizes an OR map (polar_channel) taking into
+account the region of interest (ROI). The ROI is specified by
+values set to 99. Note that this functionality is implemented to
+reproduce the experimental approach and has not been tested (not
+required for Topographica simulations)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">
+<tt class="descname">polar_preference</tt><big>(</big><em>pref</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.polar_preference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns hue representation to polar representation.
+Hue representation uses values expected in the range 0-1.0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours">
+<tt class="descname">polarmap_contours</tt><big>(</big><em>polarmap</em>, <em>bounds</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.polarmap_contours"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies the real and imaginary contours in a polar map.
+Returns the real and imaginary contours as 2D vertex arrays
+together with the pairs of contours known to intersect. The
+coordinate system used is specified by the supplied bounds.</p>
+<p>Contour plotting requires origin=&#8217;upper&#8217; for consistency with
+image coordinate system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates">
+<tt class="descname">remove_path_duplicates</tt><big>(</big><em>vertices</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.remove_path_duplicates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes successive duplicates along a path of vertices.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.analysis.pinwheels.WarningCounter">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.pinwheels.</tt><tt class="descname">WarningCounter</tt><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#WarningCounter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.WarningCounter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A simple class to count &#8216;divide by zero&#8217; and &#8216;invalid value&#8217;
+exceptions to allow a suitable warning message to be generated.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.analysis.pinwheels</a><ul>
+<li><a class="reference internal" href="#module-featuremapper.analysis.pinwheels">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.analysis.pinwheels-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

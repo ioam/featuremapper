@@ -1,0 +1,12 @@
+<map id="inheritancebd34ebd041" name="inheritancebd34ebd041">
+<area shape="rect" id="node1" href="#featuremapper.DistributionMatrix" title="Maintains a matrix of Distributions (each of which is a dictionary" alt="" coords="182,2,299,16"/>
+<area shape="rect" id="node2" title="Base class for named objects that support Parameters and message" alt="" coords="5,28,135,42"/>
+<area shape="rect" id="node11" href="#featuremapper.FullMatrix" title="Records the output of every unit in a sheet, for every combination" alt="" coords="195,28,285,42"/>
+<area shape="rect" id="node14" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="161,53,319,68"/>
+<area shape="rect" id="node4" href="#featuremapper.FeatureCurves" title="Measures and collects the responses to a set of features, for calculating" alt="" coords="650,28,758,42"/>
+<area shape="rect" id="node5" href="#featuremapper.FeatureResponses" title="Systematically vary input pattern feature values and collate the" alt="" coords="499,53,619,68"/>
+<area shape="rect" id="node7" href="#featuremapper.FeatureMaps" title="Measure and collect the responses to a set of features, for" alt="" coords="653,53,755,68"/>
+<area shape="rect" id="node16" href="#featuremapper.ReverseCorrelation" title="Calculate the receptive fields for all neurons using reverse correlation." alt="" coords="644,79,765,93"/>
+<area shape="rect" id="node9" title="Abstract base class for various stimulus&#45;response types of analysis." alt="" coords="344,53,474,68"/>
+<area shape="rect" id="node13" title="Exception raised when a measurement is stopped before" alt="" coords="3,2,137,16"/>
+</map>

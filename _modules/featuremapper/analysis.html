@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
+    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper.analysis</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+
+<span class="kn">from</span> <span class="nn">imagen.analysis</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">SheetView</span>
+
+<span class="kn">from</span> <span class="nn">featuremapper.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span><span class="p">,</span> \
+    <span class="n">DSF_MaxValue</span>
+
+
+<div class="viewcode-block" id="decode_feature"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis-module.html#featuremapper.analysis.decode_feature">[docs]</a><span class="k">class</span> <span class="nc">decode_feature</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate the value of a feature from the current activity pattern</span>
+<span class="sd">    on a sheet and a preference map of the sheet. The activity and</span>
+<span class="sd">    preference should be supplied as an Overlay or a Stack of Overlay</span>
+<span class="sd">    objects.</span>
+
+<span class="sd">    If weighted_average is False, the feature value returned is the</span>
+<span class="sd">    value of the preference_map at the maximally active location.</span>
+
+<span class="sd">    If weighted_average is True, the feature value is estimated by</span>
+<span class="sd">    weighting the preference_map by the current activity level, and</span>
+<span class="sd">    averaging the result across all units in the sheet.</span>
+
+<span class="sd">    For instance, if preference_map is OrientationPreference (a cyclic</span>
+<span class="sd">    quantity), then the result will be the vector average of the</span>
+<span class="sd">    activated orientations.  For an orientation map this value should</span>
+<span class="sd">    be an estimate of the orientation present on the input.</span>
+
+<span class="sd">    Record the V1 activity in response to an oriented Gaussian and the</span>
+<span class="sd">    orientation preference as follows and overlay them::</span>
+
+<span class="sd">       act = measure_response(pattern_generator=imagen.Gaussian(),</span>
+<span class="sd">                              durations=[0.1, 0.5, 1.0])[&#39;V1&#39;]</span>
+<span class="sd">       pref = measure_or_pref()[&#39;V1&#39;].last</span>
+<span class="sd">       ActivityPreferenceStack = act * pref</span>
+
+<span class="sd">       decode_feature(ActivityPreferenceStack)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">reference_value</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_None</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Allows specifying a reference value, to compute the error of the</span>
+<span class="s">        decoded value.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">weighted_average</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Decode as vector average if True or by maximal responding unit.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">):</span>
+        <span class="n">preference</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span> <span class="n">selectivity</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span> <span class="n">activity</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span>
+        <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">overlay</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Preference&#39;</span><span class="p">):</span>
+                <span class="n">preference</span> <span class="o">=</span> <span class="n">sv</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">&#39;Preference&#39;</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Selectivity&#39;</span><span class="p">):</span>
+                <span class="n">selectivity</span> <span class="o">=</span> <span class="n">sv</span>
+            <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Activity&#39;</span><span class="p">):</span>
+                <span class="n">activity</span> <span class="o">=</span> <span class="n">sv</span>
+
+        <span class="k">if</span> <span class="n">preference</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">activity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DecodeFeature requires overlay with activity &quot;</span>
+                             <span class="s">&quot;and preference as input.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">selectivity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">selectivity</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                                    <span class="n">preference</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+
+        <span class="n">cr</span> <span class="o">=</span> <span class="n">preference</span><span class="o">.</span><span class="n">cyclic_range</span>
+        <span class="n">cyclic</span> <span class="o">=</span> <span class="bp">False</span> <span class="k">if</span> <span class="n">cr</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="bp">True</span>
+        <span class="nb">range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="k">if</span> <span class="n">cr</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">cr</span><span class="p">)</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Distribution</span><span class="p">(</span><span class="nb">range</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">activity</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">selectivity</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">()):</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="n">p</span><span class="p">:</span> <span class="n">a</span><span class="o">*</span><span class="n">s</span><span class="p">})</span>
+
+        <span class="n">decoded_label</span> <span class="o">=</span> <span class="s">&quot;Decoded &quot;</span> <span class="o">+</span> <span class="n">fname</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">DSF_WeightedAverage</span><span class="p">()(</span><span class="n">d</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">weighted_average</span> <span class="k">else</span> <span class="n">DSF_MaxValue</span><span class="p">()(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">decoded_value</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">][</span><span class="s">&#39;preference&#39;</span><span class="p">]</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">{</span><span class="n">decoded_label</span><span class="p">:</span> <span class="n">decoded_value</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">reference_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">difference</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">decoded_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">reference_value</span><span class="p">)</span>
+            <span class="n">difference</span> <span class="o">=</span> <span class="n">cr</span> <span class="o">-</span> <span class="n">difference</span> <span class="k">if</span> <span class="n">difference</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">cr</span> <span class="k">else</span> <span class="n">difference</span>
+            <span class="k">if</span> <span class="n">cyclic</span><span class="p">:</span> <span class="n">difference</span> <span class="o">=</span> <span class="n">difference</span> <span class="o">%</span> <span class="n">cr</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&quot;Decoding Error&quot;</span><span class="p">:</span> <span class="n">difference</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="n">ret</span><span class="p">)]</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../../index.html">Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper/analysis.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

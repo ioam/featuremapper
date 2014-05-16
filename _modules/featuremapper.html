@@ -1,0 +1,950 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">FeatureResponses and associated functions and classes.</span>
+
+<span class="sd">These classes implement map and tuning curve measurement based</span>
+<span class="sd">on measuring responses while varying features of an input pattern.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">from</span> <span class="nn">param.parameterized</span> <span class="kn">import</span> <span class="n">ParamOverrides</span><span class="p">,</span> <span class="n">bothmethod</span>
+<span class="kn">from</span> <span class="nn">dataviews.ndmapping</span> <span class="kn">import</span> <span class="n">AttrDict</span><span class="p">,</span> <span class="n">NdMapping</span>
+<span class="kn">from</span> <span class="nn">dataviews.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+<span class="kn">from</span> <span class="nn">dataviews.sheetviews</span> <span class="kn">import</span> <span class="n">SheetView</span><span class="p">,</span> <span class="n">SheetStack</span><span class="p">,</span> <span class="n">CoordinateGrid</span>
+
+<span class="kn">from</span> <span class="nn">collector</span> <span class="kn">import</span> <span class="n">ViewContainer</span>
+<span class="kn">from</span> <span class="nn">distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DistributionStatisticFn</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span>
+<span class="kn">import</span> <span class="nn">features</span>
+<span class="kn">from</span> <span class="nn">features</span> <span class="kn">import</span> <span class="n">Feature</span> <span class="c"># pyflakes:ignore (API import)</span>
+
+<span class="n">activity_dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+
+<span class="k">class</span> <span class="nc">PatternDrivenAnalysis</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract base class for various stimulus-response types of analysis.</span>
+
+<span class="sd">    This type of analysis consists of presenting a set of input</span>
+<span class="sd">    patterns and collecting the responses to each one, which one will</span>
+<span class="sd">    often want to do in a way that does not affect the current state</span>
+<span class="sd">    of the network.</span>
+
+<span class="sd">    To achieve this, the class defines several types of hooks where</span>
+<span class="sd">    arbitrary function objects (i.e., callables) can be registered.</span>
+<span class="sd">    These hooks are generally used to ensure that unrelated previous</span>
+<span class="sd">    activity is eliminated, that subsequent patterns do not interact,</span>
+<span class="sd">    and that the initial state is restored after analysis.</span>
+
+<span class="sd">    Any subclasses must ensure that these hook lists are run at the</span>
+<span class="sd">    appropriate stage in their processing, using e.g.</span>
+<span class="sd">    &quot;for f in some_hook_list: f()&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__abstract</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="n">pre_analysis_session_hooks</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span><span class="n">instantiate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        List of callable objects to be run before an analysis session begins.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">pre_presentation_hooks</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span><span class="n">instantiate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        List of callable objects to be run before each pattern is presented.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">post_presentation_hooks</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span><span class="n">instantiate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        List of callable objects to be run after each pattern is presented.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">post_analysis_session_hooks</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span><span class="n">instantiate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        List of callable objects to be run after an analysis session ends.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="c"># CB: having a class called DistributionMatrix with an attribute</span>
+<span class="c"># distribution_matrix to hold the distribution matrix seems silly.</span>
+<span class="c"># Either rename distribution_matrix or make DistributionMatrix into</span>
+<span class="c"># a matrix.</span>
+<div class="viewcode-block" id="DistributionMatrix"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.DistributionMatrix">[docs]</a><span class="k">class</span> <span class="nc">DistributionMatrix</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maintains a matrix of Distributions (each of which is a dictionary</span>
+<span class="sd">    of (feature value: activity) pairs).</span>
+
+<span class="sd">    The matrix contains one Distribution for each unit in a</span>
+<span class="sd">    rectangular matrix (given by the matrix_shape constructor</span>
+<span class="sd">    argument).  The contents of each Distribution can be updated for a</span>
+<span class="sd">    given bin value all at once by providing a matrix of new values to</span>
+<span class="sd">    update().</span>
+
+<span class="sd">    The results can then be accessed as a matrix of weighted averages</span>
+<span class="sd">    (which can be used as a preference map) and/or a selectivity map</span>
+<span class="sd">    (which measures the peakedness of each distribution).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix_shape</span><span class="p">,</span> <span class="n">axis_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">cyclic</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">keep_peak</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the internal data structure: a matrix of Distribution</span>
+<span class="sd">        objects.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis_range</span> <span class="o">=</span> <span class="n">axis_range</span>
+        <span class="n">new_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">axis_range</span><span class="p">,</span> <span class="n">cyclic</span><span class="p">,</span> <span class="n">keep_peak</span><span class="p">),</span>
+            <span class="n">doc</span><span class="o">=</span><span class="s">&quot;Return a Distribution instance for each element of x.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution_matrix</span> <span class="o">=</span> <span class="n">new_distribution</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">matrix_shape</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="DistributionMatrix.update"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.DistributionMatrix.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_values</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new matrix of histogram values for a given bin value.&quot;&quot;&quot;</span>
+        <span class="c">### JABHACKALERT!  The Distribution class should override +=,</span>
+        <span class="c">### rather than + as used here, because this operation</span>
+        <span class="c">### actually modifies the distribution_matrix, but that has</span>
+        <span class="c">### not yet been done.  Alternatively, it could use a different</span>
+        <span class="c">### function name altogether (e.g. update(x,y)).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribution_matrix</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span> <span class="p">{</span><span class="nb">bin</span><span class="p">:</span> <span class="n">new_values</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]}),</span>
+            <span class="n">new_values</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DistributionMatrix.apply_DSF"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.DistributionMatrix.apply_DSF">[docs]</a>    <span class="k">def</span> <span class="nf">apply_DSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dsf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply the given dsf DistributionStatisticFn on each element of</span>
+<span class="sd">        the distribution_matrix</span>
+
+<span class="sd">        Return a dictionary of dictionaries, with the same structure</span>
+<span class="sd">        of the called DistributionStatisticFn, but with matrices as</span>
+<span class="sd">        values, instead of scalars</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distribution_matrix</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c"># this is an extra call to the dsf() DistributionStatisticFn,</span>
+        <span class="c"># in order to retrieve</span>
+        <span class="c"># the dictionaries structure, and allocate the necessary matrices</span>
+        <span class="n">r0</span> <span class="o">=</span> <span class="n">dsf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution_matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">maps</span> <span class="ow">in</span> <span class="n">r0</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">maps</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">dsf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">item_value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">item</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">item_value</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+</div></div>
+<div class="viewcode-block" id="FullMatrix"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FullMatrix">[docs]</a><span class="k">class</span> <span class="nc">FullMatrix</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Records the output of every unit in a sheet, for every combination</span>
+<span class="sd">    of feature values.  Useful for collecting data for later analysis</span>
+<span class="sd">    while presenting many input patterns.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix_shape</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix_shape</span> <span class="o">=</span> <span class="n">matrix_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">),)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FullMatrix.update"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FullMatrix.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_values</span><span class="p">,</span> <span class="n">feature_value_permutation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new matrix of histogram values for a given bin value.&quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ff</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feature_value_permutation</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">ff</span> <span class="o">==</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">value</span><span class="p">),)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_matrix</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+
+</div></div>
+<span class="k">class</span> <span class="nc">MeasurementInterrupt</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exception raised when a measurement is stopped before</span>
+<span class="sd">    completion. Stores the number of executed presentations and</span>
+<span class="sd">    total presentations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">total</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current</span> <span class="o">=</span> <span class="n">current</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+
+<div class="viewcode-block" id="FeatureResponses"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FeatureResponses">[docs]</a><span class="k">class</span> <span class="nc">FeatureResponses</span><span class="p">(</span><span class="n">PatternDrivenAnalysis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Systematically vary input pattern feature values and collate the</span>
+<span class="sd">    responses.</span>
+
+<span class="sd">    A DistributionMatrix for each measurement source and feature is</span>
+<span class="sd">    created.  The DistributionMatrix stores the distribution of</span>
+<span class="sd">    activity values for that feature.  For instance, if the features</span>
+<span class="sd">    to be tested are orientation and phase, we will create a</span>
+<span class="sd">    DistributionMatrix for orientation and a DistributionMatrix for</span>
+<span class="sd">    phase for each measurement source.  The orientation and phase of</span>
+<span class="sd">    the input are then systematically varied (when measure_responses</span>
+<span class="sd">    is called), and the responses of all units from a measurement</span>
+<span class="sd">    source to each pattern are collected into the DistributionMatrix.</span>
+
+<span class="sd">    The resulting data can then be used to plot feature maps and</span>
+<span class="sd">    tuning curves, or for similar types of feature-based analyses.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">cmd_overrides</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{},</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Dictionary used to overwrite parameters on the pattern_response_fn.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">durations</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Times after presentation,</span>
+<span class="s">        when a measurement is taken.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Names of the input supplied to</span>
+<span class="s">        the metadata_fns to filter out desired inputs.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">metadata_fns</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">instantiate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Interface functions for metadata. Should return a dictionary that at a</span>
+<span class="s">        minimum must contain the name and dimensions of the inputs and outputs</span>
+<span class="s">        for pattern presentation and response measurement.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">metafeature_fns</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Metafeature functions can be used to coordinate lower level features</span>
+<span class="s">        across input devices or depending on a metafeature set on the function</span>
+<span class="s">        itself.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">measurement_prefix</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Prefix to add to the name under which results are stored.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">measurement_storage_hook</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">instantiate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Interface to store measurements after they have been completed.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Names of the output source supplied to metadata_fns to filter out</span>
+<span class="s">        desired outputs.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">static_features</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{},</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Dictionary containing name value pairs of a feature, which is to be</span>
+<span class="s">        varied across measurements.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">pattern_generator</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">instantiate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Defines the input pattern to be presented.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">pattern_response_fn</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">instantiate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Presenter command responsible for presenting the input patterns provided</span>
+<span class="s">        to it and returning the response for the requested measurement sources.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">repetitions</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        How many times each stimulus will be presented.</span>
+
+<span class="s">        Each stimulus is specified by a particular feature combination, and</span>
+<span class="s">        need only be presented once if the network has no other source of</span>
+<span class="s">        variability.  If results differ for each presentation of an identical</span>
+<span class="s">        stimulus (e.g. due to intrinsic noise), then this parameter can be</span>
+<span class="s">        increased so that results will be an average over the specified number</span>
+<span class="s">        of repetitions.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">store_responses</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Determines whether or not to return the full set of responses to the</span>
+<span class="s">        presented patterns.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">__abstract</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_featureresponses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an empty DistributionMatrix for each feature and each</span>
+<span class="sd">        measurement source, in addition to activity buffers and if</span>
+<span class="sd">        requested, the full matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_cmd_overrides</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">metadata_fns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">outputs</span><span class="p">))</span>
+
+        <span class="c"># Features are split depending on whether a preference_fn is supplied</span>
+        <span class="c"># to collapse them</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">preference_fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">preference_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_vals</span> <span class="o">=</span> <span class="p">[(),</span> <span class="p">()]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">)</span>\
+            <span class="k">else</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">])</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Duration</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span> <span class="o">=</span> <span class="p">[</span><span class="n">mp</span> <span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                                         <span class="n">p</span><span class="o">.</span><span class="n">durations</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_vals</span><span class="p">)]</span>
+
+        <span class="n">ndmapping_fn</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">NdMapping</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">ndmapping_fn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">ndmapping_fn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+            <span class="n">response_dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Time</span><span class="p">]</span><span class="o">+</span><span class="n">dimensions</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">)</span>
+            <span class="n">response_stack_fn</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">response_dimensions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">response_stack_fn</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">out_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">output_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">out_label</span><span class="p">]</span>
+            <span class="n">f_vals</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="n">f_vals</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="n">f_vals</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="n">f_vals</span><span class="p">][</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">DistributionMatrix</span><span class="p">(</span><span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">],</span> <span class="n">axis_range</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">range</span><span class="p">,</span>
+                                       <span class="n">cyclic</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">cyclic</span><span class="p">)</span>
+
+
+
+    <span class="k">def</span> <span class="nf">_measure_responses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate feature permutations and present each in sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Run hooks before the analysis session</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">pre_analysis_session_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
+
+        <span class="n">features_to_permute</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">compute_fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_to_compute</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">compute_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">values_lists</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features_to_permute</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">permutations</span> <span class="o">=</span> <span class="p">[</span><span class="n">permutation</span> <span class="k">for</span> <span class="n">permutation</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">values_lists</span><span class="p">)]</span>
+
+        <span class="c"># Permute outer or non-collapsed features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span> <span class="o">=</span> <span class="p">[</span><span class="n">permutation</span> <span class="k">for</span> <span class="n">permutation</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_vals</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span><span class="o">.</span><span class="n">append</span><span class="p">(())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_outer</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">repetitions</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">permutation_num</span><span class="p">,</span> <span class="n">permutation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">permutations</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_present_permutation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">permutation</span><span class="p">,</span> <span class="n">permutation_num</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">MeasurementInterrupt</span> <span class="k">as</span> <span class="n">MI</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Measurement was stopped after {0} out of {1} presentations. &quot;</span>
+                             <span class="s">&quot;Results may be incomplete.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MI</span><span class="o">.</span><span class="n">current</span><span class="p">,</span> <span class="n">MI</span><span class="o">.</span><span class="n">total</span><span class="p">))</span>
+                <span class="k">break</span>
+
+        <span class="c"># Run hooks after the analysis session</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">post_analysis_session_hooks</span><span class="p">:</span>
+            <span class="n">f</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">_present_permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">permutation</span><span class="p">,</span> <span class="n">permutation_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Present a pattern with the specified set of feature values.&quot;&quot;&quot;</span>
+        <span class="n">output_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">out_label</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">f_vals</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="n">f_vals</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">0</span>
+
+        <span class="c"># Calculate complete set of settings</span>
+        <span class="n">permuted_settings</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">permutation</span><span class="p">)</span>
+        <span class="n">complete_settings</span> <span class="o">=</span> <span class="n">permuted_settings</span> <span class="o">+</span>\
+                            <span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">compute_fn</span><span class="p">(</span><span class="n">permuted_settings</span><span class="p">))</span>
+                             <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_compute</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_permutations</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">repetitions</span><span class="p">):</span>
+                <span class="n">permutation</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">permuted_settings</span><span class="p">)</span>
+                <span class="n">permutation</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer_names</span><span class="p">,</span> <span class="n">op</span><span class="p">))</span>
+
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">pre_presentation_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
+
+                <span class="n">presentation_num</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">repetitions</span><span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_outer</span><span class="o">*</span><span class="n">permutation_num</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span>
+
+                <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordinate_inputs</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">permutation</span><span class="p">)</span>
+
+                <span class="n">responses</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">output_names</span><span class="p">,</span>
+                                                  <span class="n">presentation_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span><span class="p">,</span>
+                                                  <span class="n">durations</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">durations</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">post_presentation_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">response_labels</span><span class="p">,</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">responses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">response_labels</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span><span class="p">[</span><span class="n">name</span><span class="p">][(</span><span class="n">duration</span><span class="p">,)</span><span class="o">+</span><span class="n">op</span><span class="p">]</span> <span class="o">+=</span> <span class="n">response</span>
+
+            <span class="k">for</span> <span class="n">response_labels</span> <span class="ow">in</span> <span class="n">responses</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">response_labels</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span><span class="p">[</span><span class="n">name</span><span class="p">][(</span><span class="n">duration</span><span class="p">,)</span><span class="o">+</span><span class="n">op</span><span class="p">]</span> <span class="o">/=</span> <span class="n">p</span><span class="o">.</span><span class="n">repetitions</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">complete_settings</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_coordinate_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">feature_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates pattern generators for all the requested inputs, applies the</span>
+<span class="sd">        correct feature values and iterates through the metafeature_fns,</span>
+<span class="sd">        coordinating complex features.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">input_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">feature_values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">feature_values</span><span class="p">,</span> <span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">static_features</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">feature_values</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pattern_generator</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">input_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;default&#39;</span><span class="p">]</span>
+
+        <span class="c"># Copy the given generator once for every input</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">input_names</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pattern_generator</span><span class="p">)</span>
+
+        <span class="c"># Apply metafeature_fns</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">metafeature_fns</span><span class="p">:</span>
+            <span class="n">fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">feature_values</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">inputs</span>
+
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">current_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update each DistributionMatrix with (activity,bin) and</span>
+<span class="sd">        populate the full matrix, if enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;timestamp&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">mvals</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">mvals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s">&#39;bounds&#39;</span><span class="p">]</span>
+            <span class="n">f_vals</span> <span class="o">=</span> <span class="n">mvals</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_activities</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">f_vals</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">current_values</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">f_vals</span><span class="p">][</span><span class="n">feature</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">act</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+                <span class="n">cn</span><span class="p">,</span> <span class="n">cv</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">current_values</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,)</span><span class="o">+</span><span class="n">f_vals</span><span class="o">+</span><span class="n">cv</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">act</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">bounds</span><span class="p">,</span>
+                                                       <span class="n">label</span><span class="o">=</span><span class="s">&#39;Response&#39;</span><span class="p">)</span>
+
+
+    <span class="nd">@bothmethod</span>
+<div class="viewcode-block" id="FeatureResponses.set_cmd_overrides"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FeatureResponses.set_cmd_overrides">[docs]</a>    <span class="k">def</span> <span class="nf">set_cmd_overrides</span><span class="p">(</span><span class="n">self_or_cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows setting of cmd_overrides at the class and instance level.</span>
+<span class="sd">        cmd_overrides are applied to the pattern_response_fn.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">self_or_cls</span><span class="o">.</span><span class="n">cmd_overrides</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">self_or_cls</span><span class="o">.</span><span class="n">cmd_overrides</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">_apply_cmd_overrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the cmd_overrides to the pattern_response_fn and</span>
+<span class="sd">        the pattern_coordinator before launching a measurement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">override</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">cmd_overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">override</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="o">.</span><span class="n">params</span><span class="p">():</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">override</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="FeatureMaps"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FeatureMaps">[docs]</a><span class="k">class</span> <span class="nc">FeatureMaps</span><span class="p">(</span><span class="n">FeatureResponses</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measure and collect the responses to a set of features, for</span>
+<span class="sd">    calculating feature maps.</span>
+
+<span class="sd">    For each feature and each measurement source, the results are</span>
+<span class="sd">    stored as a preference matrix and selectivity matrix in the</span>
+<span class="sd">    sheet&#39;s sheet_views; these can then be plotted as preference or</span>
+<span class="sd">    selectivity maps.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">preference_fn</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ClassSelector</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">DSF_WeightedAverage</span><span class="p">(),</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Function for computing a scalar-valued preference, selectivity,</span>
+<span class="s">        etc. from the distribution of responses. Note that this default</span>
+<span class="s">        is overridden by specific functions for individual features, if</span>
+<span class="s">        specified in the Feature objects.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">selectivity_multiplier</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">17.0</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Scaling of the feature selectivity values, applied in all</span>
+<span class="s">        feature dimensions.  The multiplier sets the output scaling.</span>
+<span class="s">        The precise value is arbitrary, and set to match historical</span>
+<span class="s">        usage.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Present the given input patterns and collate the responses.</span>
+
+<span class="sd">        Responses are statistics on the distributions of measure for</span>
+<span class="sd">        every unit, extracted by functions that are subclasses of</span>
+<span class="sd">        DistributionStatisticFn, and could be specified in each</span>
+<span class="sd">        feature with the preference_fn parameter, otherwise the</span>
+<span class="sd">        default in self.preference_fn is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParamOverrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">allow_extra_keywords</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_featureresponses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measure_responses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collate_results</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+
+    <span class="k">def</span> <span class="nf">_set_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">map_type</span><span class="p">):</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="n">type_str</span> <span class="o">=</span> <span class="s">&#39;SheetView&#39;</span>
+        <span class="n">style_str</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_key</span><span class="p">(</span><span class="n">fname</span> <span class="o">+</span> <span class="n">map_type</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span> <span class="o">+</span><span class="s">&#39;_&#39;</span> <span class="o">+</span> <span class="n">type_str</span>
+        <span class="k">if</span> <span class="n">style_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">cyclic</span> <span class="o">=</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">cyclic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">map_type</span> <span class="o">==</span> <span class="s">&#39;selectivity&#39;</span> <span class="k">else</span> <span class="bp">False</span>
+            <span class="n">options</span><span class="p">[</span><span class="n">style_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">&#39;hsv&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">cyclic</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()))</span>
+
+
+    <span class="k">def</span> <span class="nf">_collate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ViewContainer</span><span class="p">()</span>
+
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">timestamp</span>
+
+        <span class="c"># Generate dimension info dictionary from features</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Time</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">Duration</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span>
+        <span class="n">pattern_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span>
+        <span class="n">pattern_dim_label</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pattern_dimensions</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Measurement source</span>
+            <span class="n">f_vals</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="c"># Duration and outer feature values</span>
+
+            <span class="c">#Metadata</span>
+            <span class="n">inner_features</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">])</span>
+            <span class="n">output_metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">inner_features</span><span class="o">=</span><span class="n">inner_features</span><span class="p">)</span>
+
+            <span class="c"># Iterate over inner features</span>
+            <span class="n">fr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">f_vals</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">fdist</span> <span class="ow">in</span> <span class="n">fr</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">feature</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+                <span class="n">base_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_prefix</span> <span class="o">+</span> <span class="n">feature</span>
+
+                <span class="c"># Get information from the feature</span>
+                <span class="n">fp</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">fname</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">pref_fn</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">preference_fn</span> <span class="k">if</span> <span class="n">fp</span><span class="o">.</span><span class="n">preference_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>\
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">preference_fn</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">selectivity_multiplier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">pref_fn</span><span class="o">.</span><span class="n">selectivity_scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">pref_fn</span><span class="o">.</span><span class="n">selectivity_scale</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                 <span class="n">p</span><span class="o">.</span><span class="n">selectivity_multiplier</span><span class="p">)</span>
+
+                <span class="c"># Get maps and iterate over them</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">fdist</span><span class="o">.</span><span class="n">apply_DSF</span><span class="p">(</span><span class="n">pref_fn</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">maps</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">map_name</span><span class="p">,</span> <span class="n">map_view</span> <span class="ow">in</span> <span class="n">maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="c"># Set labels and metadata</span>
+                        <span class="n">period</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">map_name</span> <span class="o">!=</span> <span class="s">&#39;selectivity&#39;</span> <span class="ow">and</span> <span class="n">fp</span><span class="o">.</span><span class="n">cyclic</span><span class="p">)</span> <span class="k">else</span> <span class="bp">None</span>
+
+                        <span class="n">map_index</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="n">map_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+                        <span class="n">map_label</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base_name</span><span class="p">,</span> <span class="n">map_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()])</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39; {label} </span><span class="se">\n</span><span class="s"> {dims}&#39;</span>
+                        <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">output_metadata</span><span class="p">)</span>
+
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">map_name</span><span class="p">)</span>
+
+                        <span class="c"># Create views and stacks</span>
+                        <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">map_view</span><span class="p">,</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span> <span class="n">cyclic_range</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+                                       <span class="n">label</span><span class="o">=</span><span class="n">map_label</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">))</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,)</span><span class="o">+</span><span class="n">f_vals</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">map_label</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                            <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">map_index</span><span class="p">,</span> <span class="n">SheetStack</span><span class="p">((</span><span class="n">key</span><span class="p">,</span> <span class="n">sv</span><span class="p">),</span> <span class="o">**</span><span class="n">metadata</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">map_index</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+                    <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pattern_generator</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">pattern_dim_label</span><span class="p">,</span> <span class="s">&#39;Response&#39;</span><span class="p">)</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+</div>
+<div class="viewcode-block" id="FeatureCurves"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.FeatureCurves">[docs]</a><span class="k">class</span> <span class="nc">FeatureCurves</span><span class="p">(</span><span class="n">FeatureResponses</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Measures and collects the responses to a set of features, for calculating</span>
+<span class="sd">    tuning and similar curves.</span>
+
+<span class="sd">    These curves represent the response of a measurement source to patterns</span>
+<span class="sd">    that are controlled by a set of features.  This class can collect data for</span>
+<span class="sd">    multiple curves, each with the same x axis. The x axis represents the main</span>
+<span class="sd">    feature value that is being varied, such as orientation.  Other feature</span>
+<span class="sd">    values can also be varied, such as contrast, which will result in multiple</span>
+<span class="sd">    curves (one per unique combination of other feature values).</span>
+
+<span class="sd">    A particular set of patterns is constructed using a user-specified</span>
+<span class="sd">    pattern_generator by adding the parameters determining the curve</span>
+<span class="sd">    (curve_param_dict) to a static list of parameters (param_dict),</span>
+<span class="sd">    and then varying the specified set of features. The input patterns will then</span>
+<span class="sd">    be passed to the pattern_response_fn, which should return the measured</span>
+<span class="sd">    responses for each of the requested sheets. Once the responses to all</span>
+<span class="sd">    feature permutations has been accumulated, the measured curves are passed to</span>
+<span class="sd">    the storage_fn and are finally returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x_axis</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Parameter to use for the x axis of tuning curves.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParamOverrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">allow_extra_keywords</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_featureresponses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measure_responses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collate_results</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+
+    <span class="k">def</span> <span class="nf">_collate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ViewContainer</span><span class="p">()</span>
+
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">timestamp</span>
+        <span class="n">axis_name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">x_axis</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+        <span class="n">axis_feature</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">x_axis</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">curve_label</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">measurement_prefix</span><span class="p">,</span> <span class="n">axis_name</span><span class="p">,</span> <span class="s">&#39;Tuning&#39;</span><span class="p">])</span>
+
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Time</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">Duration</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">axis_feature</span><span class="p">]</span>
+        <span class="n">pattern_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span>
+        <span class="n">pattern_dim_label</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pattern_dimensions</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="c"># Deconstruct label into source name and feature_values</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">f_vals</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+            <span class="c"># Get data and metadata from the DistributionMatrix objects</span>
+            <span class="n">dist_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">f_vals</span><span class="p">][</span><span class="n">p</span><span class="o">.</span><span class="n">x_axis</span><span class="p">]</span>
+            <span class="n">curve_responses</span> <span class="o">=</span> <span class="n">dist_matrix</span><span class="o">.</span><span class="n">distribution_matrix</span>
+
+            <span class="n">output_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">]</span>
+
+            <span class="c"># Create top level NdMapping indexing over time, duration, the outer</span>
+            <span class="c"># feature dimensions and the x_axis dimension</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39; {label} {type} </span><span class="se">\n</span><span class="s"> {dims}&#39;</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
+                                   <span class="n">label</span><span class="o">=</span><span class="n">curve_label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">output_metadata</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">curve_label</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span>
+
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="o">**</span><span class="n">output_metadata</span><span class="p">)</span>
+
+            <span class="c"># Populate the SheetStack with measurements for each x value</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">curve_responses</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">():</span>
+                <span class="n">y_axis_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">],</span> <span class="n">activity_dtype</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+                        <span class="n">y_axis_values</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">curve_responses</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,)</span><span class="o">+</span><span class="n">f_vals</span><span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="p">,)</span>
+                <span class="n">cr</span> <span class="o">=</span> <span class="n">axis_feature</span><span class="o">.</span><span class="n">range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">axis_feature</span><span class="o">.</span><span class="n">cyclic</span> <span class="k">else</span> <span class="bp">None</span>
+                <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">y_axis_values</span><span class="p">,</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span>
+                               <span class="n">cyclic_range</span><span class="o">=</span><span class="n">cr</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+                               <span class="n">label</span><span class="o">=</span><span class="s">&#39;Tuning Response&#39;</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">curve_label</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pattern_generator</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">pattern_dim_label</span><span class="p">,</span> <span class="s">&#39;Response&#39;</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            
+        <span class="k">return</span> <span class="n">results</span>
+
+
+</div>
+<div class="viewcode-block" id="ReverseCorrelation"><a class="viewcode-back" href="../Reference_Manual/featuremapper-module.html#featuremapper.ReverseCorrelation">[docs]</a><span class="k">class</span> <span class="nc">ReverseCorrelation</span><span class="p">(</span><span class="n">FeatureResponses</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the receptive fields for all neurons using reverse correlation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">continue_measurement</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ParamOverrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">allow_extra_keywords</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_permutation</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_featureresponses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_measure_responses</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collate_results</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+
+    <span class="k">def</span> <span class="nf">_initialize_featureresponses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_cmd_overrides</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">metadata</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">metadata_fns</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="o">**</span><span class="n">fn</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">outputs</span><span class="p">))</span>
+
+        <span class="c"># Create cross product of all sources and durations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                                              <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                                              <span class="n">p</span><span class="o">.</span><span class="n">durations</span><span class="p">)]</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">preference_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">preference_fn</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_vals</span> <span class="o">=</span> <span class="p">[(),</span> <span class="p">()]</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">)</span>\
+            <span class="k">else</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+            <span class="n">response_dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Time</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">Duration</span><span class="p">]</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">inner</span>
+            <span class="n">response_stack_fn</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">response_dimensions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">response_stack_fn</span><span class="p">)</span>
+
+        <span class="c"># Set up the featureresponses measurement dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">in_label</span><span class="p">,</span> <span class="n">out_label</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">labels</span>
+            <span class="n">input_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">in_label</span><span class="p">]</span>
+
+            <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="s">&#39;shape&#39;</span><span class="p">]</span>
+            <span class="n">rc_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">],</span> <span class="n">activity_dtype</span><span class="p">)</span>
+                                  <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">)]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">)])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">in_label</span><span class="p">][</span><span class="n">out_label</span><span class="p">][</span><span class="n">duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc_array</span>
+
+
+    <span class="k">def</span> <span class="nf">_present_permutation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">permutation</span><span class="p">,</span> <span class="n">permutation_num</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Present a pattern with the specified set of feature values.&quot;&quot;&quot;</span>
+
+        <span class="c"># Calculate complete set of settings</span>
+        <span class="n">permuted_settings</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">permutation</span><span class="p">)</span>
+
+        <span class="c"># Run hooks before and after pattern presentation.</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">pre_presentation_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordinate_inputs</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">permuted_settings</span><span class="p">))</span>
+        <span class="n">measurement_sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">measurement_sources</span><span class="p">,</span>
+                                          <span class="n">permutation_num</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_steps</span><span class="p">,</span>
+                                          <span class="n">durations</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">durations</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">post_presentation_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">responses</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_permutation</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">responses</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates featureresponses object with latest reverse correlation data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;timestamp&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">in_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">out_label</span><span class="p">,</span> <span class="n">output_metadata</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">durations</span><span class="p">:</span>
+                    <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">]</span>
+                    <span class="n">in_response</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[(</span><span class="n">in_label</span><span class="p">,</span> <span class="n">d</span><span class="p">)]</span>
+                    <span class="n">out_response</span> <span class="o">=</span> <span class="n">responses</span><span class="p">[(</span><span class="n">out_label</span><span class="p">,</span> <span class="n">d</span><span class="p">)]</span>
+                    <span class="n">feature_responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">in_label</span><span class="p">][</span><span class="n">out_label</span><span class="p">][</span><span class="n">d</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+                            <span class="n">delta_rf</span> <span class="o">=</span> <span class="n">out_response</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">*</span> <span class="n">in_response</span>
+                            <span class="n">feature_responses</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta_rf</span>
+                    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_permutation</span><span class="p">)</span>
+                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">out_label</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">out_response</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">bounds</span><span class="p">,</span>
+                                                                    <span class="n">label</span><span class="o">=</span><span class="s">&#39;Response&#39;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_collate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collate responses into the results dictionary containing a</span>
+<span class="sd">        ProjectionGrid for each measurement source.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">ViewContainer</span><span class="p">()</span>
+
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">timestamp</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">Time</span><span class="p">(),</span> <span class="n">features</span><span class="o">.</span><span class="n">Duration</span><span class="p">()]</span>
+        <span class="n">pattern_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span>
+        <span class="n">pattern_dim_label</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">pattern_dimensions</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">labels</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">measurement_product</span><span class="p">:</span>
+            <span class="n">in_label</span><span class="p">,</span> <span class="n">out_label</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">labels</span>
+            <span class="n">input_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">in_label</span><span class="p">]</span>
+            <span class="n">output_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">out_label</span><span class="p">]</span>
+            <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">]</span>
+            <span class="n">time_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">measurement_prefix</span><span class="p">,</span> <span class="n">out_label</span><span class="p">,</span> <span class="s">&#39;RFs&#39;</span><span class="p">])</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">CoordinateGrid</span><span class="p">(</span><span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span> <span class="n">output_metadata</span><span class="p">[</span><span class="s">&#39;shape&#39;</span><span class="p">],</span>
+                                  <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span> <span class="o">**</span><span class="n">input_metadata</span><span class="p">)</span>
+            <span class="n">rc_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_featureresponses</span><span class="p">[</span><span class="n">in_label</span><span class="p">][</span><span class="n">out_label</span><span class="p">][</span><span class="n">duration</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">matrixidx2sheet</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">)</span>
+                    <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">rc_response</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">],</span> <span class="n">input_metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span>
+                                   <span class="n">metadata</span><span class="o">=</span><span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">),</span>
+                                   <span class="n">label</span><span class="o">=</span><span class="s">&#39;Receptive Field&#39;</span><span class="p">)</span>
+                    <span class="n">view</span><span class="p">[</span><span class="n">coord</span><span class="p">]</span> <span class="o">=</span> <span class="n">SheetStack</span><span class="p">((</span><span class="n">time_key</span><span class="p">,</span> <span class="n">sv</span><span class="p">),</span> <span class="o">**</span><span class="n">metadata</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_Reverse_Correlation&#39;</span> <span class="o">%</span> <span class="n">out_label</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">in_label</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">store_responses</span><span class="p">:</span>
+                <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">pattern_generator</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">pattern_dim_label</span><span class="p">,</span> <span class="s">&#39;Response&#39;</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">out_label</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">out_label</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+<span class="c">#Default styles</span></div>
+<span class="n">options</span><span class="o">.</span><span class="n">Preference_SheetView</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">&#39;jet&#39;</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">Selectivity_SheetView</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">Activity_SheetView</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">&#39;jet&#39;</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">Response_SheetView</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s">&#39;jet&#39;</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&quot;DistributionMatrix&quot;</span><span class="p">,</span>
+    <span class="s">&quot;FullMatrix&quot;</span><span class="p">,</span>
+    <span class="s">&quot;FeatureResponses&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ReverseCorrelation&quot;</span><span class="p">,</span>
+    <span class="s">&quot;FeatureMaps&quot;</span><span class="p">,</span>
+    <span class="s">&quot;FeatureCurves&quot;</span><span class="p">,</span>
+    <span class="s">&quot;Feature&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="index.html" >Module code</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.command &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-command">
+<h1>featuremapper.command<a class="headerlink" href="#featuremapper-command" title="Permalink to this headline">¶</a></h1>
+<p class="graphviz">
+<img src="../_images/inheritance-608080b4cde7f53e9c6ddc2d96ce0b0ec420b5e9.png" alt="Inheritance diagram of featuremapper.command" usemap="#inheritance76707b6145" class="inheritance"/>
+<map id="inheritance76707b6145" name="inheritance76707b6145">
+<area shape="rect" id="node1" href="featuremapper-module.html#featuremapper.FeatureResponses" title="Systematically vary input pattern feature values and collate the" alt="" coords="276,92,333,98"/>
+<area shape="rect" id="node2" title="Abstract base class for various stimulus&#45;response types of analysis." alt="" coords="174,92,235,98"/>
+<area shape="rect" id="node4" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="74,98,149,104"/>
+<area shape="rect" id="node10" title="Parameterized command for presenting input patterns" alt="" coords="160,104,249,110"/>
+<area shape="rect" id="node6" title="A callable Parameterized command for measuring tuning curves." alt="" coords="480,37,562,44"/>
+<area shape="rect" id="node18" title="Measures tuning curve(s) of particular unit(s)." alt="" coords="582,31,658,38"/>
+<area shape="rect" id="node38" href="#featuremapper.command.measure_or_tuning_fullfield" title="Measures orientation tuning curve(s) of a particular unit using a" alt="" coords="577,43,664,50"/>
+<area shape="rect" id="node7" title="Parameterized command for presenting sine gratings and measuring" alt="" coords="361,92,465,98"/>
+<area shape="rect" id="node26" href="#featuremapper.command.measure_dr_pref" title="Measure a direction preference map by collating the response to patterns." alt="" coords="485,49,557,56"/>
+<area shape="rect" id="node30" href="#featuremapper.command.measure_hue_pref" title="Measure a hue preference map by collating the response to patterns." alt="" coords="484,62,558,68"/>
+<area shape="rect" id="node32" href="#featuremapper.command.measure_od_pref" title="Measure an ocular dominance preference map by collating the response to patterns." alt="" coords="485,74,557,80"/>
+<area shape="rect" id="node34" href="#featuremapper.command.measure_or_pref" title="Measure an orientation preference map by collating the response to patterns." alt="" coords="485,86,557,92"/>
+<area shape="rect" id="node42" href="#featuremapper.command.measure_phasedisparity" title="Measure a phase disparity preference map by collating the response to patterns." alt="" coords="480,98,562,104"/>
+<area shape="rect" id="node50" href="#featuremapper.command.measure_second_or_pref" title="Measure the secondary &#160;orientation preference maps." alt="" coords="479,110,563,117"/>
+<area shape="rect" id="node52" href="#featuremapper.command.measure_sine_pref" title="Measure preferences for sine gratings in various combinations." alt="" coords="484,122,558,129"/>
+<area shape="rect" id="node9" title="Parameterized command for presenting input patterns and measuring" alt="" coords="260,128,349,135"/>
+<area shape="rect" id="node13" title="Parameterized command for measuring topographic position." alt="" coords="366,140,460,147"/>
+<area shape="rect" id="node15" title="A callable Parameterized command for measuring the response to" alt="" coords="367,158,459,165"/>
+<area shape="rect" id="node22" href="#featuremapper.command.measure_corner_angle_pref" title="Generate the preference map for angle shapes, by collating the response to patterns." alt="" coords="477,134,565,141"/>
+<area shape="rect" id="node24" href="#featuremapper.command.measure_corner_or_pref" title="Measure a corner preference map by collating the response to patterns." alt="" coords="480,146,562,153"/>
+<area shape="rect" id="node44" href="#featuremapper.command.measure_position_pref" title="Measure a position preference map by collating the response to patterns." alt="" coords="481,158,561,165"/>
+<area shape="rect" id="node48" href="#featuremapper.command.measure_rfs" title="Map receptive fields by reverse correlation." alt="" coords="489,170,553,177"/>
+<area shape="rect" id="node20" href="#featuremapper.command.measure_contrast_response" title="Measures contrast response curves for a particular unit." alt="" coords="676,1,765,8"/>
+<area shape="rect" id="node28" href="#featuremapper.command.measure_frequency_response" title="Measure spatial frequency preference of one unit of a sheet." alt="" coords="675,13,766,20"/>
+<area shape="rect" id="node36" href="#featuremapper.command.measure_or_tuning" title="Measures orientation tuning curve(s) of a particular unit." alt="" coords="683,25,758,32"/>
+<area shape="rect" id="node40" href="#featuremapper.command.measure_orientation_contrast" title="Measures the response to a center sine grating disk and a surround" alt="" coords="675,37,766,44"/>
+<area shape="rect" id="node54" href="#featuremapper.command.measure_size_response" title="Measure receptive field size of one unit of a sheet." alt="" coords="680,49,762,56"/>
+<area shape="rect" id="node58" title="Base class for named objects that support Parameters and message" alt="" coords="1,98,63,104"/>
+</map>
+</p>
+<div class="section" id="module-featuremapper.command">
+<span id="module"></span><h2>Module<a class="headerlink" href="#module-featuremapper.command" title="Permalink to this headline">¶</a></h2>
+<p>User-level measurement commands, typically for measuring or generating
+SheetViews.</p>
+<p>The file defines base classes for defining measurements and a large
+set of predefined measurement commands.</p>
+<p>Some of the commands are ordinary Python functions, but the rest are
+ParameterizedFunctions, which act like Python functions but support
+Parameters with defaults, bounds, inheritance, etc.  These commands
+are usually grouped together using inheritance so that they share a
+set of parameters and some code, and only the bits that are specific
+to that particular plot or analysis appear below.  See the
+superclasses for the rest of the parameters and code.</p>
+<dl class="class">
+<dt id="featuremapper.command.measure_corner_angle_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_corner_angle_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_corner_angle_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_corner_angle_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.PositionMeasurementCommand</span></tt></p>
+<p>Generate the preference map for angle shapes, by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;size&#8217;, &#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">x_range</span></tt> (<em>constant=False, default=(-1.0, 1.0), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of X values to test.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;GaussiansCorner GaussiansCorner00079&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled
+        pattern to a set of Sheets.  For measuring position, the
+        pattern_presenter should be spatially localized, yet also able
+        to activate the appropriate neurons reliably.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_angle</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of angles to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.2, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=1.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">angle_1</span></tt> (<em>allow_None=False, bounds=(0.0, 3.141592653589793), constant=False, default=2.35619449019, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Last angle to test.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_MaxValue DSF_MaxValue00064&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_or</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">angle_0</span></tt> (<em>allow_None=False, bounds=(0.0, 3.141592653589793), constant=False, default=0.785398163397, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>First angle to test.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">y_range</span></tt> (<em>constant=False, default=(-1.0, 1.0), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of Y values to test.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">divisions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=7, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The number of different positions to measure in X and in Y.</dd>
+</dl>
+<p><em>param Integer</em> <tt class="docutils literal"><span class="pre">positions</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=7, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_corner_or_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_corner_or_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_corner_or_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_corner_or_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.PositionMeasurementCommand</span></tt></p>
+<p>Measure a corner preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_MaxValue DSF_MaxValue00064&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">x_range</span></tt> (<em>constant=False, default=(-1.2, 1.2), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of X values to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">divisions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=11, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The number of different positions to measure in X and in Y.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=1.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">y_range</span></tt> (<em>constant=False, default=(-1.2, 1.2), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of Y values to test.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;Composite Composite00078&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled
+        pattern to a set of Sheets.  For measuring position, the
+        pattern_presenter should be spatially localized, yet also able
+        to activate the appropriate neurons reliably.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_dr_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_dr_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_dr_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_dr_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure a direction preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00075&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of
+        unit responses. Sets value_scale to normalize direction
+        preference values.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_direction</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=6, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of directions to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">max_speed</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.0833333333333, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The maximum speed to measure (with zero always the minimum).</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_speeds</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of speeds to test (where zero means only static patterns).</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;, &lt;class &#8216;featuremapper.metaparams.direction2translation&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=Direction, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_hue_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_hue_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_hue_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_hue_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure a hue preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_hue</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=8, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of hues to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;, &lt;class &#8216;featuremapper.metaparams.hue2rgbscale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=Hue, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_od_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_od_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_od_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_od_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure an ocular dominance preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;, &lt;class &#8216;featuremapper.metaparams.ocular2leftrightscale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_or_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_or_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_or_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_or_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure an orientation preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00074&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=Orientation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_phasedisparity">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_phasedisparity</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_phasedisparity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_phasedisparity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure a phase disparity preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;orientation&#8217;, &#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">orientation</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=1.57079632679, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Orientation of the test pattern; typically vertical to measure
+        horizontal disparity.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;, &lt;class &#8216;featuremapper.metaparams.phasedisparity2leftrightphase&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_disparity</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of disparity values to test.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_rfs">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_rfs</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_rfs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_rfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SingleInputResponseCommand</span></tt></p>
+<p>Map receptive fields by reverse correlation.</p>
+<p>Presents a large collection of input patterns, typically white
+noise, keeping track of which units in the specified input_sheet
+were active when each unit in other Sheets in the simulation was
+active.  This data can then be used to plot receptive fields for
+each unit.  Note that the results are true receptive fields, not
+the connection fields usually presented in lieu of receptive
+fields, because they take all circuitry in between the input and
+the target unit into account.</p>
+<p>Note also that it is crucial to set the scale parameter properly
+when using units with a hard activation threshold (as opposed to a
+smooth sigmoid), because the input pattern used here may not be a
+very effective way to drive the unit to activate.  The value
+should be set high enough that the target units activate at least
+some of the time there is a pattern on the input.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_MaxValue DSF_MaxValue00064&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">presentations</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=100, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of presentations to run the reverse correlation for.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=30.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;UniformRandom UniformRandom00073&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Presented pattern for reverse correlation, usually white noise.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_second_or_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_second_or_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_second_or_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_second_or_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure the secondary  orientation preference maps.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=16, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">true_peak</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>If set the second
+        orientation response is computed on the true second mode of the
+	    orientation distribution, otherwise is just the second maximum
+	    response</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=Second Orientation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_sine_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_sine_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_sine_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_sine_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.SinusoidalMeasureResponseCommand</span></tt></p>
+<p>Measure preferences for sine gratings in various combinations.
+Can measure orientation, spatial frequency, spatial phase,
+ocular dominance, horizontal phase disparity, color hue, motion
+direction, and speed of motion.</p>
+<p>In practice, this command is useful for any subset of the possible
+combinations, but if all combinations are included, the number of
+input patterns quickly grows quite large, much larger than the
+typical number of patterns required for an entire simulation.
+Thus typically this command will be used for the subset of
+dimensions that need to be evaluated together, while simpler
+special-purpose routines are provided below for other dimensions
+(such as hue and disparity).</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_hue</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of hues to test; set to 1 to disable or e.g. 8 to enable.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_direction</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of directions to test.  If nonzero, overrides num_orientation,
+        because the orientation is calculated to be perpendicular to the direction.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00065&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;, &lt;class &#8216;featuremapper.metaparams.direction2translation&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_speeds</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=4, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of speeds to test (where zero means only static patterns).
+        Ignored when num_direction=0.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_ocularity</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of ocularity values to test; set to 1 to disable or 2 to enable.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">max_speed</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.0833333333333, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The maximum speed to measure (with zero always the minimum).</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_disparity</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=1, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of disparity values to test; set to 1 to disable or e.g. 12 to enable.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=Orientation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_contrast_response">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_contrast_response</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_contrast_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_contrast_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.UnitCurveCommand</span></tt></p>
+<p>Measures contrast response curves for a particular unit.</p>
+<p>Uses a circular sine grating stimulus at the preferred
+orientation and retinal position of the specified unit.
+Orientation and position preference must be calulated before
+measuring contrast response.</p>
+<p>The curve can be plotted at various different values of the
+contrast (or actually any other parameter) of the stimulus.  If
+using contrast and the network contains an LGN layer, then one
+would usually specify weber_contrast as the contrast_parameter. If
+there is no explicit LGN, then scale (offset=0.0) can be used to
+define the contrast.  Other relevant contrast definitions (or
+other parameters) can also be used, provided they are defined in
+CoordinatedPatternGenerator and the units parameter is changed as
+appropriate.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;size&#8217;, &#8216;x&#8217;, &#8216;y&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00070&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[contrast2scale(contrast_parameter=&#8217;weber_contrast&#8217;, name=&#8217;contrast2scale00071&#8217;)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=True, default=contrast, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">relative_orientations</span></tt> (<em>bounds=(0, None), constant=False, default=[0.0, 0.5235987755982988, 0.7853981633974483, 1.5707963267948966], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[10, 20, 30, 40, 50, 60, 70, 80, 90, 100], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>bounds=(0, None), constant=False, default=[(0, 0)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of coordinates of units to measure.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_frequency_response">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_frequency_response</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_frequency_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_frequency_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.UnitCurveCommand</span></tt></p>
+<p>Measure spatial frequency preference of one unit of a sheet.</p>
+<p>Uses an constant circular sine grating stimulus at the preferred
+with varying spatial frequency orientation and retinal position
+of the specified unit. Orientation and position preference must
+be calulated before measuring size response.</p>
+<p>The curve can be plotted at various different values of the
+contrast (or actually any other parameter) of the stimulus.  If
+using contrast and the network contains an LGN layer, then one
+would usually specify weber_contrast as the contrast_parameter. If
+there is no explicit LGN, then scale (offset=0.0) can be used to
+define the contrast.  Other relevant contrast definitions (or
+other parameters) can also be used, provided they are defined in one of the
+appropriate metaparameter_fns.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;orientation&#8217;, &#8216;x&#8217;, &#8216;y&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_freq</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=21, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of different sizes to test.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00070&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[contrast2scale(contrast_parameter=&#8217;weber_contrast&#8217;, name=&#8217;contrast2scale00071&#8217;)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=True, default=frequency, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">max_freq</span></tt> (<em>allow_None=False, bounds=(0.1, None), constant=False, default=10.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Maximum extent of the grating</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>bounds=(0, None), constant=False, default=[(0, 0)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of coordinates of units to measure.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_or_tuning">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_or_tuning</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_or_tuning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_or_tuning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.UnitCurveCommand</span></tt></p>
+<p>Measures orientation tuning curve(s) of a particular unit.</p>
+<p>Uses a circular sine grating patch as the stimulus on the
+retina.</p>
+<p>The curve can be plotted at various different values of the
+contrast (or actually any other parameter) of the stimulus.  If
+using contrast and the network contains an LGN layer, then one
+would usually specify weber_contrast as the contrast_parameter. If
+there is no explicit LGN, then scale (offset=0.0) can be used to
+define the contrast.  Other relevant contrast definitions (or
+other parameters) can also be used, provided they are defined in
+CoordinatedPatternGenerator and the units parameter is changed as
+appropriate.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;size&#8217;, &#8216;x&#8217;, &#8216;y&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00070&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[contrast2scale(contrast_parameter=&#8217;weber_contrast&#8217;, name=&#8217;contrast2scale00071&#8217;)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=False, default=orientation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>bounds=(0, None), constant=False, default=[(0, 0)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of coordinates of units to measure.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_or_tuning_fullfield">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_or_tuning_fullfield</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_or_tuning_fullfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_or_tuning_fullfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.FeatureCurveCommand</span></tt></p>
+<p>Measures orientation tuning curve(s) of a particular unit using a
+full-field sine grating stimulus.</p>
+<p>The curve can be plotted at various different values of the
+contrast (or actually any other parameter) of the stimulus.  If
+using contrast and the network contains an LGN layer, then one
+would usually specify michelson_contrast as the
+contrast_parameter. If there is no explicit LGN, then scale
+(offset=0.0) can be used to define the contrast.  Other relevant
+contrast definitions (or other parameters) can also be used,
+provided they are defined in CoordinatedPatternGenerator and the units
+parameter is changed as appropriate.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Ignored; here just to suppress warning.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=False, default=orientation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00080&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_orientation_contrast">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_orientation_contrast</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_orientation_contrast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_orientation_contrast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.UnitCurveCommand</span></tt></p>
+<p>Measures the response to a center sine grating disk and a surround
+sine grating ring at different contrasts of the central disk.</p>
+<p>The central disk is set to the preferred orientation of the unit
+to be measured. The surround disk orientation (relative to the
+central grating) and contrast can be varied, as can the size of
+both disks.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;x&#8217;, &#8216;y&#8217;, &#8216;sizecenter&#8217;, &#8216;sizesurround&#8217;, &#8216;orientationcenter&#8217;, &#8216;thickness&#8217;, &#8216;contrastcenter&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">contrastsurround</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Contrast of the surround.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;OrientationContrast OrientationContrast00082&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[contrast2centersurroundscale(contrast_parameter=&#8217;weber_contrast&#8217;, name=&#8217;contrast2centersurroundscale00081&#8217;)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=True, default=orientationsurround, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=9, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">thickness</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Ring thickness.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">sizecenter</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the central pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">sizesurround</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=1.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the surround pattern to present.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">orientation_center</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Orientation of the center grating patch</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">contrastcenter</span></tt> (<em>allow_None=False, bounds=(0, 100), constant=False, default=100, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Contrast of the center.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>bounds=(0, None), constant=False, default=[(0, 0)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of coordinates of units to measure.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_position_pref">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_position_pref</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_position_pref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_position_pref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.PositionMeasurementCommand</span></tt></p>
+<p>Measure a position preference map by collating the response to patterns.</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_MaxValue DSF_MaxValue00064&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">x_range</span></tt> (<em>constant=False, default=(-0.5, 0.5), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of X values to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">divisions</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=7, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The number of different positions to measure in X and in Y.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;scale&#8217;, &#8216;offset&#8217;, &#8216;size&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[&lt;class &#8216;featuremapper.metaparams.contrast2scale&#8217;&gt;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param NumericTuple</em> <tt class="docutils literal"><span class="pre">y_range</span></tt> (<em>constant=False, default=(-0.5, 0.5), instantiate=False, length=2, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The range of Y values to test.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;Gaussian Gaussian00067&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled
+        pattern to a set of Sheets.  For measuring position, the
+        pattern_presenter should be spatially localized, yet also able
+        to activate the appropriate neurons reliably.</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.command.measure_size_response">
+<em class="property">class </em><tt class="descclassname">featuremapper.command.</tt><tt class="descname">measure_size_response</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/command.html#measure_size_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.command.measure_size_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.command.UnitCurveCommand</span></tt></p>
+<p>Measure receptive field size of one unit of a sheet.</p>
+<p>Uses an expanding circular sine grating stimulus at the preferred
+orientation and retinal position of the specified unit.
+Orientation and position preference must be calulated before
+measuring size response.</p>
+<p>The curve can be plotted at various different values of the
+contrast (or actually any other parameter) of the stimulus.  If
+using contrast and the network contains an LGN layer, then one
+would usually specify weber_contrast as the contrast_parameter. If
+there is no explicit LGN, then scale (offset=0.0) can be used to
+define the contrast.  Other relevant contrast definitions (or
+other parameters) can also be used, provided they are defined in
+CoordinatedPatternGenerator and the units parameter is changed as
+appropriate.</p>
+<dl class="docutils">
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">static_parameters</span></tt> (<em>bounds=(0, None), constant=False, default=[&#8216;orientation&#8217;, &#8216;x&#8217;, &#8216;y&#8217;], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of names of parameters of this class to pass to the
+        pattern_presenter as static parameters, i.e. values that will be fixed
+        to a single value during measurement.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether to compute results using a weighted average, or just discrete
+        values. A weighted average can give more precise results, without being
+        limited to a set of discrete values, but the results can have systematic
+        biases due to the averaging, especially for non-cyclic parameters.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_generator</span></tt> (<em>constant=False, default=&lt;SineGrating SineGrating00070&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Pattern to be presented on the inputs.</dd>
+<dt><em>param HookList</em> <tt class="docutils literal"><span class="pre">metafeature_fns</span></tt> (<em>bounds=(0, None), constant=False, default=[contrast2scale(contrast_parameter=&#8217;weber_contrast&#8217;, name=&#8217;contrast2scale00071&#8217;)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Metafeature_fns is a hooklist, which accepts any function, which applies
+        coordinated changes to a set of inputs based on some parameter or feature
+        value. Can be used to present different patterns to different inputs or
+        to control complex features like contrast.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">size</span></tt> (<em>allow_None=False, bounds=(0, None), constant=False, default=0.5, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The size of the pattern to present.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">scale</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.3, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Multiplicative strength of input pattern.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">x_axis</span></tt> (<em>allow_None=False, constant=True, default=size, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Parameter to use for the x axis of tuning curves.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_orientation</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=12, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of orientations to test.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">max_size</span></tt> (<em>allow_None=False, bounds=(0.1, None), constant=False, default=1.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Maximum extent of the grating</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">outputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of output sources supplied
+        to metadata_fns to filter out desired output.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">pattern_response_fn</span></tt> (<em>constant=False, default=None, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will present a parameter-controlled pattern to a
+        set of Sheets.  Needs to be supplied by a subclass or in the call.
+        The attributes duration and apply_output_fns (if non-None) will
+        be set on this object, and it should respect those if possible.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">inputs</span></tt> (<em>bounds=(0, None), constant=False, default=[], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of input supplied to the
+        metadata_fns to filter out desired input.</dd>
+<dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">preference_fn</span></tt> (<em>allow_None=False, constant=False, default=&lt;DSF_WeightedAverage DSF_WeightedAverage00066&gt;, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Function that will be used to analyze the distributions of unit
+        responses.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">frequencies</span></tt> (<em>bounds=(0, None), constant=False, default=[2.4], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Sine grating frequencies to test.</dd>
+<dt><em>param Parameter</em> <tt class="docutils literal"><span class="pre">durations</span></tt> (<em>constant=False, default=[1.0], instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Times after presentation
+        begins at which to record a measurement.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">measurement_prefix</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Optional prefix to add to the name under which results are stored as
+        part of a measurement response.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">offset</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Additive offset to input pattern.</dd>
+</dl>
+<p><em>param List</em> <tt class="docutils literal"><span class="pre">contrasts</span></tt> (<em>bounds=(0, None), constant=False, default=[30, 60, 80, 90], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">preference_lookup_fn</span></tt> (<em>constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Callable object that will look up a preferred feature values.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">subplot</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Name of map to register as a subplot, if any.</dd>
+<dt><em>param List</em> <tt class="docutils literal"><span class="pre">coords</span></tt> (<em>bounds=(0, None), constant=False, default=[(0, 0)], instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>List of coordinates of units to measure.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_phase</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=18, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of phases to test.</dd>
+<dt><em>param Integer</em> <tt class="docutils literal"><span class="pre">num_sizes</span></tt> (<em>allow_None=False, bounds=(1, None), constant=False, default=11, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Number of different sizes to test.</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.command</a><ul>
+<li><a class="reference internal" href="#module-featuremapper.command">Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.command-module.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper-module.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

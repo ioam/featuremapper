@@ -1,0 +1,18 @@
+***************
+featuremapper.analysis
+***************
+
+.. inheritance-diagram:: featuremapper.analysis
+
+Submodules
+==========
+* `featuremapper.analysis.hypercolumns <featuremapper.analysis.hypercolumns-module.html>`_
+* `featuremapper.analysis.pinwheels <featuremapper.analysis.pinwheels-module.html>`_
+
+
+Module
+======
+
+.. automodule:: featuremapper.analysis
+   :members:
+   :show-inheritance:

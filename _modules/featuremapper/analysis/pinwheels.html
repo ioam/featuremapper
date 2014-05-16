@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis.pinwheels &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../../index.html" />
+    <link rel="up" title="featuremapper.analysis" href="../analysis.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
+          <li><a href="../analysis.html" accesskey="U">featuremapper.analysis</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper.analysis.pinwheels</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">cmath</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">from</span> <span class="nn">imagen.analysis</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Contours</span><span class="p">,</span> <span class="n">Points</span>
+
+<span class="kn">from</span> <span class="nn">dataviews.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Jean-Luc Stevens&quot;</span>
+
+
+<div class="viewcode-block" id="WarningCounter"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.WarningCounter">[docs]</a><span class="k">class</span> <span class="nc">WarningCounter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;</span>
+<span class="sd">    exceptions to allow a suitable warning message to be generated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">div_by_zeros</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalid_values</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">errtype</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">errtype</span> <span class="o">==</span> <span class="s">&quot;divide by zero&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">div_by_zeros</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">errtype</span> <span class="o">==</span> <span class="s">&quot;invalid value&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">invalid_values</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">total_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">div_by_zeros</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_values</span>
+        <span class="k">if</span> <span class="n">total_events</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_events</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">div_by_zeros</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">invalid_values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">div_by_zeros</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">invalid_values</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Warning: There were </span><span class="si">%d</span><span class="s"> invalid intersection events:&quot;</span>
+                   <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">Numpy &#39;divide by zero&#39; events: </span><span class="si">%d</span><span class="s">&quot;</span>
+                   <span class="s">&quot;</span><span class="se">\n\t</span><span class="s">Numpy &#39;invalid value&#39; events: </span><span class="si">%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span> <span class="o">%</span> <span class="n">info</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PinwheelAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a SheetView or SheetStack of a cyclic feature preference,</span>
+<span class="sd">    compute the position of all pinwheel singularities in the</span>
+<span class="sd">    map. Optionally includes the contours for the real and imaginary</span>
+<span class="sd">    components of the preference map used to determine the pinwheel</span>
+<span class="sd">    locations.</span>
+
+<span class="sd">    Returns the original SheetView input overlayed with a Points</span>
+<span class="sd">    object containing the computed pinwheel locations and (optionally)</span>
+<span class="sd">    Contours overlays including the real and imaginary contour lines</span>
+<span class="sd">    respectively.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># TODO: Optional computation of pinwheel polarities.</span>
+
+    <span class="n">include_contours</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">      Whether or not to include the computed contours for the real and</span>
+<span class="s">      imaginary components of the map.&quot;&quot;&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="p">[</span><span class="n">sheetview</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">polar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polar_preference</span><span class="p">(</span><span class="n">sheetview</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">contour_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarmap_contours</span><span class="p">(</span><span class="n">polar_map</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span> <span class="o">=</span> <span class="n">contour_info</span>
+
+        <span class="n">pinwheels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify_pinwheels</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">))</span>
+        <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">bounds</span><span class="p">,</span>
+                                <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Pinwheel&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">include_contours</span><span class="p">:</span>
+            <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
+                                <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Real&#39;</span><span class="p">)</span>
+            <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
+                                  <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Imaginary&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">sheetview</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">sheetview</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+
+<div class="viewcode-block" id="PinwheelAnalysis.polar_preference"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">[docs]</a>    <span class="k">def</span> <span class="nf">polar_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pref</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Turns hue representation to polar representation.</span>
+<span class="sd">        Hue representation uses values expected in the range 0-1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polarfn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">cmath</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">polar_vecfn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">polarfn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">polar_vecfn</span><span class="p">(</span><span class="n">pref</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis.normalize_polar_channel"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_polar_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polar_channel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This functions normalizes an OR map (polar_channel) taking into</span>
+<span class="sd">        account the region of interest (ROI). The ROI is specified by</span>
+<span class="sd">        values set to 99. Note that this functionality is implemented to</span>
+<span class="sd">        reproduce the experimental approach and has not been tested (not</span>
+<span class="sd">        required for Topographica simulations)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">grad</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+            <span class="p">(</span><span class="n">r_x</span><span class="p">,</span> <span class="n">r_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">r_xx</span><span class="p">,</span> <span class="n">r_xy</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">r_x</span><span class="p">);</span>
+            <span class="p">(</span><span class="n">r_yx</span><span class="p">,</span> <span class="n">r_yy</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">r_y</span><span class="p">);</span>
+            <span class="k">return</span> <span class="n">r_xx</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">r_yy</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r_xy</span> <span class="o">**</span> <span class="mi">2</span>
+
+        <span class="c"># Set ROI to 0 to ignore values of -99.</span>
+        <span class="n">roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">polar_channel</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c"># In Matlab: roi(find(z==-99))=0</span>
+        <span class="n">roi</span><span class="p">[</span><span class="n">roi</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">fst_grad</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">roi</span><span class="p">)</span>
+        <span class="n">snd_grad</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">fst_grad</span><span class="p">)</span>
+
+        <span class="c"># Find non-zero elements in second grad and sets to unity</span>
+        <span class="n">snd_grad</span><span class="p">[</span><span class="n">snd_grad</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c"># These elements now mask out ROI region (set to zero)</span>
+        <span class="n">roi</span><span class="p">[</span><span class="n">snd_grad</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c"># Find the unmasked coordinates</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="p">(</span><span class="n">polar_channel</span> <span class="o">!=</span> <span class="mi">99</span><span class="p">)</span>
+        <span class="c"># The complex abs of unmasked</span>
+        <span class="n">normalisation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">polar_channel</span><span class="p">))</span>
+        <span class="c"># Only normalize with unmasked</span>
+        <span class="k">return</span> <span class="n">polar_channel</span> <span class="o">/</span> <span class="n">normalisation</span>
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis.polarmap_contours"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours">[docs]</a>    <span class="k">def</span> <span class="nf">polarmap_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarmap</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identifies the real and imaginary contours in a polar map.</span>
+<span class="sd">        Returns the real and imaginary contours as 2D vertex arrays</span>
+<span class="sd">        together with the pairs of contours known to intersect. The</span>
+<span class="sd">        coordinate system used is specified by the supplied bounds.</span>
+
+<span class="sd">        Contour plotting requires origin=&#39;upper&#39; for consistency with</span>
+<span class="sd">        image coordinate system.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">l</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">t</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">lbrt</span><span class="p">()</span>
+        <span class="c"># Convert to polar and normalise</span>
+        <span class="n">normalized_polar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_polar_channel</span><span class="p">(</span><span class="n">polarmap</span><span class="p">)</span>
+        <span class="n">figure_handle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="c"># Real component</span>
+        <span class="n">re_contours_plot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">normalized_polar</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s">&#39;upper&#39;</span><span class="p">,</span>
+                                       <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">re_path_collections</span> <span class="o">=</span> <span class="n">re_contours_plot</span><span class="o">.</span><span class="n">collections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">re_contour_paths</span> <span class="o">=</span> <span class="n">re_path_collections</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span>
+        <span class="c"># Imaginary component</span>
+        <span class="n">im_contours_plot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">normalized_polar</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s">&#39;upper&#39;</span><span class="p">,</span>
+                                       <span class="n">extent</span><span class="o">=</span><span class="p">[</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">t</span><span class="p">])</span>
+
+        <span class="n">im_path_collections</span> <span class="o">=</span> <span class="n">im_contours_plot</span><span class="o">.</span><span class="n">collections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">im_contour_paths</span> <span class="o">=</span> <span class="n">im_path_collections</span><span class="o">.</span><span class="n">get_paths</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">figure_handle</span><span class="p">)</span>
+
+        <span class="n">intersections</span> <span class="o">=</span> <span class="p">[(</span><span class="n">re_ind</span><span class="p">,</span> <span class="n">im_ind</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="p">(</span><span class="n">re_ind</span><span class="p">,</span> <span class="n">re_path</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">re_contour_paths</span><span class="p">)</span>
+                         <span class="k">for</span> <span class="p">(</span><span class="n">im_ind</span><span class="p">,</span> <span class="n">im_path</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">im_contour_paths</span><span class="p">)</span>
+                         <span class="k">if</span> <span class="n">im_path</span><span class="o">.</span><span class="n">intersects_path</span><span class="p">(</span><span class="n">re_path</span><span class="p">)]</span>
+
+        <span class="c"># Contour vertices  0.5 pixel inset. Eg. (0,0)-(48,48)=&gt;(0.5, 0.5)-(47.5,  47.5)</span>
+        <span class="c"># Returned values will not therefore reach limits of 0.0 and 1.0</span>
+        <span class="n">re_contours</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_path_duplicates</span><span class="p">(</span><span class="n">re_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span> <span class="k">for</span> <span class="n">re_path</span> <span class="ow">in</span> <span class="n">re_contour_paths</span><span class="p">]</span>
+        <span class="n">im_contours</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_path_duplicates</span><span class="p">(</span><span class="n">im_path</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span> <span class="k">for</span> <span class="n">im_path</span> <span class="ow">in</span> <span class="n">im_contour_paths</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis.remove_path_duplicates"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates">[docs]</a>    <span class="k">def</span> <span class="nf">remove_path_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+        <span class="s">&quot;Removes successive duplicates along a path of vertices.&quot;</span>
+        <span class="n">zero_diff_bools</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">duplicate_indices</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">zero_diff_bools</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">duplicate_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis.find_intersections"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections">[docs]</a>    <span class="k">def</span> <span class="nf">find_intersections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour1</span><span class="p">,</span> <span class="n">contour2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Vectorized code to find intersections between contours. All</span>
+<span class="sd">        successive duplicate vertices along the input contours must be</span>
+<span class="sd">        removed to help avoid division-by-zero errors.</span>
+
+<span class="sd">        There are cases were no intersection exists (eg. parallel lines)</span>
+<span class="sd">        where division by zero and invalid value exceptions occur. These</span>
+<span class="sd">        exceptions should be caught as warnings: these edge cases are</span>
+<span class="sd">        unavoidable with this algorithm and do not indicate that the</span>
+<span class="sd">        output is erroneous.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Elementwise min selection</span>
+        <span class="n">amin</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x1</span> <span class="o">&lt;</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="c"># Elementwise max selection</span>
+        <span class="n">amax</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="c"># dstacks, checks True depthwise</span>
+        <span class="n">aall</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">abools</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">abools</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c"># Uses delta (using np.diff) to find successive slopes along path</span>
+        <span class="n">slope</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="c"># Meshgrids between both paths (x and y). One element sliced off end/beginning</span>
+        <span class="n">x11</span><span class="p">,</span> <span class="n">x21</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">contour1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">contour2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">x12</span><span class="p">,</span> <span class="n">x22</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">contour1</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">contour2</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">y11</span><span class="p">,</span> <span class="n">y21</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">contour1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">contour2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">y12</span><span class="p">,</span> <span class="n">y22</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">contour1</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">contour2</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="c"># Meshgrid of all slopes for both paths</span>
+        <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">slope</span><span class="p">(</span><span class="n">contour1</span><span class="p">),</span> <span class="n">slope</span><span class="p">(</span><span class="n">contour2</span><span class="p">))</span>
+        <span class="n">m2inv</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">m2</span> <span class="c"># m1inv was not used.</span>
+        <span class="n">yi</span> <span class="o">=</span> <span class="p">(</span><span class="n">m1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x21</span> <span class="o">-</span> <span class="n">x11</span> <span class="o">-</span> <span class="n">m2inv</span> <span class="o">*</span> <span class="n">y21</span><span class="p">)</span> <span class="o">+</span> <span class="n">y11</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m1</span> <span class="o">*</span> <span class="n">m2inv</span><span class="p">)</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="p">(</span><span class="n">yi</span> <span class="o">-</span> <span class="n">y21</span><span class="p">)</span> <span class="o">*</span> <span class="n">m2inv</span> <span class="o">+</span> <span class="n">x21</span> <span class="c"># (xi, yi) is intersection candidate</span>
+        <span class="c"># Bounding box type conditions for intersection candidates</span>
+        <span class="n">xconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">amin</span><span class="p">(</span><span class="n">x11</span><span class="p">,</span> <span class="n">x12</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">xi</span><span class="p">,</span> <span class="n">xi</span> <span class="o">&lt;=</span> <span class="n">amax</span><span class="p">(</span><span class="n">x11</span><span class="p">,</span> <span class="n">x12</span><span class="p">),</span>
+                  <span class="n">amin</span><span class="p">(</span><span class="n">x21</span><span class="p">,</span> <span class="n">x22</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">xi</span><span class="p">,</span> <span class="n">xi</span> <span class="o">&lt;=</span> <span class="n">amax</span><span class="p">(</span><span class="n">x21</span><span class="p">,</span> <span class="n">x22</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">yconds</span> <span class="o">=</span> <span class="p">(</span><span class="n">amin</span><span class="p">(</span><span class="n">y11</span><span class="p">,</span> <span class="n">y12</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">yi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">&lt;=</span> <span class="n">amax</span><span class="p">(</span><span class="n">y11</span><span class="p">,</span> <span class="n">y12</span><span class="p">),</span>
+                  <span class="n">amin</span><span class="p">(</span><span class="n">y21</span><span class="p">,</span> <span class="n">y22</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">yi</span><span class="p">,</span> <span class="n">yi</span> <span class="o">&lt;=</span> <span class="n">amax</span><span class="p">(</span><span class="n">y21</span><span class="p">,</span> <span class="n">y22</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">xi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">xconds</span><span class="p">)],</span> <span class="n">yi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">yconds</span><span class="p">)]</span>
+
+</div>
+<div class="viewcode-block" id="PinwheelAnalysis.identify_pinwheels"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">[docs]</a>    <span class="k">def</span> <span class="nf">identify_pinwheels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Locates the pinwheels from the intersection of the real and</span>
+<span class="sd">        imaginary contours of of polar OR map.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warning_counter</span> <span class="o">=</span> <span class="n">WarningCounter</span><span class="p">()</span>
+        <span class="n">pinwheels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">seterrcall</span><span class="p">(</span><span class="n">warning_counter</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">re_ind</span><span class="p">,</span> <span class="n">im_ind</span><span class="p">)</span> <span class="ow">in</span> <span class="n">intersections</span><span class="p">:</span>
+            <span class="n">re_contour</span> <span class="o">=</span> <span class="n">re_contours</span><span class="p">[</span><span class="n">re_ind</span><span class="p">]</span>
+            <span class="n">im_contour</span> <span class="o">=</span> <span class="n">im_contours</span><span class="p">[</span><span class="n">im_ind</span><span class="p">]</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s">&#39;call&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s">&#39;call&#39;</span><span class="p">)</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_intersections</span><span class="p">(</span><span class="n">re_contour</span><span class="p">,</span> <span class="n">im_contour</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
+            <span class="n">pinwheels</span> <span class="o">+=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">warning_counter</span><span class="o">.</span><span class="n">warn</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pinwheels</span>
+
+
+</div></div>
+<span class="n">options</span><span class="o">.</span><span class="n">Pinwheel_Points</span> <span class="o">=</span>    <span class="n">StyleOpts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s">&#39;w&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">Imaginary_Contours</span> <span class="o">=</span> <span class="n">StyleOpts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">options</span><span class="o">.</span><span class="n">Real_Contours</span> <span class="o">=</span>      <span class="n">StyleOpts</span><span class="p">(</span><span class="n">color</span><span class="o">=</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../../../index.html">Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../../../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper/analysis/pinwheels.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
+          <li><a href="../analysis.html" >featuremapper.analysis</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

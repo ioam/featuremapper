@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.features &mdash; FeatureMapper 0.1a documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
+    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for featuremapper.features</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">from</span> <span class="nn">dataviews.ndmapping</span> <span class="kn">import</span> <span class="n">Dimension</span>
+
+<span class="kn">from</span> <span class="nn">distribution</span> <span class="kn">import</span> <span class="n">DistributionStatisticFn</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span>
+
+
+
+<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.features-module.html#featuremapper.features.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies several parameters required for generating a map of one input</span>
+<span class="sd">    feature.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">compute_fn</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        If non-None, a function that when given a list of other parameter</span>
+<span class="s">        values, computes and returns the value for this feature.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">preference_fn</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ClassSelector</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">,</span> <span class="n">allow_None</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                        <span class="n">default</span><span class="o">=</span><span class="n">DSF_WeightedAverage</span><span class="p">(),</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Function that will be used to analyze the distributions of unit response</span>
+<span class="s">        to this feature.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">steps</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Number of steps, between lower and upper range value, to be presented.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Offset to add to the values for this feature&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Explicit list of values for this feature, used in alternative to the</span>
+<span class="s">        range and step parameters&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">_init</span> <span class="o">=</span> <span class="bp">False</span> <span class="c"># Allows creation of default Features in the file</span>
+
+    <span class="n">definitions</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_init_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">==</span> <span class="mi">0</span> \
+                <span class="k">else</span> <span class="p">[</span><span class="n">v</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;The range or values must be specified.&#39;</span><span class="p">)</span>
+            <span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">low_bound</span><span class="p">,</span> <span class="n">up_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">,</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cyclic</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span> <span class="o">%</span> <span class="p">(</span><span class="n">up_bound</span> <span class="o">-</span> <span class="n">low_bound</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cyclic</span> <span class="k">else</span> <span class="n">values</span><span class="p">)</span>
+
+        
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Users can provide either a range and a step size, or a list of</span>
+<span class="sd">        values.  If a list of values is supplied, the range can be</span>
+<span class="sd">        omitted unless the default of the min and max in the list of</span>
+<span class="sd">        values is not appropriate.</span>
+
+<span class="sd">        If non-None, the compute_fn should be a function that when</span>
+<span class="sd">        given a list of other parameter values, computes and returns</span>
+<span class="sd">        the value for this feature.</span>
+
+<span class="sd">        If supplied, the offset is added to the given or computed</span>
+<span class="sd">        values to allow the starting value to be specified.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Feature</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">()</span>
+
+        <span class="n">Feature</span><span class="o">.</span><span class="n">definitions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+
+<span class="c"># Basic features</span></div>
+<span class="n">Float</span>   <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="s">&quot;float&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">Integer</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="s">&quot;float&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+
+<span class="c"># Cyclic features</span>
+<span class="n">Cyclic</span>              <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;cyclic&quot;</span><span class="p">,</span> <span class="n">cyclic</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;rad&quot;</span><span class="p">)</span>
+<span class="n">Hue</span>                 <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;hue&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+<span class="n">FullCycle</span>           <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;full cycle&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+<span class="n">Angle</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;angle&quot;</span><span class="p">)</span>
+<span class="n">Direction</span>           <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;direction&quot;</span><span class="p">)</span>
+<span class="n">Phase</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;phase&quot;</span><span class="p">)</span>
+<span class="n">PhaseDisparity</span>      <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;phasedisparity&quot;</span><span class="p">)</span>
+
+<span class="n">HalfCycle</span>           <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;half cycle&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+<span class="n">Orientation</span>         <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;orientation&quot;</span><span class="p">)</span>
+<span class="n">OrientationSurround</span> <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;orientationsurround&quot;</span><span class="p">)</span>
+
+<span class="c"># Non-cyclic features</span>
+<span class="n">Frequency</span>    <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;cycles per unit distance&quot;</span><span class="p">)</span>
+<span class="n">Presentation</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;presentation&quot;</span><span class="p">)</span>
+<span class="n">Size</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;size&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;Diameter&quot;</span><span class="p">)</span>
+<span class="n">Scale</span>        <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;scale&quot;</span><span class="p">)</span>
+<span class="n">X</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">Y</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+
+<span class="c"># Complex features</span>
+<span class="n">Contrast</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;contrast&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;%&quot;</span><span class="p">)</span>
+<span class="n">ContrastSurround</span> <span class="o">=</span> <span class="n">Contrast</span><span class="p">(</span><span class="s">&quot;contrastsurround&quot;</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">Ocular</span>           <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;ocular&quot;</span><span class="p">)</span>
+<span class="n">Speed</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;speed&quot;</span><span class="p">)</span>
+
+<span class="c"># Time features</span>
+<span class="n">Time</span>     <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">Dynamic</span><span class="o">.</span><span class="n">time_fn</span><span class="o">.</span><span class="n">time_type</span><span class="p">)</span>
+<span class="n">Duration</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s">&quot;duration&quot;</span><span class="p">)</span>
+
+<span class="n">Feature</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># All Features created externally have to supply range or values</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../../index.html">Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/_modules/featuremapper/features.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../../index.html">FeatureMapper Home</a></li>
+<li><a href="../../Tutorials/index.html">Tutorials</a></li>
+<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+
+
+
+<li><ul class="parents">
+
+
+
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
+
+</ul></li>
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
