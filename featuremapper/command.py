@@ -28,6 +28,7 @@ from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
 
 import imagen
+from imagen import random
 
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
@@ -430,7 +431,7 @@ class measure_rfs(SingleInputResponseCommand):
 
     static_parameters = param.List(default=["scale", "offset"])
 
-    pattern_generator = param.Callable(default=imagen.random.UniformRandom(),
+    pattern_generator = param.Callable(default=random.UniformRandom(),
        doc="""Presented pattern for reverse correlation, usually white noise.""")
 
     presentations = param.Number(default=100, doc="""
