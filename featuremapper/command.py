@@ -26,13 +26,13 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     GaussiansCorner, OrientationContrast
 from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
+from dataviews.views import ViewGroup
 
 import imagen
 from imagen import random
 
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
-from collector import ViewContainer
 import features as f
 from metaparams import *
 from distribution import DSF_MaxValue, DistributionStatisticFn, \
@@ -321,13 +321,12 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 
     def _populate_grid(self, results):
-        grid_container = ViewContainer()
-        for coord, container in results.items():
-            for src, group in container.containers.items():
-                for label, stack in group.items.items():
-                    coord_stack = stack.add_dimension(f.Y, 0, coord[1])
-                    coord_stack = coord_stack.add_dimension(f.X, 0, coord[0])
-                    grid_container.add(src, label, coord_stack)
+        grid_container = ViewGroup()
+        for coord, viewgroup in results.items():
+            for path, stack in viewgroup.path_items.items():
+                coord_stack = stack.add_dimension(f.Y, 0, coord[1])
+                coord_stack = coord_stack.add_dimension(f.X, 0, coord[0])
+                grid_container.set_path(path, coord_stack)
         return grid_container
 
 
@@ -375,7 +374,8 @@ class measure_response(FeatureResponses):
 
         for f in p.post_presentation_hooks: f()
 
-        results = self._collate_results(responses)
+        label = inputs.values()[0].__class__.__name__
+        results = self._collate_results(responses, label)
 
         if p.measurement_storage_hook:
             p.measurement_storage_hook(results)
@@ -383,20 +383,21 @@ class measure_response(FeatureResponses):
         return results
 
 
-    def _collate_results(self, responses):
+    def _collate_results(self, responses, label):
         time = self.metadata.timestamp
         dims = [f.Time, f.Duration]
 
-        results = ViewContainer()
+        response_label = label + ' Response'
+        results = ViewGroup()
         for label, response in responses.items():
             name, duration = label
+            path = (response_label, name)
             metadata = self.metadata['outputs'][name]
             if name not in results:
-                results.add(name, 'Response', SheetStack(dimensions=dims, **metadata))
+                results.set_path(path, SheetStack(dimensions=dims, **metadata))
             sv = SheetView(response, metadata['bounds'],
-                           label=' '.join([name.capitalize(), 'Activity']),
-                           metadata=AttrDict(timestamp=time))
-            results.add(name, 'Response', sv, (time, duration))
+                           label='Activity', metadata=AttrDict(timestamp=time))
+            results.path_items[path][(time, duration)] = sv
         return results
 
 
