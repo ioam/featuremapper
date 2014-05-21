@@ -16,8 +16,8 @@ from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.options import options, StyleOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
+from dataviews.views import ViewGroup
 
-from collector import ViewContainer
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 import features
 from features import Feature # pyflakes:ignore (API import)
@@ -496,7 +496,7 @@ class FeatureMaps(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = ViewContainer()
+        results = ViewGroup()
 
         timestamp = self.metadata.timestamp
 
@@ -545,13 +545,13 @@ class FeatureMaps(FeatureResponses):
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
                                        label=map_label, metadata=AttrDict(timestamp=timestamp))
                         key = (timestamp,)+f_vals
-                        if (name, map_label) not in results:
-                            results.add(name, map_index, SheetStack((key, sv), **metadata))
+                        if (map_label, name) not in results:
+                            results.set_path((map_index, name), SheetStack((key, sv), **metadata))
                         else:
-                            results.add(name, map_index, sv, key)
+                            results.path_items[(map_index, name)][key] = sv
                 if p.store_responses:
                     info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
-                    results.add(name, '%s_%s_%s' % info, self._responses[name])
+                    results.set_path(('%s_%s_%s' % info, name), self._responses[name])
 
         return results
 
@@ -597,7 +597,7 @@ class FeatureCurves(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = ViewContainer()
+        results = ViewGroup()
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
@@ -626,7 +626,7 @@ class FeatureCurves(FeatureResponses):
                 title = name + ' {label} {type} \n {dims}'
                 stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
                                    label=curve_label, title=title, **output_metadata)
-                results.add(name, curve_label, stack)
+                results.set_path((curve_label, name), stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
 
@@ -641,10 +641,10 @@ class FeatureCurves(FeatureResponses):
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
                                cyclic_range=cr, metadata=metadata.copy(),
                                label='Tuning Response')
-                results.add(name, curve_label, sv, key)
+                results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
-                results.add(name, '%s_%s_%s' % info, self._responses[name])
+                results.set_path(('%s_%s_%s' % info, name), self._responses[name])
             
         return results
 
@@ -758,7 +758,7 @@ class ReverseCorrelation(FeatureResponses):
         Collate responses into the results dictionary containing a
         ProjectionGrid for each measurement source.
         """
-        results = ViewContainer()
+        results = ViewGroup()
 
         timestamp = self.metadata.timestamp
         dimensions = [features.Time(), features.Duration()]
@@ -785,10 +785,10 @@ class ReverseCorrelation(FeatureResponses):
                                    label='Receptive Field')
                     view[coord] = SheetStack((time_key, sv), **metadata)
             label = '%s_Reverse_Correlation' % out_label
-            results.add(in_label, label, view)
+            results.set_path((label, in_label), view)
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
-                results.add(out_label, '%s_%s_%s' % info, self._responses[out_label])
+                results.set_path(('%s_%s_%s' % info, out_label), self._responses[out_label])
         return results
 
 #Default styles
