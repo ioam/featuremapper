@@ -150,7 +150,11 @@ class PowerSpectrumAnalysis(ViewOperation):
         """
         dim, _dim = spectrum.shape
         assert dim == _dim, "This approach only supports square FFT spectra"
-        assert dim % 2, "Odd dimensions necessary for properly centered FFT plot"
+        if not dim % 2:
+            self.warning("Slicing data to nearest odd dimensions for centered FFT.")
+            spectrum = spectrum[:None if dim % 2 else -1,
+                                :None if _dim % 2 else -1]
+            dim, _ = spectrum.shape
 
         # Invert as power_spectrum returns black (low values) for high amplitude
         spectrum = 1 - spectrum
