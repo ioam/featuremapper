@@ -16,7 +16,7 @@ from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.options import options, StyleOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
-from dataviews.views import ViewGroup
+from dataviews.collector import ViewGroup
 
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 import features

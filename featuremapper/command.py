@@ -26,7 +26,7 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     GaussiansCorner, OrientationContrast
 from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
-from dataviews.views import ViewGroup
+from dataviews.collector import ViewGroup, Collector
 
 import imagen
 from imagen import random
