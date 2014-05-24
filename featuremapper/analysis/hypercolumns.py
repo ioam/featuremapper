@@ -82,7 +82,8 @@ class PowerSpectrumAnalysis(ViewOperation):
     def _process(self, view):
 
         [pref] = self.get_views(view, 'Preference')
-        pinwheel_views = self.get_views(view, 'Pinwheels', Points)
+        pinwheel_views = self.get_views(view, 'Pinwheel', Points)
+
         pinwheel_count = sum([pw_view.data.shape[0] for pw_view in pinwheel_views], 0)
 
         xlabel, ylabel ='Wavenumber (k)', 'Power'
