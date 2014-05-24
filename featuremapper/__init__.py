@@ -512,6 +512,7 @@ class FeatureMaps(FeatureResponses):
             #Metadata
             inner_features = dict([(f.name, f) for f in self.inner])
             output_metadata = dict(self.metadata.outputs[name], inner_features=inner_features)
+            stack_metadata = dict(dimensions=dimensions, **output_metadata)
 
             # Iterate over inner features
             fr = self._featureresponses[name][f_vals]
@@ -536,17 +537,15 @@ class FeatureMaps(FeatureResponses):
 
                         map_index = base_name + k + map_name.capitalize()
                         map_label = ' '.join([base_name, map_name.capitalize()])
-                        title = name + ' {label} \n {dims}'
-                        metadata = dict(dimensions=dimensions, title=title, **output_metadata)
-
+                        title = name + ' {label}'
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
-                                       label=map_label, metadata=AttrDict(timestamp=timestamp))
+                                       label=map_label, title=title, metadata=AttrDict(timestamp=timestamp))
                         key = (timestamp,)+f_vals
                         if (map_label, name) not in results:
-                            results.set_path((map_index, name), SheetStack((key, sv), **metadata))
+                            results.set_path((map_index, name), SheetStack((key, sv), **stack_metadata))
                         else:
                             results.path_items[(map_index, name)][key] = sv
                 if p.store_responses:
@@ -618,14 +617,15 @@ class FeatureCurves(FeatureResponses):
             curve_responses = dist_matrix.distribution_matrix
 
             output_metadata = self.metadata.outputs[name]
+            title = name + ' {label} {type}'
             rows, cols = output_metadata['shape']
 
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
-                title = name + ' {label} {type} \n {dims}'
+
                 stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
-                                   label=curve_label, title=title, **output_metadata)
+                                   label=curve_label, **output_metadata)
                 results.set_path((curve_label, name), stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
@@ -640,7 +640,7 @@ class FeatureCurves(FeatureResponses):
                 cr = axis_feature.range[0] if axis_feature.cyclic else None
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
                                cyclic_range=cr, metadata=metadata.copy(),
-                               label='Tuning Response')
+                               title=title, label='Tuning Response')
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
@@ -771,9 +771,9 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = output_metadata['shape']
             time_key = (timestamp, duration)
-            title = ' '.join([p.measurement_prefix, out_label, 'RFs'])
+            title = ' '.join([p.measurement_prefix, out_label, '{label}'])
             view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
-                                  title=title)
+                                  title=title, label='RFs')
             metadata = dict(dimensions=dimensions, **input_metadata)
             rc_response = self._featureresponses[in_label][out_label][duration]
 
@@ -782,7 +782,7 @@ class ReverseCorrelation(FeatureResponses):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
                                    metadata=AttrDict(timestamp=timestamp),
-                                   label='Receptive Field')
+                                   title=title, label='Receptive Field')
                     view[coord] = SheetStack((time_key, sv), **metadata)
             label = '%s_Reverse_Correlation' % out_label
             results.set_path((label, in_label), view)

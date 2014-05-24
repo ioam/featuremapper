@@ -395,7 +395,7 @@ class measure_response(FeatureResponses):
             metadata = self.metadata['outputs'][name]
             if name not in results:
                 results.set_path(path, SheetStack(dimensions=dims, **metadata))
-            sv = SheetView(response, metadata['bounds'],
+            sv = SheetView(response, metadata['bounds'], title=name+' {label}',
                            label='Activity', metadata=AttrDict(timestamp=time))
             results.path_items[path][(time, duration)] = sv
         return results
@@ -1154,10 +1154,7 @@ class measure_orientation_contrast(UnitCurveCommand):
         default=["x", "y", "sizecenter", "sizesurround", "orientationcenter",
                  "thickness", "contrastcenter"])
 
-
-
     or_surrounds = []
-
 
     def __call__(self, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
