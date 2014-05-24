@@ -14,7 +14,7 @@ import numpy as np
 import param
 from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
-from dataviews.options import options, StyleOpts
+from dataviews.options import options, channels, StyleOpts, ChannelOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 from dataviews.collector import ViewGroup
 
@@ -796,6 +796,9 @@ options.Preference_SheetView = StyleOpts(cmap='jet')
 options.Selectivity_SheetView = StyleOpts(cmap='gray')
 options.Activity_SheetView = StyleOpts(cmap='gray')
 options.Response_SheetView = StyleOpts(cmap='gray')
+
+# Default channel definitions
+channels.Preference_Selectivity = ChannelOpts('HCS', 'Preference * Selectivity', flipSC=True)
 
 
 __all__ = [
