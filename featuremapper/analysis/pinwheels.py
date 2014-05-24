@@ -63,24 +63,26 @@ class PinwheelAnalysis(ViewOperation):
 
 
     def _process(self, view):
-        [sheetview] = self.get_views(view, 'Preference')
-        bounds = sheetview.bounds
-        polar_map = self.polar_preference(sheetview.N.data)
+        [pref] = self.get_views(view, 'Preference')
+        bounds = pref.bounds
+        polar_map = self.polar_preference(pref.N.data)
         contour_info = self.polarmap_contours(polar_map, bounds)
         (re_contours, im_contours, intersections) = contour_info
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
         pinwheels = Points(np.array(pinwheels), bounds,
-                                label = sheetview.label+' Pinwheel')
+                                label = pref.label+' Pinwheel')
 
+        sel = self.get_views(view, 'Selectivity')
+        base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
             re_lines = Contours(re_contours, bounds,
-                                label = sheetview.label+' Real')
+                                label = pref.label+' Real')
             im_lines = Contours(im_contours, bounds,
-                                  label = sheetview.label+' Imaginary')
-            return [sheetview * re_lines * im_lines * pinwheels]
+                                  label = pref.label+' Imaginary')
+            return [base * re_lines * im_lines * pinwheels]
         else:
-            return [sheetview * pinwheels]
+            return [base * pinwheels]
 
     def polar_preference(self, pref):
         """
