@@ -794,8 +794,8 @@ class ReverseCorrelation(FeatureResponses):
 #Default styles
 options.Preference_SheetView = StyleOpts(cmap='jet')
 options.Selectivity_SheetView = StyleOpts(cmap='gray')
-options.Activity_SheetView = StyleOpts(cmap='jet')
-options.Response_SheetView = StyleOpts(cmap='jet')
+options.Activity_SheetView = StyleOpts(cmap='gray')
+options.Response_SheetView = StyleOpts(cmap='gray')
 
 
 __all__ = [
