@@ -26,7 +26,7 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     GaussiansCorner, OrientationContrast
 from dataviews.ndmapping import AttrDict
 from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
-from dataviews.collector import ViewGroup, Collector
+from dataviews.collector import AttrTree, Collector
 
 import imagen
 from imagen import random
@@ -321,7 +321,7 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 
     def _populate_grid(self, results):
-        grid_container = ViewGroup()
+        grid_container = AttrTree()
         for coord, viewgroup in results.items():
             for path, stack in viewgroup.path_items.items():
                 coord_stack = stack.add_dimension(f.Y, 0, coord[1])
@@ -388,7 +388,7 @@ class measure_response(FeatureResponses):
         dims = [f.Time, f.Duration]
 
         response_label = label + ' Response'
-        results = ViewGroup()
+        results = AttrTree()
         for label, response in responses.items():
             name, duration = label
             path = (response_label, name)

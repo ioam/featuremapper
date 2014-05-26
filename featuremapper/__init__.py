@@ -16,7 +16,7 @@ from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.options import options, channels, StyleOpts, ChannelOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
-from dataviews.collector import ViewGroup
+from dataviews.collector import AttrTree
 
 from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 import features
@@ -496,7 +496,7 @@ class FeatureMaps(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = ViewGroup()
+        results = AttrTree()
 
         timestamp = self.metadata.timestamp
 
@@ -596,7 +596,7 @@ class FeatureCurves(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = ViewGroup()
+        results = AttrTree()
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
@@ -758,7 +758,7 @@ class ReverseCorrelation(FeatureResponses):
         Collate responses into the results dictionary containing a
         ProjectionGrid for each measurement source.
         """
-        results = ViewGroup()
+        results = AttrTree()
 
         timestamp = self.metadata.timestamp
         dimensions = [features.Time(), features.Duration()]
