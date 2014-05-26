@@ -4,7 +4,11 @@
 # sphinx-quickstart on Thu May 15 23:32:51 2014.
 #
 
-from builder.shared_conf import *
+import os, sys
+
+sys.path.append(os.path.abspath('.'))
+
+from .builder.shared_conf import *
 
 paths = ['../param/', '../imagen/', '../dataviews/', '.', '..']
 add_paths(paths)
@@ -12,6 +16,7 @@ add_paths(paths)
 # General information about the project.
 project = u'FeatureMapper'
 copyright = u'2014, IOAM'
+ioam_project = 'featuremapper'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -27,8 +32,14 @@ release = '0.1a'
 exclude_patterns = ['_build', 'test_data', 'reference_data', 'nbpublisher',
                     'builder']
 
+
+# The name for this set of Sphinx documents.  If None, it defaults to
+# "<project> v<release> documentation".
+html_title = project
+
+
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'FeatureMapperdoc'
+htmlhelp_basename = project + 'doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -38,7 +49,7 @@ htmlhelp_basename = 'FeatureMapperdoc'
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'FeatureMapper.tex', u'FeatureMapper Documentation',
+  ('index', project+'.tex', project+ ' Documentation',
    u'IOAM', 'manual'),
 ]
 
@@ -47,7 +58,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'featuremapper', u'FeatureMapper Documentation',
+    ('index', ioam_project, project + ' Documentation',
      [u'IOAM'], 1)
 ]
 
@@ -61,8 +72,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'FeatureMapper', u'FeatureMapper Documentation',
-   u'IOAM', 'FeatureMapper', 'One line description of project.',
+  ('index', project, project + ' Documentation',
+   u'IOAM', project, 'One line description of project.',
    'Miscellaneous'),
 ]
 
