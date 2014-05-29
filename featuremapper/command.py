@@ -1233,3 +1233,22 @@ __all__ = [
     "measure_size_response",
     "test_measure"
 ]
+
+
+#=================#
+# Collector hooks #
+#=================#
+
+
+def array_hook(obj, *args, **kwargs):
+    return None if obj is None else SheetView(obj.copy(), **kwargs)
+
+def measurement_hook(obj, *args, **kwargs):
+    return obj(*args, **kwargs)
+
+def pattern_hook(obj,*args, **kwargs):
+    return obj[:]
+
+Collector.for_type(np.ndarray, array_hook)
+Collector.for_type(MeasureResponseCommand,  measurement_hook, mode='merge')
+Collector.for_type(imagen.PatternGenerator, pattern_hook)
