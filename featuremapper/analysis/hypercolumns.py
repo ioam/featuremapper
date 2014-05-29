@@ -78,6 +78,9 @@ class PowerSpectrumAnalysis(ViewOperation):
       The degree to which the gamma kernel is heavily tailed when
       squashing the pinwheel density into a unit map metric.""")
 
+    label = param.String(None, allow_None=True, precedence=-1, constant=True,
+     doc="""Label suffixes are fixed as there are too many labels to specify.""")
+
 
     def _process(self, view):
 
@@ -113,7 +116,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             samples = zip([0, dim1/2], [0.0, 0.0])
 
         curve = Curve(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
-        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='HistogramFit')
+        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Power')
         annotation = Annotation(vlines=[kmax], label='KMax Line')
 
         views = [hist * curve * annotation , info_table]

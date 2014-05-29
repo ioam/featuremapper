@@ -61,6 +61,8 @@ class PinwheelAnalysis(ViewOperation):
       Whether or not to include the computed contours for the real and
       imaginary components of the map.""")
 
+    label = param.String(None, allow_None=True, precedence=-1, constant=True,
+     doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
     def _process(self, view):
         [pref] = self.get_views(view, 'Preference')
