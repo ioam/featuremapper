@@ -4,6 +4,11 @@ FeatureResponses and associated functions and classes.
 These classes implement map and tuning curve measurement based
 on measuring responses while varying features of an input pattern.
 """
+import sys, os
+
+import param
+from param.version import Version
+__version__ = Version(release=(0,2,0), fpath=__file__, commit="$Format:%h$")
 
 import copy
 from collections import defaultdict
@@ -11,7 +16,6 @@ from itertools import product
 
 import numpy as np
 
-import param
 from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping
 from dataviews.options import options, channels, StyleOpts, ChannelOpts

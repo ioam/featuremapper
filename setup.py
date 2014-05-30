@@ -2,7 +2,7 @@
 
 import sys
 from distutils.core import setup
-
+import featuremapper
 
 setup_args = {}
 
@@ -39,7 +39,7 @@ for package_list in packages_to_state:
 
 setup_args.update(dict(
     name='FeatureMapper',
-    version='1.0',
+    version=str(featuremapper.__version__),
     description='FeatureMapper coordinates the presentation of input patterns, collating and analysing the responses.',
     long_description=open('README.rst').read(),
     author= "IOAM",
@@ -66,4 +66,8 @@ setup_args.update(dict(
 
 
 if __name__=="__main__":
+
+    if 'bdist_wininst' in sys.argv or 'upload' in sys.argv:
+        featuremapper.__version__.verify()
+
     setup(**setup_args)
