@@ -391,12 +391,13 @@ class measure_response(FeatureResponses):
         results = AttrTree()
         for label, response in responses.items():
             name, duration = label
-            path = (response_label, name)
+            path = (response_label.replace(' ', ''), name)
+            label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
-            if name not in results:
+            if path not in results:
                 results.set_path(path, SheetStack(dimensions=dims, **metadata))
-            sv = SheetView(response, metadata['bounds'], title=name+' {label}',
-                           label='Activity', metadata=AttrDict(timestamp=time))
+            sv = SheetView(response, metadata['bounds'], label=label,
+                           value='Activity', metadata=AttrDict(timestamp=time))
             results.path_items[path][(time, duration)] = sv
         return results
 
@@ -1190,6 +1191,7 @@ class measure_orientation_contrast(UnitCurveCommand):
                 f.OrientationSurround(values=self.or_surrounds),
                 f.ContrastSurround(values=p.contrastsurround,
                                    preference_fn=None)]
+
 
 
 class test_measure(UnitCurveCommand):

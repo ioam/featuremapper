@@ -16,7 +16,7 @@ import param
 from dataviews.operation  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
-from dataviews import Curve, Points, Table, Annotation, Histogram
+from dataviews import Dimension, Curve, Points, Table, Annotation, Histogram
 from dataviews.options import options, StyleOpts
 
 try: # 2.7+
@@ -89,7 +89,7 @@ class PowerSpectrumAnalysis(ViewOperation):
 
         pinwheel_count = sum([pw_view.data.shape[0] for pw_view in pinwheel_views], 0)
 
-        xlabel, ylabel ='Wavenumber (k)', 'Power'
+        xlabel, ylabel = Dimension('Wavenumber', unit='(k)'), 'FFT Power'
         (l,b,r,t) = pref.bounds.lbrt()
         (dim1, dim2) = pref.data.shape
         xdensity = abs(r-l) / dim1
@@ -115,16 +115,18 @@ class PowerSpectrumAnalysis(ViewOperation):
         else:
             samples = zip([0, dim1/2], [0.0, 0.0])
 
-        curve = Curve(samples, xlabel=xlabel, ylabel=ylabel, label='Histogram Fit')
-        hist = Histogram(amplitudes, edges, xlabel=xlabel, ylabel=ylabel, label='Power')
-        annotation = Annotation(vlines=[kmax], label='KMax Line')
+        curve = Curve(samples, dimensions=[xlabel], label=ylabel, value=ylabel,
+                      title='{label} Histogram Fit')
+        hist = Histogram(amplitudes, edges, dimensions=[xlabel],
+                         label=ylabel, value=ylabel, title='FFT Histogram')
+        annotation = Annotation(vlines=[kmax], label='KMax', title='{label} Line')
 
         views = [hist * curve * annotation , info_table]
         if self.p.fit_table and fit is None:
             fit = dict(('a%i' % i,'-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = Table(fit)
+            fit_table = Table(fit, title='Hypercolumn Analysis')
             views.append(fit_table)
         return views
 
@@ -248,6 +250,6 @@ class PowerSpectrumAnalysis(ViewOperation):
 
 
 # Defining styles
-options.HistogramFit_Curve = StyleOpts(color='r', linewidth=3)
-options.KMaxLine_Annotation =    StyleOpts(color='g', linewidth=3)
-options.FFTPower_Histogram =     StyleOpts(fc='w', ec='k')
+options.Power_Curve = StyleOpts(color='r', linewidth=3)
+options.KMax_Annotation =    StyleOpts(color='g', linewidth=3)
+options.Power_Histogram =     StyleOpts(fc='w', ec='k')
