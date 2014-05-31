@@ -17,14 +17,14 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from dataviews.ndmapping import AttrDict, NdMapping
+from dataviews.ndmapping import AttrDict, NdMapping, Dimension
 from dataviews.options import options, channels, StyleOpts, ChannelOpts
 from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
 from dataviews.collector import AttrTree
 
-from distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
-import features
-from features import Feature # pyflakes:ignore (API import)
+from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
+from . import features
+from .features import Feature # pyflakes:ignore (API import)
 
 activity_dtype = np.float64
 
@@ -347,7 +347,7 @@ class FeatureResponses(PatternDrivenAnalysis):
                              for f in self.features_to_compute]
 
         for i, op in enumerate(self.outer_permutations):
-            for j in xrange(0, p.repetitions):
+            for j in range(0, p.repetitions):
                 permutation = dict(permuted_settings)
                 permutation.update(zip(self.outer_names, op))
 
@@ -537,16 +537,17 @@ class FeatureMaps(FeatureResponses):
                 for k, maps in response.items():
                     for map_name, map_view in maps.items():
                         # Set labels and metadata
-                        period = fp.range[1] if (map_name != 'selectivity' and fp.cyclic) else None
-
                         map_index = base_name + k + map_name.capitalize()
                         map_label = ' '.join([base_name, map_name.capitalize()])
+                        cyclic = (map_name != 'selectivity' and fp.cyclic)
+                        value_dimension = Dimension(map_label, cyclic=cyclic, range=fp.range)
                         title = name + ' {label}'
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
-                        sv = SheetView(map_view, output_metadata['bounds'], cyclic_range=period,
-                                       label=map_label, title=title, metadata=AttrDict(timestamp=timestamp))
+                        sv = SheetView(map_view, output_metadata['bounds'],
+                                       label=' '.join([name, map_label]),
+                                       value=value_dimension)
                         key = (timestamp,)+f_vals
                         if (map_label, name) not in results:
                             results.set_path((map_index, name), SheetStack((key, sv), **stack_metadata))
@@ -621,15 +622,13 @@ class FeatureCurves(FeatureResponses):
             curve_responses = dist_matrix.distribution_matrix
 
             output_metadata = self.metadata.outputs[name]
-            title = name + ' {label} {type}'
             rows, cols = output_metadata['shape']
 
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
-
                 stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
-                                   label=curve_label, **output_metadata)
+                                   **output_metadata)
                 results.set_path((curve_label, name), stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
@@ -641,10 +640,9 @@ class FeatureCurves(FeatureResponses):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                cr = axis_feature.range[0] if axis_feature.cyclic else None
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
-                               cyclic_range=cr, metadata=metadata.copy(),
-                               title=title, label='Tuning Response')
+                               label=' '.join([name, curve_label]),
+                               metadata=metadata.copy(), value=Dimension('Response'))
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')

@@ -73,18 +73,18 @@ class PinwheelAnalysis(ViewOperation):
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
         pinwheels = Points(np.array(pinwheels), bounds,
-                                label = pref.label+' Pinwheel')
+                           label=pref.label, title='{label} Pinwheel {type}')
 
         sel = self.get_views(view, 'Selectivity')
         base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
             re_lines = Contours(re_contours, bounds,
-                                label = pref.label+' Real')
+                                label=pref.label, title='Real {label} {type}')
             im_lines = Contours(im_contours, bounds,
-                                  label = pref.label+' Imaginary')
-            return [base * re_lines * im_lines * pinwheels]
+                                label=pref.label, title='Imaginary {label} {type}')
+            return [pref * re_lines * im_lines * pinwheels]
         else:
-            return [base * pinwheels]
+            return [pref * pinwheels]
 
     def polar_preference(self, pref):
         """
