@@ -547,6 +547,7 @@ class FeatureMaps(FeatureResponses):
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'],
                                        label=' '.join([name, map_label]),
+                                       metadata=AttrDict(timestamp=timestamp),
                                        value=value_dimension)
                         key = (timestamp,)+f_vals
                         if (map_label, name) not in results:
