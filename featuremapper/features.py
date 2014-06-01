@@ -82,31 +82,31 @@ Cyclic              = Float("cyclic", cyclic=True, unit="rad")
 Hue                 = Cyclic("hue", range=(0.0, 1.0))
 
 FullCycle           = Cyclic("full cycle", range=(0, 2*np.pi))
-Angle               = FullCycle("Angle")
-Direction           = FullCycle("Direction")
-Phase               = FullCycle("Phase")
-PhaseDisparity      = FullCycle("PhaseDisparity")
+Angle               = FullCycle("angle")
+Direction           = FullCycle("direction")
+Phase               = FullCycle("phase")
+PhaseDisparity      = FullCycle("phasedisparity")
 
 HalfCycle           = Cyclic("half cycle", range=(0, np.pi))
-Orientation         = HalfCycle("Orientation")
-OrientationSurround = HalfCycle("OrientationSurround")
+Orientation         = HalfCycle("orientation")
+OrientationSurround = HalfCycle("orientationsurround")
 
 # Non-cyclic features
-Frequency    = Float("Frequency", unit="cycles per unit distance")
-Presentation = Integer("Presentation")
-Size         = Float("Size", unit="Diameter")
-Scale        = Float("Scale")
-X            = Float("X")
-Y            = Float("Y")
+Frequency    = Float("frequency", unit="cycles per unit distance")
+Presentation = Integer("presentation")
+Size         = Float("size", unit="Diameter")
+Scale        = Float("scale")
+X            = Float("x")
+Y            = Float("y")
 
 # Complex features
-Contrast         = Float("Contrast", range=(0, 100), unit="%")
-ContrastSurround = Contrast("ContrastSurround", preference_fn=None)
-Ocular           = Integer("Ocular")
-Speed            = Float("Speed")
+Contrast         = Float("contrast", range=(0, 100), unit="%")
+ContrastSurround = Contrast("contrastsurround", preference_fn=None)
+Ocular           = Integer("ocular")
+Speed            = Float("speed")
 
 # Time features
-Time     = Dimension("Time", type=param.Dynamic.time_fn.time_type)
-Duration = Time("Duration")
+Time     = Feature("time", type=param.Dynamic.time_fn.time_type)
+Duration = Time("duration")
 
 Feature._init = True # All Features created externally have to supply range or values
