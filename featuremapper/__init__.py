@@ -516,7 +516,6 @@ class FeatureMaps(FeatureResponses):
             #Metadata
             inner_features = dict([(f.name, f) for f in self.inner])
             output_metadata = dict(self.metadata.outputs[name], inner_features=inner_features)
-            stack_metadata = dict(dimensions=dimensions, **output_metadata)
 
             # Iterate over inner features
             fr = self._featureresponses[name][f_vals]
@@ -547,11 +546,13 @@ class FeatureMaps(FeatureResponses):
                         # Create views and stacks
                         sv = SheetView(map_view, output_metadata['bounds'],
                                        label=' '.join([name, map_label]),
-                                       metadata=AttrDict(timestamp=timestamp),
                                        value=value_dimension)
+                        sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label, name) not in results:
-                            results.set_path((map_index, name), SheetStack((key, sv), **stack_metadata))
+                            stack = SheetStack((key, sv), dimensions=dimensions)
+                            stack.metadata = AttrDict(**output_metadata)
+                            results.set_path((map_index, name), stack)
                         else:
                             results.path_items[(map_index, name)][key] = sv
                 if p.store_responses:
@@ -628,8 +629,8 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if name not in results:
-                stack = SheetStack(dimensions=dimensions, timestamp=timestamp,
-                                   **output_metadata)
+                stack = SheetStack(dimensions=dimensions, timestamp=timestamp)
+                stack.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
@@ -642,8 +643,8 @@ class FeatureCurves(FeatureResponses):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
-                               label=' '.join([name, curve_label]),
-                               metadata=metadata.copy(), value=Dimension('Response'))
+                               label=' '.join([name, curve_label]), value=Dimension('Response'))
+                sv.metadata=metadata.copy()
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
@@ -777,16 +778,18 @@ class ReverseCorrelation(FeatureResponses):
             title = ' '.join([p.measurement_prefix, out_label, '{label}'])
             view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
                                   title=title, label='RFs')
-            metadata = dict(dimensions=dimensions, **input_metadata)
+
             rc_response = self._featureresponses[in_label][out_label][duration]
 
             for ii in range(rows):
                 for jj in range(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
-                                   metadata=AttrDict(timestamp=timestamp),
                                    title=title, label='Receptive Field')
-                    view[coord] = SheetStack((time_key, sv), **metadata)
+                    sv.metadata=AttrDict(timestamp=timestamp)
+                    view[coord] = SheetStack((time_key, sv), dimensions=dimensions)
+                    view[coord].metadata = AttrDict(**input_metadata)
+
             label = '%s_Reverse_Correlation' % out_label
             results.set_path((label, in_label), view)
             if p.store_responses:

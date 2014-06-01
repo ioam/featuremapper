@@ -395,9 +395,12 @@ class measure_response(FeatureResponses):
             label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
             if path not in results:
-                results.set_path(path, SheetStack(dimensions=dims, **metadata))
-            sv = SheetView(response, metadata['bounds'], label=label,
-                           value='Activity', metadata=AttrDict(timestamp=time))
+                stack = SheetStack(dimensions=dims)
+                stack.metadata = AttrDict(**metadata)
+                results.set_path(path, stack)
+
+            sv = SheetView(response, metadata['bounds'], label=label, value='Activity')
+            sv.metadata=AttrDict(timestamp=time)
             results.path_items[path][(time, duration)] = sv
         return results
 
