@@ -158,7 +158,7 @@ class FullMatrix(param.Parameterized):
         index = ()
         for f in self.features:
             for ff, value in feature_value_permutation:
-                if (ff == f.name):
+                if (ff == f.name.lower()):
                     index = index + (f.values.index(value),)
         self.full_matrix[index] = new_values.copy()
 
@@ -269,7 +269,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         self.outer = [f for f in self.features if f.preference_fn is None]
         self.inner = [f for f in self.features if f.preference_fn is not None]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
-            else zip(*[(f.name, f.values) for f in self.outer])
+            else zip(*[(f.name.lower(), f.values) for f in self.outer])
         dimensions = [features.Duration] + list(self.outer)
 
         self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
@@ -292,7 +292,7 @@ class FeatureResponses(PatternDrivenAnalysis):
 
             self._featureresponses[out_label][f_vals] = {}
             for f in self.inner:
-                self._featureresponses[out_label][f_vals][f.name] = \
+                self._featureresponses[out_label][f_vals][f.name.lower()] = \
                     DistributionMatrix(output_metadata['shape'], axis_range=f.range,
                                        cyclic=f.cyclic)
 
@@ -309,7 +309,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         features_to_permute = [f for f in self.inner if f.compute_fn is None]
         self.features_to_compute = [f for f in self.inner if f.compute_fn is not None]
 
-        self.feature_names, values_lists = zip(*[(f.name, f.values) for f in features_to_permute])
+        self.feature_names, values_lists = zip(*[(f.name.lower(), f.values) for f in features_to_permute])
 
         self.permutations = [permutation for permutation in product(*values_lists)]
 
@@ -525,7 +525,7 @@ class FeatureMaps(FeatureResponses):
                 base_name = self.measurement_prefix + feature
 
                 # Get information from the feature
-                fp = [f for f in self.features if f.name == fname][0]
+                fp = [f for f in self.features if f.name.lower() == fname][0]
                 pref_fn = fp.preference_fn if fp.preference_fn is not None\
                     else self.preference_fn
                 if p.selectivity_multiplier is not None:
@@ -606,7 +606,7 @@ class FeatureCurves(FeatureResponses):
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
-        axis_feature = [f for f in self.features if f.name == p.x_axis][0]
+        axis_feature = [f for f in self.features if f.name.lower() == p.x_axis][0]
         curve_label = ''.join([p.measurement_prefix, axis_name, 'Tuning'])
 
         dimensions = [features.Time, features.Duration] + [f for f in self.outer] + [axis_feature]
@@ -692,7 +692,7 @@ class ReverseCorrelation(FeatureResponses):
 
         self.outer = [f for f in self.features if f.preference_fn is None]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
-            else zip(*[(f.name, f.values) for f in self.outer])
+            else zip(*[(f.name.lower(), f.values) for f in self.outer])
 
         if p.store_responses:
             response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
