@@ -4,9 +4,8 @@
 # sphinx-quickstart on Thu May 15 23:32:51 2014.
 #
 
-import os, sys
-
-sys.path.append(os.path.abspath('.'))
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from .builder.shared_conf import *
 
