@@ -549,7 +549,7 @@ class FeatureMaps(FeatureResponses):
                                        value=value_dimension)
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
-                        if (map_label, name) not in results:
+                        if (map_label.replace(' ', ''), name) not in results:
                             stack = SheetStack((key, sv), dimensions=dimensions)
                             stack.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), stack)
