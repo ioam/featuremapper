@@ -1,0 +1,36 @@
+featuremapper.analysis Package
+==============================
+
+:mod:`analysis` Package
+-----------------------
+
+.. inheritance-diagram:: featuremapper.analysis
+
+
+.. automodule:: featuremapper.analysis
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`hypercolumns` Module
+--------------------------
+
+.. inheritance-diagram:: featuremapper.analysis.hypercolumns
+
+
+.. automodule:: featuremapper.analysis.hypercolumns
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`pinwheels` Module
+-----------------------
+
+.. inheritance-diagram:: featuremapper.analysis.pinwheels
+
+
+.. automodule:: featuremapper.analysis.pinwheels
+    :members:
+    :inherited-members:
+    :show-inheritance:
+

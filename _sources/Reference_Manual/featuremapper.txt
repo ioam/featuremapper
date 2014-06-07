@@ -1,0 +1,65 @@
+featuremapper.featuremapper Package
+===================================
+
+:mod:`featuremapper` Package
+----------------------------
+
+.. inheritance-diagram:: featuremapper.__init__
+
+
+.. automodule:: featuremapper.__init__
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`command` Module
+---------------------
+
+.. inheritance-diagram:: featuremapper.command
+
+
+.. automodule:: featuremapper.command
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`distribution` Module
+--------------------------
+
+.. inheritance-diagram:: featuremapper.distribution
+
+
+.. automodule:: featuremapper.distribution
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`features` Module
+----------------------
+
+.. inheritance-diagram:: featuremapper.features
+
+
+.. automodule:: featuremapper.features
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+:mod:`metaparams` Module
+------------------------
+
+.. inheritance-diagram:: featuremapper.metaparams
+
+
+.. automodule:: featuremapper.metaparams
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+
+    featuremapper.analysis
+

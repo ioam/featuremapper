@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>featuremapper.analysis.pinwheels &mdash; FeatureMapper 0.1a documentation</title>
+    <title>featuremapper.analysis.pinwheels &mdash; FeatureMapper</title>
     
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/custom.js"></script>
-    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../../index.html" />
+    <link rel="top" title="FeatureMapper" href="../../../index.html" />
     <link rel="up" title="featuremapper.analysis" href="../analysis.html" /> 
   </head>
   <body>
@@ -42,7 +42,7 @@
 
 <li><a href="../../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -51,7 +51,6 @@
 
 
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
           <li><a href="../analysis.html" accesskey="U">featuremapper.analysis</a> &raquo;</li>
 
 </ul></li>
@@ -79,7 +78,7 @@
 <span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Jean-Luc Stevens&quot;</span>
 
 
-<div class="viewcode-block" id="WarningCounter"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.WarningCounter">[docs]</a><span class="k">class</span> <span class="nc">WarningCounter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WarningCounter"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.WarningCounter">[docs]</a><span class="k">class</span> <span class="nc">WarningCounter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;</span>
 <span class="sd">    exceptions to allow a suitable warning message to be generated.</span>
@@ -109,7 +108,7 @@
 
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PinwheelAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PinwheelAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given a SheetView or SheetStack of a cyclic feature preference,</span>
 <span class="sd">    compute the position of all pinwheel singularities in the</span>
@@ -129,28 +128,32 @@
 <span class="s">      Whether or not to include the computed contours for the real and</span>
 <span class="s">      imaginary components of the map.&quot;&quot;&quot;</span><span class="p">)</span>
 
+    <span class="n">label</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_None</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">precedence</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+     <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Label suffixes are fixed as there are too many labels to specify.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="p">[</span><span class="n">sheetview</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
-        <span class="n">bounds</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">bounds</span>
-        <span class="n">polar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polar_preference</span><span class="p">(</span><span class="n">sheetview</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">pref</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
+        <span class="n">bounds</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">bounds</span>
+        <span class="n">polar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polar_preference</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">contour_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarmap_contours</span><span class="p">(</span><span class="n">polar_map</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
         <span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span> <span class="o">=</span> <span class="n">contour_info</span>
 
         <span class="n">pinwheels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify_pinwheels</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">))</span>
         <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">bounds</span><span class="p">,</span>
-                                <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Pinwheel&#39;</span><span class="p">)</span>
+                           <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} Pinwheel {type}&#39;</span><span class="p">)</span>
 
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Selectivity&#39;</span><span class="p">)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">pref</span> <span class="o">*</span> <span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">sel</span> <span class="o">!=</span><span class="p">[]</span>  <span class="k">else</span> <span class="n">pref</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">include_contours</span><span class="p">:</span>
             <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
-                                <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Real&#39;</span><span class="p">)</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Real {label} {type}&#39;</span><span class="p">)</span>
             <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
-                                  <span class="n">label</span> <span class="o">=</span> <span class="n">sheetview</span><span class="o">.</span><span class="n">label</span><span class="o">+</span><span class="s">&#39; Imaginary&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">sheetview</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+                                <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Imaginary {label} {type}&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">sheetview</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
 
-<div class="viewcode-block" id="PinwheelAnalysis.polar_preference"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">[docs]</a>    <span class="k">def</span> <span class="nf">polar_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pref</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.polar_preference"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">[docs]</a>    <span class="k">def</span> <span class="nf">polar_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pref</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Turns hue representation to polar representation.</span>
 <span class="sd">        Hue representation uses values expected in the range 0-1.0</span>
@@ -160,7 +163,7 @@
         <span class="k">return</span> <span class="n">polar_vecfn</span><span class="p">(</span><span class="n">pref</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.normalize_polar_channel"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_polar_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polar_channel</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.normalize_polar_channel"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_polar_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polar_channel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This functions normalizes an OR map (polar_channel) taking into</span>
 <span class="sd">        account the region of interest (ROI). The ROI is specified by</span>
@@ -196,7 +199,7 @@
         <span class="k">return</span> <span class="n">polar_channel</span> <span class="o">/</span> <span class="n">normalisation</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.polarmap_contours"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours">[docs]</a>    <span class="k">def</span> <span class="nf">polarmap_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarmap</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.polarmap_contours"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours">[docs]</a>    <span class="k">def</span> <span class="nf">polarmap_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polarmap</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Identifies the real and imaginary contours in a polar map.</span>
 <span class="sd">        Returns the real and imaginary contours as 2D vertex arrays</span>
@@ -235,14 +238,14 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.remove_path_duplicates"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates">[docs]</a>    <span class="k">def</span> <span class="nf">remove_path_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.remove_path_duplicates"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates">[docs]</a>    <span class="k">def</span> <span class="nf">remove_path_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
         <span class="s">&quot;Removes successive duplicates along a path of vertices.&quot;</span>
         <span class="n">zero_diff_bools</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">duplicate_indices</span><span class="p">,</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">zero_diff_bools</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">duplicate_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.find_intersections"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections">[docs]</a>    <span class="k">def</span> <span class="nf">find_intersections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour1</span><span class="p">,</span> <span class="n">contour2</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.find_intersections"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections">[docs]</a>    <span class="k">def</span> <span class="nf">find_intersections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contour1</span><span class="p">,</span> <span class="n">contour2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Vectorized code to find intersections between contours. All</span>
 <span class="sd">        successive duplicate vertices along the input contours must be</span>
@@ -280,7 +283,7 @@
         <span class="k">return</span> <span class="n">xi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">xconds</span><span class="p">)],</span> <span class="n">yi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">yconds</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.identify_pinwheels"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.pinwheels-module.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">[docs]</a>    <span class="k">def</span> <span class="nf">identify_pinwheels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.identify_pinwheels"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">[docs]</a>    <span class="k">def</span> <span class="nf">identify_pinwheels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Locates the pinwheels from the intersection of the real and</span>
 <span class="sd">        imaginary contours of of polar OR map.</span>
@@ -316,7 +319,7 @@
 
 <li><a href="../../../index.html">Home</a></li>
 <li><a href="../../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 <li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
 <li><a href="../../../site_map.html">Site Map</a></li>
 </ul>
@@ -358,7 +361,7 @@
 
 <li><a href="../../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -367,7 +370,6 @@
 
 
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../featuremapper.html" >featuremapper</a> &raquo;</li>
           <li><a href="../analysis.html" >featuremapper.analysis</a> &raquo;</li>
 
 </ul></li>

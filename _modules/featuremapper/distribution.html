@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>featuremapper.distribution &mdash; FeatureMapper 0.1a documentation</title>
+    <title>featuremapper.distribution &mdash; FeatureMapper</title>
     
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/custom.js"></script>
-    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
-    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+    <link rel="top" title="FeatureMapper" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,7 +42,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -50,8 +50,7 @@
 
 
 
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li>
 
 </ul></li>
 
@@ -94,7 +93,7 @@
     <span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">()</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;scipy.optimize not available, dummy von Mises fit&quot;</span><span class="p">)</span>
     <span class="n">unavailable_scipy_optimize</span> <span class="o">=</span> <span class="bp">True</span>
 
-<div class="viewcode-block" id="arg"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.arg">[docs]</a><span class="k">def</span> <span class="nf">arg</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="arg"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.arg">[docs]</a><span class="k">def</span> <span class="nf">arg</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the complex argument (phase) of z.</span>
 <span class="sd">    (z in radians.)</span>
@@ -103,7 +102,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="wrap"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.wrap">[docs]</a><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="wrap"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.wrap">[docs]</a><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">lower</span><span class="p">,</span> <span class="n">upper</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Circularly alias the numeric value x into the range [lower,upper).</span>
 
@@ -118,7 +117,7 @@
     <span class="k">return</span> <span class="n">lower</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">fmod</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">lower</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">range_</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">range_</span><span class="p">))),</span> <span class="n">range_</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Distribution"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution">[docs]</a><span class="k">class</span> <span class="nc">Distribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution">[docs]</a><span class="k">class</span> <span class="nc">Distribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Holds a distribution of the values f(x) associated with a variable x.</span>
 
@@ -193,7 +192,7 @@
         <span class="k">return</span> <span class="bp">None</span>
 
 
-<div class="viewcode-block" id="Distribution.get_value"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.get_value"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the value of the specified bin.</span>
 
@@ -202,7 +201,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">bin</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.get_count"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.get_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.get_count"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.get_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the count from the specified bin.</span>
 
@@ -211,7 +210,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">bin</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.values"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.values"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of values.</span>
 
@@ -226,7 +225,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.counts"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.counts">[docs]</a>    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.counts"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.counts">[docs]</a>    <span class="k">def</span> <span class="nf">counts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of values.</span>
 
@@ -241,14 +240,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.bins"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.bins">[docs]</a>    <span class="k">def</span> <span class="nf">bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.bins"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.bins">[docs]</a>    <span class="k">def</span> <span class="nf">bins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of bins that have been populated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.add"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.add"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a set of new data in the form of a dictionary of (bin,</span>
 <span class="sd">        value) pairs.  If the bin already exists, the value is added</span>
@@ -290,7 +289,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">new_bin</span><span class="p">]</span> <span class="o">+=</span> <span class="n">new_value</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.sub_distr"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.sub_distr">[docs]</a>    <span class="k">def</span> <span class="nf">sub_distr</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">distr</span> <span class="p">):</span>
+<div class="viewcode-block" id="Distribution.sub_distr"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.sub_distr">[docs]</a>    <span class="k">def</span> <span class="nf">sub_distr</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">distr</span> <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subtract the given distribution from the current one.</span>
 <span class="sd">        Only existing bins are modified, new bins in the given</span>
@@ -306,22 +305,22 @@
                 <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-=</span> <span class="n">v</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.max_value_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.max_value_bin">[docs]</a>    <span class="k">def</span> <span class="nf">max_value_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.max_value_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.max_value_bin">[docs]</a>    <span class="k">def</span> <span class="nf">max_value_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the bin with the largest value.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.weighted_sum"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.weighted_sum">[docs]</a>    <span class="k">def</span> <span class="nf">weighted_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.weighted_sum"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.weighted_sum">[docs]</a>    <span class="k">def</span> <span class="nf">weighted_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the sum of each value times its bin.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.value_mag"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.value_mag">[docs]</a>    <span class="k">def</span> <span class="nf">value_mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.value_mag"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.value_mag">[docs]</a>    <span class="k">def</span> <span class="nf">value_mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the value of a single bin as a proportion of total_value.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safe_divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">bin</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_value</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="Distribution.count_mag"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Distribution.count_mag">[docs]</a>    <span class="k">def</span> <span class="nf">count_mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
+<div class="viewcode-block" id="Distribution.count_mag"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Distribution.count_mag">[docs]</a>    <span class="k">def</span> <span class="nf">count_mag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the count of a single bin as a proportion of total_count.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safe_divide</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">bin</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_count</span><span class="p">))</span>
         <span class="c"># use of float()</span>
@@ -360,7 +359,7 @@
             <span class="k">return</span> <span class="n">numerator</span><span class="o">/</span><span class="n">denominator</span>
 
 </div>
-<div class="viewcode-block" id="Pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.Pref">[docs]</a><span class="k">class</span> <span class="nc">Pref</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<div class="viewcode-block" id="Pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.Pref">[docs]</a><span class="k">class</span> <span class="nc">Pref</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class simply collects named arguments into a dictionary</span>
 
@@ -380,7 +379,7 @@
 
 
 </div>
-<div class="viewcode-block" id="DistributionStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DistributionStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DistributionStatisticFn</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">):</span>
+<div class="viewcode-block" id="DistributionStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DistributionStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DistributionStatisticFn</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">Parameterized</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for various functions performing statistics on a distribution.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -411,12 +410,12 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 </div>
-<div class="viewcode-block" id="DescriptiveStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DescriptiveStatisticFn</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DescriptiveStatisticFn</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class for basic descriptive statistics</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DescriptiveStatisticFn.vector_sum"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveStatisticFn.vector_sum">[docs]</a>    <span class="k">def</span> <span class="nf">vector_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveStatisticFn.vector_sum"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveStatisticFn.vector_sum">[docs]</a>    <span class="k">def</span> <span class="nf">vector_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).</span>
 
@@ -468,7 +467,7 @@
         <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">_safe_divide</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">weighted_sum</span><span class="p">(),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
 
-<div class="viewcode-block" id="DescriptiveStatisticFn.selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveStatisticFn.selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveStatisticFn.selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveStatisticFn.selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a measure of the peakedness of the distribution.  The</span>
 <span class="sd">        calculation differs depending on whether this is a cyclic</span>
@@ -547,13 +546,13 @@
 
 
 </div>
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DescriptiveBimodalStatisticFn</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">DescriptiveBimodalStatisticFn</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract class for descriptive statistics of two-modes distributions</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_max_value_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_max_value_bin">[docs]</a>    <span class="k">def</span> <span class="nf">second_max_value_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_max_value_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_max_value_bin">[docs]</a>    <span class="k">def</span> <span class="nf">second_max_value_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the bin with the second largest value.</span>
 <span class="sd">        If there is one bin only, return it. This is not a correct result,</span>
@@ -573,7 +572,7 @@
         <span class="k">return</span> <span class="n">m</span>
 
 </div>
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">second_selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">second_selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the selectivity of the second largest value in the distribution.</span>
 <span class="sd">        If there is one bin only, the selectivity is 0, since there is no second</span>
@@ -623,7 +622,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safe_divide</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
 
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak_bin">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak_bin"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak_bin">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak_bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the bin with the second peak in the distribution.</span>
 <span class="sd">        Unlike second_max_value_bin(), it does not return a bin which is the</span>
@@ -687,7 +686,7 @@
         <span class="k">return</span> <span class="n">ks</span><span class="p">[</span><span class="n">im</span><span class="p">]</span>
 
 </div>
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak_selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak_selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak_selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak_selectivity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak_selectivity">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak_selectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the selectivity of the second peak in the distribution.</span>
 
@@ -711,7 +710,7 @@
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">scaled</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+<div class="viewcode-block" id="DescriptiveBimodalStatisticFn.second_peak"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DescriptiveBimodalStatisticFn.second_peak">[docs]</a>    <span class="k">def</span> <span class="nf">second_peak</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return preference and selectivity of the second peak in the distribution.</span>
 
@@ -740,7 +739,7 @@
     <span class="n">__abstract</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
-<div class="viewcode-block" id="DSF_MaxValue"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_MaxValue">[docs]</a><span class="k">class</span> <span class="nc">DSF_MaxValue</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_MaxValue"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_MaxValue">[docs]</a><span class="k">class</span> <span class="nc">DSF_MaxValue</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the peak value of the given distribution</span>
 
@@ -755,7 +754,7 @@
 
 
 </div>
-<div class="viewcode-block" id="DSF_WeightedAverage"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_WeightedAverage">[docs]</a><span class="k">class</span> <span class="nc">DSF_WeightedAverage</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_WeightedAverage"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_WeightedAverage">[docs]</a><span class="k">class</span> <span class="nc">DSF_WeightedAverage</span><span class="p">(</span><span class="n">DescriptiveStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the main mode of the given distribution</span>
 
@@ -790,7 +789,7 @@
 
 
 </div>
-<div class="viewcode-block" id="DSF_TopTwoValues"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_TopTwoValues">[docs]</a><span class="k">class</span> <span class="nc">DSF_TopTwoValues</span><span class="p">(</span><span class="n">DescriptiveBimodalStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_TopTwoValues"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_TopTwoValues">[docs]</a><span class="k">class</span> <span class="nc">DSF_TopTwoValues</span><span class="p">(</span><span class="n">DescriptiveBimodalStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the two max values of distributions in the given matrix</span>
 
@@ -811,7 +810,7 @@
         <span class="k">return</span> <span class="n">r</span>
 
 </div>
-<div class="viewcode-block" id="DSF_BimodalPeaks"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_BimodalPeaks">[docs]</a><span class="k">class</span> <span class="nc">DSF_BimodalPeaks</span><span class="p">(</span><span class="n">DescriptiveBimodalStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_BimodalPeaks"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_BimodalPeaks">[docs]</a><span class="k">class</span> <span class="nc">DSF_BimodalPeaks</span><span class="p">(</span><span class="n">DescriptiveBimodalStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the two peak values of distributions in the given matrix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -830,7 +829,7 @@
 
 
 </div>
-<div class="viewcode-block" id="VonMisesStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.VonMisesStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">VonMisesStatisticFn</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="VonMisesStatisticFn"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.VonMisesStatisticFn">[docs]</a><span class="k">class</span> <span class="nc">VonMisesStatisticFn</span><span class="p">(</span><span class="n">DistributionStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for von Mises statistics</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -876,7 +875,7 @@
         <span class="k">return</span> <span class="n">t</span>
 
 
-<div class="viewcode-block" id="VonMisesStatisticFn.von_mises"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.VonMisesStatisticFn.von_mises">[docs]</a>    <span class="k">def</span> <span class="nf">von_mises</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="VonMisesStatisticFn.von_mises"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.VonMisesStatisticFn.von_mises">[docs]</a>    <span class="k">def</span> <span class="nf">von_mises</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a simplified von Mises function.</span>
 
@@ -894,7 +893,7 @@
         <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 
 </div>
-<div class="viewcode-block" id="VonMisesStatisticFn.von2_mises"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.VonMisesStatisticFn.von2_mises">[docs]</a>    <span class="k">def</span> <span class="nf">von2_mises</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="VonMisesStatisticFn.von2_mises"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.VonMisesStatisticFn.von2_mises">[docs]</a>    <span class="k">def</span> <span class="nf">von2_mises</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute a simplified bimodal von Mises function</span>
 
@@ -918,7 +917,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">m</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="VonMisesStatisticFn.fit_vm"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.VonMisesStatisticFn.fit_vm">[docs]</a>    <span class="k">def</span> <span class="nf">fit_vm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
+<div class="viewcode-block" id="VonMisesStatisticFn.fit_vm"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.VonMisesStatisticFn.fit_vm">[docs]</a>    <span class="k">def</span> <span class="nf">fit_vm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the best fit of the monovariate von Mises function in the</span>
 <span class="sd">        semi-circle.</span>
@@ -1015,7 +1014,7 @@
         <span class="k">return</span> <span class="s">&quot;unknown exit code&quot;</span>
 
 
-<div class="viewcode-block" id="VonMisesStatisticFn.fit_v2m"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.VonMisesStatisticFn.fit_v2m">[docs]</a>    <span class="k">def</span> <span class="nf">fit_v2m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
+<div class="viewcode-block" id="VonMisesStatisticFn.fit_v2m"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.VonMisesStatisticFn.fit_v2m">[docs]</a>    <span class="k">def</span> <span class="nf">fit_v2m</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the best fit of the bivariate von Mises function in the</span>
 <span class="sd">        semi-circle.</span>
@@ -1091,7 +1090,7 @@
 
 
 </div>
-<div class="viewcode-block" id="DSF_VonMisesFit"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_VonMisesFit">[docs]</a><span class="k">class</span> <span class="nc">DSF_VonMisesFit</span><span class="p">(</span><span class="n">VonMisesStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_VonMisesFit"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_VonMisesFit">[docs]</a><span class="k">class</span> <span class="nc">DSF_VonMisesFit</span><span class="p">(</span><span class="n">VonMisesStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the main mode of distribution in the given matrix, by fit with von Mises function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1118,7 +1117,7 @@
 
 
 </div>
-<div class="viewcode-block" id="DSF_BimodalVonMisesFit"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.distribution-module.html#featuremapper.distribution.DSF_BimodalVonMisesFit">[docs]</a><span class="k">class</span> <span class="nc">DSF_BimodalVonMisesFit</span><span class="p">(</span><span class="n">VonMisesStatisticFn</span><span class="p">):</span>
+<div class="viewcode-block" id="DSF_BimodalVonMisesFit"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.distribution.DSF_BimodalVonMisesFit">[docs]</a><span class="k">class</span> <span class="nc">DSF_BimodalVonMisesFit</span><span class="p">(</span><span class="n">VonMisesStatisticFn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the two modes of distributions in the given matrix, by fit with von Mises function</span>
 
@@ -1200,7 +1199,7 @@
 
 <li><a href="../../index.html">Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 <li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
 <li><a href="../../site_map.html">Site Map</a></li>
 </ul>
@@ -1242,7 +1241,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -1251,7 +1250,6 @@
 
 
           <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
 
 </ul></li>
 

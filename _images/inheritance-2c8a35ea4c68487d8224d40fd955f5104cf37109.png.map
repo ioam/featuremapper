@@ -1,0 +1,15 @@
+<map id="inheritance67524b9151" name="inheritance67524b9151">
+<area shape="rect" id="node1" href="#featuremapper.distribution.DSF_BimodalPeaks" title="Return the two peak values of distributions in the given matrix" alt="" coords="950,64,1148,80"/>
+<area shape="rect" id="node2" href="#featuremapper.distribution.DescriptiveBimodalStatisticFn" title="Abstract class for descriptive statistics of two&#45;modes distributions" alt="" coords="679,79,920,95"/>
+<area shape="rect" id="node7" href="#featuremapper.distribution.DSF_TopTwoValues" title="Return the two max values of distributions in the given matrix" alt="" coords="951,95,1147,111"/>
+<area shape="rect" id="node3" href="#featuremapper.distribution.DSF_BimodalVonMisesFit" title="Return the two modes of distributions in the given matrix, by fit with von Mises function" alt="" coords="689,18,910,34"/>
+<area shape="rect" id="node4" href="#featuremapper.distribution.VonMisesStatisticFn" title="Base class for von Mises statistics" alt="" coords="444,49,645,64"/>
+<area shape="rect" id="node8" href="#featuremapper.distribution.DSF_VonMisesFit" title="Return the main mode of distribution in the given matrix, by fit with von Mises function." alt="" coords="705,49,893,64"/>
+<area shape="rect" id="node5" href="#featuremapper.distribution.DSF_MaxValue" title="Return the peak value of the given distribution" alt="" coords="709,110,890,126"/>
+<area shape="rect" id="node6" href="#featuremapper.distribution.DescriptiveStatisticFn" title="Abstract class for basic descriptive statistics" alt="" coords="440,95,649,111"/>
+<area shape="rect" id="node9" href="#featuremapper.distribution.DSF_WeightedAverage" title="Return the main mode of the given distribution" alt="" coords="694,141,905,156"/>
+<area shape="rect" id="node10" href="#featuremapper.distribution.DistributionStatisticFn" title="Base class for various functions performing statistics on a distribution." alt="" coords="201,64,410,80"/>
+<area shape="rect" id="node11" href="#featuremapper.distribution.Distribution" title="Holds a distribution of the values f(x) associated with a variable x." alt="" coords="3,34,171,49"/>
+<area shape="rect" id="node12" title="Base class for named objects that support Parameters and message" alt="" coords="7,64,168,80"/>
+<area shape="rect" id="node13" href="#featuremapper.distribution.Pref" title="This class simply collects named arguments into a dictionary" alt="" coords="18,3,156,19"/>
+</map>

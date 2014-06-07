@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>featuremapper.command &mdash; FeatureMapper 0.1a documentation</title>
+    <title>featuremapper.command &mdash; FeatureMapper</title>
     
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/custom.js"></script>
-    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
-    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+    <link rel="top" title="FeatureMapper" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,7 +42,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -50,8 +50,7 @@
 
 
 
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li>
 
 </ul></li>
 
@@ -93,13 +92,13 @@
     <span class="n">GaussiansCorner</span><span class="p">,</span> <span class="n">OrientationContrast</span>
 <span class="kn">from</span> <span class="nn">dataviews.ndmapping</span> <span class="kn">import</span> <span class="n">AttrDict</span>
 <span class="kn">from</span> <span class="nn">dataviews.sheetviews</span> <span class="kn">import</span> <span class="n">SheetStack</span><span class="p">,</span> <span class="n">SheetView</span><span class="p">,</span> <span class="n">CoordinateGrid</span>
+<span class="kn">from</span> <span class="nn">dataviews.collector</span> <span class="kn">import</span> <span class="n">AttrTree</span><span class="p">,</span> <span class="n">Collector</span>
 
 <span class="kn">import</span> <span class="nn">imagen</span>
 <span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">random</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper</span> <span class="kn">import</span> <span class="n">FeatureResponses</span><span class="p">,</span> <span class="n">FeatureMaps</span><span class="p">,</span> <span class="n">FeatureCurves</span><span class="p">,</span> \
     <span class="n">ReverseCorrelation</span>
-<span class="kn">from</span> <span class="nn">collector</span> <span class="kn">import</span> <span class="n">ViewContainer</span>
 <span class="kn">import</span> <span class="nn">features</span> <span class="kn">as</span> <span class="nn">f</span>
 <span class="kn">from</span> <span class="nn">metaparams</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">distribution</span> <span class="kn">import</span> <span class="n">DSF_MaxValue</span><span class="p">,</span> <span class="n">DistributionStatisticFn</span><span class="p">,</span> \
@@ -388,13 +387,12 @@
 
 
     <span class="k">def</span> <span class="nf">_populate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
-        <span class="n">grid_container</span> <span class="o">=</span> <span class="n">ViewContainer</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">coord</span><span class="p">,</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">coord_stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="n">grid_container</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">coord_stack</span><span class="p">)</span>
+        <span class="n">grid_container</span> <span class="o">=</span> <span class="n">AttrTree</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">coord</span><span class="p">,</span> <span class="n">viewgroup</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">viewgroup</span><span class="o">.</span><span class="n">path_items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">coord_stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">grid_container</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">coord_stack</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">grid_container</span>
 
 
@@ -442,7 +440,8 @@
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">post_presentation_hooks</span><span class="p">:</span> <span class="n">f</span><span class="p">()</span>
 
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collate_results</span><span class="p">(</span><span class="n">responses</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collate_results</span><span class="p">(</span><span class="n">responses</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">:</span>
             <span class="n">p</span><span class="o">.</span><span class="n">measurement_storage_hook</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
@@ -450,20 +449,25 @@
         <span class="k">return</span> <span class="n">results</span>
 
 
-    <span class="k">def</span> <span class="nf">_collate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">responses</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_collate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">responses</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">timestamp</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">Time</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">Duration</span><span class="p">]</span>
 
-        <span class="n">results</span> <span class="o">=</span> <span class="n">ViewContainer</span><span class="p">()</span>
+        <span class="n">response_label</span> <span class="o">=</span> <span class="n">label</span> <span class="o">+</span> <span class="s">&#39; Response&#39;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">AttrTree</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">responses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">duration</span> <span class="o">=</span> <span class="n">label</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="p">(</span><span class="n">response_label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">response_label</span><span class="p">])</span>
             <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;outputs&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;Response&#39;</span><span class="p">,</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">metadata</span><span class="p">))</span>
-            <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span>
-                           <span class="n">label</span><span class="o">=</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">(),</span> <span class="s">&#39;Activity&#39;</span><span class="p">]),</span>
-                           <span class="n">metadata</span><span class="o">=</span><span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="p">))</span>
-            <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;Response&#39;</span><span class="p">,</span> <span class="n">sv</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">duration</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="o">**</span><span class="n">metadata</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span>
+
+            <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Activity&#39;</span><span class="p">)</span>
+            <span class="n">sv</span><span class="o">.</span><span class="n">metadata</span><span class="o">=</span><span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">path_items</span><span class="p">[</span><span class="n">path</span><span class="p">][(</span><span class="n">time</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sv</span>
         <span class="k">return</span> <span class="n">results</span>
 
 
@@ -475,7 +479,7 @@
 
 
 
-<div class="viewcode-block" id="measure_rfs"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_rfs">[docs]</a><span class="k">class</span> <span class="nc">measure_rfs</span><span class="p">(</span><span class="n">SingleInputResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_rfs"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_rfs">[docs]</a><span class="k">class</span> <span class="nc">measure_rfs</span><span class="p">(</span><span class="n">SingleInputResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map receptive fields by reverse correlation.</span>
 
@@ -547,7 +551,7 @@
 
 
 
-<div class="viewcode-block" id="measure_sine_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_sine_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_sine_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_sine_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_sine_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_sine_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measure preferences for sine gratings in various combinations.</span>
 <span class="sd">    Can measure orientation, spatial frequency, spatial phase,</span>
@@ -632,7 +636,7 @@
 
 
 </div>
-<div class="viewcode-block" id="measure_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_or_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_or_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure an orientation preference map by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">subplot</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="s">&quot;Orientation&quot;</span><span class="p">)</span>
@@ -651,7 +655,7 @@
 
 
 </div>
-<div class="viewcode-block" id="measure_od_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_od_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_od_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_od_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_od_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_od_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measure an ocular dominance preference map by collating the response to patterns.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -669,7 +673,7 @@
 
 
 </div>
-<div class="viewcode-block" id="measure_phasedisparity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_phasedisparity">[docs]</a><span class="k">class</span> <span class="nc">measure_phasedisparity</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_phasedisparity"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_phasedisparity">[docs]</a><span class="k">class</span> <span class="nc">measure_phasedisparity</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measure a phase disparity preference map by collating the response to patterns.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -695,7 +699,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">PhaseDisparity</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">num_disparity</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_dr_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_dr_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_dr_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_dr_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_dr_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_dr_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure a direction preference map by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">metafeature_fns</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">contrast2scale</span><span class="p">,</span>
@@ -741,7 +745,7 @@
                               <span class="n">compute_fn</span><span class="o">=</span><span class="n">compute_orientation_from_direction</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_hue_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_hue_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_hue_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_hue_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_hue_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_hue_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure a hue preference map by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">metafeature_fns</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">HookList</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">contrast2scale</span><span class="p">,</span>
@@ -766,7 +770,7 @@
 
 
 </div>
-<div class="viewcode-block" id="measure_second_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_second_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_second_or_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_second_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_second_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_second_or_pref</span><span class="p">(</span><span class="n">SinusoidalMeasureResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure the secondary  orientation preference maps.&quot;&quot;&quot;</span>
 
     <span class="n">num_orientation</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Integer</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
@@ -800,7 +804,7 @@
         <span class="n">Gaussian</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)])</span>
 
 
-<div class="viewcode-block" id="measure_corner_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_corner_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_corner_or_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_corner_or_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_corner_or_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_corner_or_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure a corner preference map by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">scale</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
@@ -829,7 +833,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">Orientation</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span> <span class="n">steps</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">num_orientation</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_corner_angle_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_corner_angle_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_corner_angle_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_corner_angle_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_corner_angle_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_corner_angle_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate the preference map for angle shapes, by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">scale</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
@@ -917,7 +921,7 @@
         <span class="k">return</span> <span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_img_fname</span> <span class="p">)</span>
 
 </div>
-<div class="viewcode-block" id="measure_position_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_position_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_position_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_position_pref"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_position_pref">[docs]</a><span class="k">class</span> <span class="nc">measure_position_pref</span><span class="p">(</span><span class="n">PositionMeasurementCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Measure a position preference map by collating the response to patterns.&quot;&quot;&quot;</span>
 
     <span class="n">scale</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
@@ -929,7 +933,7 @@
                     <span class="n">preference_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preference_fn</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_or_tuning_fullfield"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_or_tuning_fullfield">[docs]</a><span class="k">class</span> <span class="nc">measure_or_tuning_fullfield</span><span class="p">(</span><span class="n">FeatureCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_or_tuning_fullfield"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_or_tuning_fullfield">[docs]</a><span class="k">class</span> <span class="nc">measure_or_tuning_fullfield</span><span class="p">(</span><span class="n">FeatureCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures orientation tuning curve(s) of a particular unit using a</span>
 <span class="sd">    full-field sine grating stimulus.</span>
@@ -951,7 +955,7 @@
     <span class="n">pattern_generator</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">SineGrating</span><span class="p">())</span>
 
 </div>
-<div class="viewcode-block" id="measure_or_tuning"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_or_tuning">[docs]</a><span class="k">class</span> <span class="nc">measure_or_tuning</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_or_tuning"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_or_tuning">[docs]</a><span class="k">class</span> <span class="nc">measure_or_tuning</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures orientation tuning curve(s) of a particular unit.</span>
 
@@ -991,7 +995,7 @@
 
 
 </div>
-<div class="viewcode-block" id="measure_size_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_size_response">[docs]</a><span class="k">class</span> <span class="nc">measure_size_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_size_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_size_response">[docs]</a><span class="k">class</span> <span class="nc">measure_size_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measure receptive field size of one unit of a sheet.</span>
 
@@ -1052,7 +1056,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">contrasts</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_contrast_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_contrast_response">[docs]</a><span class="k">class</span> <span class="nc">measure_contrast_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_contrast_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_contrast_response">[docs]</a><span class="k">class</span> <span class="nc">measure_contrast_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures contrast response curves for a particular unit.</span>
 
@@ -1113,7 +1117,7 @@
                                       <span class="k">for</span> <span class="n">ro</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">relative_orientations</span><span class="p">])]</span>
 
 </div>
-<div class="viewcode-block" id="measure_frequency_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_frequency_response">[docs]</a><span class="k">class</span> <span class="nc">measure_frequency_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_frequency_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_frequency_response">[docs]</a><span class="k">class</span> <span class="nc">measure_frequency_response</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measure spatial frequency preference of one unit of a sheet.</span>
 
@@ -1174,7 +1178,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">contrasts</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="measure_orientation_contrast"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.command-module.html#featuremapper.command.measure_orientation_contrast">[docs]</a><span class="k">class</span> <span class="nc">measure_orientation_contrast</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_orientation_contrast"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_orientation_contrast">[docs]</a><span class="k">class</span> <span class="nc">measure_orientation_contrast</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Measures the response to a center sine grating disk and a surround</span>
 <span class="sd">    sine grating ring at different contrasts of the central disk.</span>
@@ -1220,10 +1224,7 @@
         <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="s">&quot;sizecenter&quot;</span><span class="p">,</span> <span class="s">&quot;sizesurround&quot;</span><span class="p">,</span> <span class="s">&quot;orientationcenter&quot;</span><span class="p">,</span>
                  <span class="s">&quot;thickness&quot;</span><span class="p">,</span> <span class="s">&quot;contrastcenter&quot;</span><span class="p">])</span>
 
-
-
     <span class="n">or_surrounds</span> <span class="o">=</span> <span class="p">[]</span>
-
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">ParamOverrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">allow_extra_keywords</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1259,6 +1260,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">OrientationSurround</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">or_surrounds</span><span class="p">),</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">ContrastSurround</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">contrastsurround</span><span class="p">,</span>
                                    <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)]</span>
+
 
 </div>
 <span class="k">class</span> <span class="nc">test_measure</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
@@ -1302,6 +1304,25 @@
     <span class="s">&quot;measure_size_response&quot;</span><span class="p">,</span>
     <span class="s">&quot;test_measure&quot;</span>
 <span class="p">]</span>
+
+
+<span class="c">#=================#</span>
+<span class="c"># Collector hooks #</span>
+<span class="c">#=================#</span>
+
+
+<span class="k">def</span> <span class="nf">array_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">measurement_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pattern_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="p">[:]</span>
+
+<span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">array_hook</span><span class="p">)</span>
+<span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">MeasureResponseCommand</span><span class="p">,</span>  <span class="n">measurement_hook</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;merge&#39;</span><span class="p">)</span>
+<span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">imagen</span><span class="o">.</span><span class="n">PatternGenerator</span><span class="p">,</span> <span class="n">pattern_hook</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -1314,7 +1335,7 @@
 
 <li><a href="../../index.html">Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 <li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
 <li><a href="../../site_map.html">Site Map</a></li>
 </ul>
@@ -1356,7 +1377,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -1365,7 +1386,6 @@
 
 
           <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
 
 </ul></li>
 

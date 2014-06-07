@@ -1,0 +1,6 @@
+<map id="inheritance4ea281de0a" name="inheritance4ea281de0a">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="555,4,758,25"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="Estimation of hypercolumn distance in a cyclic preference map from" alt="" coords="799,4,1147,25"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="257,4,514,25"/>
+<area shape="rect" id="node4" title="Base class for named objects that support Parameters and message" alt="" coords="4,4,218,25"/>
+</map>

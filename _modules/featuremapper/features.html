@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>featuremapper.features &mdash; FeatureMapper 0.1a documentation</title>
+    <title>featuremapper.features &mdash; FeatureMapper</title>
     
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/custom.js"></script>
-    <link rel="top" title="FeatureMapper 0.1a documentation" href="../../index.html" />
-    <link rel="up" title="featuremapper" href="../featuremapper.html" /> 
+    <link rel="top" title="FeatureMapper" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,7 +42,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -50,8 +50,7 @@
 
 
 
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" accesskey="U">featuremapper</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li>
 
 </ul></li>
 
@@ -74,7 +73,7 @@
 
 
 
-<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.features-module.html#featuremapper.features.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
+<div class="viewcode-block" id="Feature"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.features.Feature">[docs]</a><span class="k">class</span> <span class="nc">Feature</span><span class="p">(</span><span class="n">Dimension</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Specifies several parameters required for generating a map of one input</span>
 <span class="sd">    feature.</span>
@@ -149,32 +148,32 @@
 <span class="n">Hue</span>                 <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;hue&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 
 <span class="n">FullCycle</span>           <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;full cycle&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-<span class="n">Angle</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;angle&quot;</span><span class="p">)</span>
-<span class="n">Direction</span>           <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;direction&quot;</span><span class="p">)</span>
-<span class="n">Phase</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;phase&quot;</span><span class="p">)</span>
-<span class="n">PhaseDisparity</span>      <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;phasedisparity&quot;</span><span class="p">)</span>
+<span class="n">Angle</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;Angle&quot;</span><span class="p">)</span>
+<span class="n">Direction</span>           <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;Direction&quot;</span><span class="p">)</span>
+<span class="n">Phase</span>               <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;Phase&quot;</span><span class="p">)</span>
+<span class="n">PhaseDisparity</span>      <span class="o">=</span> <span class="n">FullCycle</span><span class="p">(</span><span class="s">&quot;PhaseDisparity&quot;</span><span class="p">)</span>
 
 <span class="n">HalfCycle</span>           <span class="o">=</span> <span class="n">Cyclic</span><span class="p">(</span><span class="s">&quot;half cycle&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-<span class="n">Orientation</span>         <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;orientation&quot;</span><span class="p">)</span>
-<span class="n">OrientationSurround</span> <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;orientationsurround&quot;</span><span class="p">)</span>
+<span class="n">Orientation</span>         <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;Orientation&quot;</span><span class="p">)</span>
+<span class="n">OrientationSurround</span> <span class="o">=</span> <span class="n">HalfCycle</span><span class="p">(</span><span class="s">&quot;OrientationSurround&quot;</span><span class="p">)</span>
 
 <span class="c"># Non-cyclic features</span>
-<span class="n">Frequency</span>    <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;cycles per unit distance&quot;</span><span class="p">)</span>
-<span class="n">Presentation</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;presentation&quot;</span><span class="p">)</span>
-<span class="n">Size</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;size&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;Diameter&quot;</span><span class="p">)</span>
-<span class="n">Scale</span>        <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;scale&quot;</span><span class="p">)</span>
-<span class="n">X</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span>
-<span class="n">Y</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">Frequency</span>    <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Frequency&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;cycles per unit distance&quot;</span><span class="p">)</span>
+<span class="n">Presentation</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;Presentation&quot;</span><span class="p">)</span>
+<span class="n">Size</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Size&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;Diameter&quot;</span><span class="p">)</span>
+<span class="n">Scale</span>        <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Scale&quot;</span><span class="p">)</span>
+<span class="n">X</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;X&quot;</span><span class="p">)</span>
+<span class="n">Y</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Y&quot;</span><span class="p">)</span>
 
 <span class="c"># Complex features</span>
-<span class="n">Contrast</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;contrast&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;%&quot;</span><span class="p">)</span>
-<span class="n">ContrastSurround</span> <span class="o">=</span> <span class="n">Contrast</span><span class="p">(</span><span class="s">&quot;contrastsurround&quot;</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">Ocular</span>           <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;ocular&quot;</span><span class="p">)</span>
-<span class="n">Speed</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;speed&quot;</span><span class="p">)</span>
+<span class="n">Contrast</span>         <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Contrast&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s">&quot;%&quot;</span><span class="p">)</span>
+<span class="n">ContrastSurround</span> <span class="o">=</span> <span class="n">Contrast</span><span class="p">(</span><span class="s">&quot;ContrastSurround&quot;</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">Ocular</span>           <span class="o">=</span> <span class="n">Integer</span><span class="p">(</span><span class="s">&quot;Ocular&quot;</span><span class="p">)</span>
+<span class="n">Speed</span>            <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="s">&quot;Speed&quot;</span><span class="p">)</span>
 
 <span class="c"># Time features</span>
-<span class="n">Time</span>     <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">Dynamic</span><span class="o">.</span><span class="n">time_fn</span><span class="o">.</span><span class="n">time_type</span><span class="p">)</span>
-<span class="n">Duration</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s">&quot;duration&quot;</span><span class="p">)</span>
+<span class="n">Time</span>     <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">Dynamic</span><span class="o">.</span><span class="n">time_fn</span><span class="o">.</span><span class="n">time_type</span><span class="p">)</span>
+<span class="n">Duration</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s">&quot;Duration&quot;</span><span class="p">)</span>
 
 <span class="n">Feature</span><span class="o">.</span><span class="n">_init</span> <span class="o">=</span> <span class="bp">True</span> <span class="c"># All Features created externally have to supply range or values</span>
 </pre></div>
@@ -189,7 +188,7 @@
 
 <li><a href="../../index.html">Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 <li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
 <li><a href="../../site_map.html">Site Map</a></li>
 </ul>
@@ -231,7 +230,7 @@
 
 <li><a href="../../index.html">FeatureMapper Home</a></li>
 <li><a href="../../Tutorials/index.html">Tutorials</a></li>
-<li><a href="../../Reference_Manual/featuremapper-module.html">Reference Manual</a></li>
+<li><a href="../../Reference_Manual/featuremapper.html">Reference Manual</a></li>
 
 
 
@@ -240,7 +239,6 @@
 
 
           <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../featuremapper.html" >featuremapper</a> &raquo;</li>
 
 </ul></li>
 

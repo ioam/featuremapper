@@ -1,0 +1,877 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>featuremapper.analysis Package &mdash; FeatureMapper</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/custom.js"></script>
+    <link rel="top" title="FeatureMapper" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="featuremapper-analysis-package">
+<h1>featuremapper.analysis Package<a class="headerlink" href="#featuremapper-analysis-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="analysis-package">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">analysis</span></tt> Package<a class="headerlink" href="#analysis-package" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="../_images/inheritance-d1f955327d7b0887bd5ac7ed47cc18273c7f68ea.png" alt="Inheritance diagram of featuremapper.analysis" usemap="#inheritanceed6e039036" class="inheritance"/>
+<map id="inheritanceed6e039036" name="inheritanceed6e039036">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="620,4,847,28"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.decode_feature" title="Estimate the value of a feature from the current activity pattern" alt="" coords="892,4,1146,28"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="287,4,575,28"/>
+<area shape="rect" id="node4" title="Base class for named objects that support Parameters and message" alt="" coords="5,4,243,28"/>
+</map>
+</p>
+<span class="target" id="module-featuremapper.analysis"></span><dl class="class">
+<dt id="featuremapper.analysis.decode_feature">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.</tt><tt class="descname">decode_feature</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis.html#decode_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.decode_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/dataviews/Reference_Manual/dataviews.operation-module.html#dataviews.operation.ViewOperation" title="(in DataViews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">dataviews.operation.ViewOperation</span></tt></a></p>
+<p>Estimate the value of a feature from the current activity pattern
+on a sheet and a preference map of the sheet. The activity and
+preference should be supplied as an Overlay or a Stack of Overlay
+objects.</p>
+<p>If weighted_average is False, the feature value returned is the
+value of the preference_map at the maximally active location.</p>
+<p>If weighted_average is True, the feature value is estimated by
+weighting the preference_map by the current activity level, and
+averaging the result across all units in the sheet.</p>
+<p>For instance, if preference_map is OrientationPreference (a cyclic
+quantity), then the result will be the vector average of the
+activated orientations.  For an orientation map this value should
+be an estimate of the orientation present on the input.</p>
+<p>Record the V1 activity in response to an oriented Gaussian and the
+orientation preference as follows and overlay them:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">act</span> <span class="o">=</span> <span class="n">measure_response</span><span class="p">(</span><span class="n">pattern_generator</span><span class="o">=</span><span class="n">imagen</span><span class="o">.</span><span class="n">Gaussian</span><span class="p">(),</span>
+                       <span class="n">durations</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])[</span><span class="s">&#39;V1&#39;</span><span class="p">]</span>
+<span class="n">pref</span> <span class="o">=</span> <span class="n">measure_or_pref</span><span class="p">()[</span><span class="s">&#39;V1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">last</span>
+<span class="n">ActivityPreferenceStack</span> <span class="o">=</span> <span class="n">act</span> <span class="o">*</span> <span class="n">pref</span>
+
+<span class="n">decode_feature</span><span class="p">(</span><span class="n">ActivityPreferenceStack</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">reference_value</span></tt> (<em>allow_None=True, bounds=None, constant=False, default=None, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>Allows specifying a reference value, to compute the error of the
+        decoded value.</dd>
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Decode as vector average if True or by maximal responding unit.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The label to identify the output of the ViewOperation. By
+        default this will match the name of the ViewOperation itself.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.debug">
+<tt class="descname">debug</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a debugging statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return {parameter_name:parameter.default} for all non-constant
+Parameters.</p>
+<p>Note that a Parameter for which instantiate==True has its default
+instantiated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.force_new_dynamic_value">
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4fc00&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.get_param_values">
+<tt class="descname">get_param_values</tt><big>(</big><em>onlychanged=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of name,value pairs for all Parameters of this
+object.</p>
+<p>If onlychanged is True, will only return values that are not
+equal to the default value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.get_value_generator">
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4fdb8&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.get_views">
+<tt class="descname">get_views</tt><big>(</big><em>view</em>, <em>pattern</em>, <em>view_type=&lt;class 'dataviews.sheetviews.sheetviews.SheetView'&gt;</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method that return a list of views with labels ending
+with the given pattern and which have the specified type. This
+may be useful to check is a single view satisfies some
+condition or to extract the appropriate views from an Overlay.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.inspect_value">
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4fec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.inspect_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.instance">
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4ff18&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.message">
+<tt class="descname">message</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a message.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.decode_feature.params">
+<em class="property">classmethod </em><tt class="descname">params</tt><big>(</big><em>parameter_name=None</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Parameters of this class as the
+dictionary {name: parameter_object}</p>
+<p>Includes Parameters from this class and its
+superclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.decode_feature.print_param_defaults">
+<em class="property">classmethod </em><tt class="descname">print_param_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.print_param_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the default values of all cls&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.print_param_values">
+<tt class="descname">print_param_values</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.print_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the values of all this object&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.script_repr">
+<tt class="descname">script_repr</tt><big>(</big><em>imports=</em>, <span class="optional">[</span><span class="optional">]</span><em>prefix='    '</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.script_repr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as Parameterized.script_repr, except that X.classname(Y
+is replaced with X.classname.instance(Y</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.decode_feature.set_default">
+<em class="property">classmethod </em><tt class="descname">set_default</tt><big>(</big><em>param_name</em>, <em>value</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default value of param_name.</p>
+<p>Equivalent to setting param_name on the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.set_dynamic_time_fn">
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4ffc8&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.decode_feature.set_param">
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b7910a4fe68&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.state_pop">
+<tt class="descname">state_pop</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.state_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the most recently saved state.</p>
+<p>See state_push() for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.state_push">
+<tt class="descname">state_push</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.state_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this instance&#8217;s state.</p>
+<p>For Parameterized instances, this includes the state of
+dynamically generated values.</p>
+<p>Subclasses that maintain short-term state should additionally
+save and restore that state using state_push() and
+state_pop().</p>
+<p>Generally, this method is used by operations that need to test
+something without permanently altering the objects&#8217; state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.verbose">
+<tt class="descname">verbose</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a verbose message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.decode_feature.warning">
+<tt class="descname">warning</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.decode_feature.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a warning, unless module variable
+warnings_as_exceptions is True, then raise an Exception
+containing the arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="hypercolumns-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">hypercolumns</span></tt> Module<a class="headerlink" href="#hypercolumns-module" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="../_images/inheritance-c34f48edbbd55fd3bac9c31f3324e7c524f3850f.png" alt="Inheritance diagram of featuremapper.analysis.hypercolumns" usemap="#inheritance4ea281de0a" class="inheritance"/>
+<map id="inheritance4ea281de0a" name="inheritance4ea281de0a">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="555,4,758,25"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="Estimation of hypercolumn distance in a cyclic preference map from" alt="" coords="799,4,1147,25"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="257,4,514,25"/>
+<area shape="rect" id="node4" title="Base class for named objects that support Parameters and message" alt="" coords="4,4,218,25"/>
+</map>
+</p>
+<span class="target" id="module-featuremapper.analysis.hypercolumns"></span><p>This module is used to analyse the hypercolumn structure of preference
+maps. Currently thsi file offers a means to estimate the hypercolumn
+distance from the Fourier power spectrum but different types of
+analysis (eg. wavelet analysis) may be introduced in future.</p>
+<dl class="class">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.hypercolumns.</tt><tt class="descname">PowerSpectrumAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/dataviews/Reference_Manual/dataviews.operation-module.html#dataviews.operation.ViewOperation" title="(in DataViews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">dataviews.operation.ViewOperation</span></tt></a></p>
+<p>Estimation of hypercolumn distance in a cyclic preference map from
+the size of the ring in the fourier power spectrum, following the
+methods described in the in the supplementary materials of
+<a href="#id1"><span class="problematic" id="id2">``</span></a>Universality in the Evolution of Orientation Columns in the
+Visual Cortex&#8217;&#8216;, Kaschube et al. 2010.</p>
+<p>If supplied with a preference overlayed with pinwheels, the
+pinwheel_density is computed from kmax (the wavenumber of highest
+power) using the equation:</p>
+<p>rho = pinwheel count/(kmax**2)</p>
+<p>This is then used to generate a map quality estimate (with unit
+range) based on the pi-pinwheel density criterion.</p>
+<dl class="docutils">
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">fit_table</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether or not to add table listing the fit coefficients at the
+      end of the output layout.</dd>
+<dt><em>param Number</em> <tt class="docutils literal"><span class="pre">gamma_k</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=1.8, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
+<dd>The degree to which the gamma kernel is heavily tailed when
+      squashing the pinwheel density into a unit map metric.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, constant=True, default=ViewOperation, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
+<dd>Label suffixes are fixed as there are too many labels to specify.</dd>
+<dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">init_fit</span></tt> (<em>allow_None=True, constant=False, default=None, instantiate=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>If set to None, an initial fit is automatically selected for
+       the curve fitting procedure. Otherwise, this is a dictionary of
+       the initial coefficients for equation (7) from the 2010 Science
+       paper mentioned above (supplementary materials). For instance,
+       the values used in the GCAL (Stevens et al. 2013):
+
+       init_fit = dict(a0=0.35, a1=3.8, a2=1.3, a3=0.15, a4=-0.003, a5=0)
+
+       These coefficients may be understood as follows:
+
+        a0 =&gt; Gaussian height.
+        a1 =&gt; Peak x-axis position.
+        a2 =&gt; Gaussian spread (ie. variance).
+        a3 =&gt; Baseline value (without falloff).
+        a4 =&gt; Linear falloff.
+        a5 =&gt; Quadratic falloff.</dd>
+<dt><em>param Callable</em> <tt class="docutils literal"><span class="pre">averaging_fn</span></tt> (<em>constant=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The averaging function used to collapse the power spectrum at each
+      wavenumber down to a scalar value. By default, finds the mean
+      power for each wavenumber.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.KaschubeFit">
+<tt class="descname">KaschubeFit</tt><big>(</big><em>k</em>, <em>a0</em>, <em>a1</em>, <em>a2</em>, <em>a3</em>, <em>a4</em>, <em>a5</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.KaschubeFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.KaschubeFit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fitting function used by Kaschube for finding the hypercolumn
+distance from the Fourier power spectrum. These values should
+match the init_fit defaults of pinwheel_analysis below.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.averaging_fn">
+<em class="property">static </em><tt class="descname">averaging_fn</tt><big>(</big><em>a</em>, <em>axis=None</em>, <em>dtype=None</em>, <em>out=None</em>, <em>keepdims=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.averaging_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the arithmetic mean along the specified axis.</p>
+<p>Returns the average of the array elements.  The average is taken over
+the flattened array by default, otherwise over the specified axis.
+<cite>float64</cite> intermediate and return values are used for integer inputs.</p>
+<dl class="docutils">
+<dt>a <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
+<dd>Array containing numbers whose mean is desired. If <cite>a</cite> is not an
+array, a conversion is attempted.</dd>
+<dt>axis <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>Axis along which the means are computed. The default is to compute
+the mean of the flattened array.</dd>
+<dt>dtype <span class="classifier-delimiter">:</span> <span class="classifier">data-type, optional</span></dt>
+<dd>Type to use in computing the mean.  For integer inputs, the default
+is <cite>float64</cite>; for floating point inputs, it is the same as the
+input dtype.</dd>
+<dt>out <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, optional</span></dt>
+<dd>Alternate output array in which to place the result.  The default
+is <tt class="docutils literal"><span class="pre">None</span></tt>; if provided, it must have the same shape as the
+expected output, but the type will be cast if necessary.
+See <cite>doc.ufuncs</cite> for details.</dd>
+<dt>keepdims <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd>If this is set to True, the axes which are reduced are left
+in the result as dimensions with size one. With this option,
+the result will broadcast correctly against the original <cite>arr</cite>.</dd>
+</dl>
+<dl class="docutils">
+<dt>m <span class="classifier-delimiter">:</span> <span class="classifier">ndarray, see dtype parameter above</span></dt>
+<dd>If <cite>out=None</cite>, returns a new array containing the mean values,
+otherwise a reference to the output array is returned.</dd>
+</dl>
+<p>average : Weighted average
+std, var, nanmean, nanstd, nanvar</p>
+<p>The arithmetic mean is the sum of the elements along the axis divided
+by the number of elements.</p>
+<p>Note that for floating-point input, the mean is computed using the
+same precision the input has.  Depending on the input data, this can
+cause the results to be inaccurate, especially for <cite>float32</cite> (see
+example below).  Specifying a higher-precision accumulator using the
+<cite>dtype</cite> keyword can alleviate this issue.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">2.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">array([ 2.,  3.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([ 1.5,  3.5])</span>
+</pre></div>
+</div>
+<p>In single precision, <cite>mean</cite> can be inaccurate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">512</span><span class="o">*</span><span class="mi">512</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">0.546875</span>
+</pre></div>
+</div>
+<p>Computing the mean in float64 is more accurate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="go">0.55000000074505806</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.debug">
+<tt class="descname">debug</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a debugging statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return {parameter_name:parameter.default} for all non-constant
+Parameters.</p>
+<p>Note that a Parameter for which instantiate==True has its default
+instantiated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.estimate_hypercolumn_distance">
+<tt class="descname">estimate_hypercolumn_distance</tt><big>(</big><em>power_spectrum</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.estimate_hypercolumn_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.estimate_hypercolumn_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimating the hypercolumn distance by fitting Equation 7 of
+Kaschube et al. 2010 Equation 7 (supplementary
+material). Returns the analysed values as a dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.fit_samples">
+<tt class="descname">fit_samples</tt><big>(</big><em>max_k</em>, <em>samples</em>, <em>fit</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.fit_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.fit_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a curve based from the fit coefficients</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value">
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7911639a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_dist">
+<tt class="descname">gamma_dist</tt><big>(</big><em>x</em>, <em>k</em>, <em>theta</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.gamma_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The gamma distribution used for the gamma metric</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_metric">
+<tt class="descname">gamma_metric</tt><big>(</big><em>pwd</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.gamma_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.gamma_metric" title="Permalink to this definition">¶</a></dt>
+<dd><p>The heavily-tailed gamma kernel used to squash the pinwheel
+density into unit range. The maximum value of unity is
+attained when the input pinwheel density is pi.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_param_values">
+<tt class="descname">get_param_values</tt><big>(</big><em>onlychanged=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of name,value pairs for all Parameters of this
+object.</p>
+<p>If onlychanged is True, will only return values that are not
+equal to the default value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator">
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b7911639c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_views">
+<tt class="descname">get_views</tt><big>(</big><em>view</em>, <em>pattern</em>, <em>view_type=&lt;class 'dataviews.sheetviews.sheetviews.SheetView'&gt;</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method that return a list of views with labels ending
+with the given pattern and which have the specified type. This
+may be useful to check is a single view satisfies some
+condition or to extract the appropriate views from an Overlay.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value">
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7911639d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance">
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b7911639db8&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.message">
+<tt class="descname">message</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a message.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.params">
+<em class="property">classmethod </em><tt class="descname">params</tt><big>(</big><em>parameter_name=None</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Parameters of this class as the
+dictionary {name: parameter_object}</p>
+<p>Includes Parameters from this class and its
+superclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.print_param_defaults">
+<em class="property">classmethod </em><tt class="descname">print_param_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.print_param_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the default values of all cls&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.print_param_values">
+<tt class="descname">print_param_values</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.print_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the values of all this object&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.script_repr">
+<tt class="descname">script_repr</tt><big>(</big><em>imports=</em>, <span class="optional">[</span><span class="optional">]</span><em>prefix='    '</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.script_repr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as Parameterized.script_repr, except that X.classname(Y
+is replaced with X.classname.instance(Y</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_default">
+<em class="property">classmethod </em><tt class="descname">set_default</tt><big>(</big><em>param_name</em>, <em>value</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default value of param_name.</p>
+<p>Equivalent to setting param_name on the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn">
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b7911676158&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param">
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b79116761b0&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.state_pop">
+<tt class="descname">state_pop</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.state_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the most recently saved state.</p>
+<p>See state_push() for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.state_push">
+<tt class="descname">state_push</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.state_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this instance&#8217;s state.</p>
+<p>For Parameterized instances, this includes the state of
+dynamically generated values.</p>
+<p>Subclasses that maintain short-term state should additionally
+save and restore that state using state_push() and
+state_pop().</p>
+<p>Generally, this method is used by operations that need to test
+something without permanently altering the objects&#8217; state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.verbose">
+<tt class="descname">verbose</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a verbose message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.warning">
+<tt class="descname">warning</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a warning, unless module variable
+warnings_as_exceptions is True, then raise an Exception
+containing the arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.wavenumber_spectrum">
+<tt class="descname">wavenumber_spectrum</tt><big>(</big><em>spectrum</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis.wavenumber_spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.wavenumber_spectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bins the power values in the 2D FFT power spectrum as a
+function of wavenumber (1D). Requires square FFT spectra with
+an odd dimension to work to ensure there is a central sample
+corresponding to the DC component (wavenumber zero).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pinwheels-module">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">pinwheels</span></tt> Module<a class="headerlink" href="#pinwheels-module" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="../_images/inheritance-be8d56ab7dd1ba1a01656bd90f303e9199648cb6.png" alt="Inheritance diagram of featuremapper.analysis.pinwheels" usemap="#inheritance1698fe547f" class="inheritance"/>
+<map id="inheritance1698fe547f" name="inheritance1698fe547f">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="620,44,822,65"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Given a SheetView or SheetStack of a cyclic feature preference," alt="" coords="862,44,1148,65"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="325,44,580,65"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.pinwheels.WarningCounter" title="A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;" alt="" coords="5,4,285,25"/>
+<area shape="rect" id="node5" title="Base class for named objects that support Parameters and message" alt="" coords="39,44,251,65"/>
+</map>
+</p>
+<span class="target" id="module-featuremapper.analysis.pinwheels"></span><dl class="class">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.pinwheels.</tt><tt class="descname">PinwheelAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/dataviews/Reference_Manual/dataviews.operation-module.html#dataviews.operation.ViewOperation" title="(in DataViews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">dataviews.operation.ViewOperation</span></tt></a></p>
+<p>Given a SheetView or SheetStack of a cyclic feature preference,
+compute the position of all pinwheel singularities in the
+map. Optionally includes the contours for the real and imaginary
+components of the preference map used to determine the pinwheel
+locations.</p>
+<p>Returns the original SheetView input overlayed with a Points
+object containing the computed pinwheel locations and (optionally)
+Contours overlays including the real and imaginary contour lines
+respectively.</p>
+<dl class="docutils">
+<dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">include_contours</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>Whether or not to include the computed contours for the real and
+      imaginary components of the map.</dd>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, constant=True, default=ViewOperation, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
+<dd>Label suffixes are fixed as there are too many labels to specify.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.debug">
+<tt class="descname">debug</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a debugging statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return {parameter_name:parameter.default} for all non-constant
+Parameters.</p>
+<p>Note that a Parameter for which instantiate==True has its default
+instantiated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections">
+<tt class="descname">find_intersections</tt><big>(</big><em>contour1</em>, <em>contour2</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.find_intersections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.find_intersections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vectorized code to find intersections between contours. All
+successive duplicate vertices along the input contours must be
+removed to help avoid division-by-zero errors.</p>
+<p>There are cases were no intersection exists (eg. parallel lines)
+where division by zero and invalid value exceptions occur. These
+exceptions should be caught as warnings: these edge cases are
+unavoidable with this algorithm and do not indicate that the
+output is erroneous.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value">
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7911830418&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.get_param_values">
+<tt class="descname">get_param_values</tt><big>(</big><em>onlychanged=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of name,value pairs for all Parameters of this
+object.</p>
+<p>If onlychanged is True, will only return values that are not
+equal to the default value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator">
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b79118306d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.get_views">
+<tt class="descname">get_views</tt><big>(</big><em>view</em>, <em>pattern</em>, <em>view_type=&lt;class 'dataviews.sheetviews.sheetviews.SheetView'&gt;</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method that return a list of views with labels ending
+with the given pattern and which have the specified type. This
+may be useful to check is a single view satisfies some
+condition or to extract the appropriate views from an Overlay.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">
+<tt class="descname">identify_pinwheels</tt><big>(</big><em>re_contours</em>, <em>im_contours</em>, <em>intersections</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.identify_pinwheels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locates the pinwheels from the intersection of the real and
+imaginary contours of of polar OR map.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value">
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b7911830730&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.instance">
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b7911830788&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.message">
+<tt class="descname">message</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel">
+<tt class="descname">normalize_polar_channel</tt><big>(</big><em>polar_channel</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.normalize_polar_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.normalize_polar_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions normalizes an OR map (polar_channel) taking into
+account the region of interest (ROI). The ROI is specified by
+values set to 99. Note that this functionality is implemented to
+reproduce the experimental approach and has not been tested (not
+required for Topographica simulations)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.params">
+<em class="property">classmethod </em><tt class="descname">params</tt><big>(</big><em>parameter_name=None</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Parameters of this class as the
+dictionary {name: parameter_object}</p>
+<p>Includes Parameters from this class and its
+superclasses.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">
+<tt class="descname">polar_preference</tt><big>(</big><em>pref</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.polar_preference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns hue representation to polar representation.
+Hue representation uses values expected in the range 0-1.0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours">
+<tt class="descname">polarmap_contours</tt><big>(</big><em>polarmap</em>, <em>bounds</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.polarmap_contours"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.polarmap_contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies the real and imaginary contours in a polar map.
+Returns the real and imaginary contours as 2D vertex arrays
+together with the pairs of contours known to intersect. The
+coordinate system used is specified by the supplied bounds.</p>
+<p>Contour plotting requires origin=&#8217;upper&#8217; for consistency with
+image coordinate system.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.print_param_defaults">
+<em class="property">classmethod </em><tt class="descname">print_param_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.print_param_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the default values of all cls&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.print_param_values">
+<tt class="descname">print_param_values</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.print_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the values of all this object&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates">
+<tt class="descname">remove_path_duplicates</tt><big>(</big><em>vertices</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis.remove_path_duplicates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.remove_path_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes successive duplicates along a path of vertices.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.script_repr">
+<tt class="descname">script_repr</tt><big>(</big><em>imports=</em>, <span class="optional">[</span><span class="optional">]</span><em>prefix='    '</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.script_repr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as Parameterized.script_repr, except that X.classname(Y
+is replaced with X.classname.instance(Y</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_default">
+<em class="property">classmethod </em><tt class="descname">set_default</tt><big>(</big><em>param_name</em>, <em>value</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default value of param_name.</p>
+<p>Equivalent to setting param_name on the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn">
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b7911830628&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param">
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b7911830890&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.state_pop">
+<tt class="descname">state_pop</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.state_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the most recently saved state.</p>
+<p>See state_push() for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.state_push">
+<tt class="descname">state_push</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.state_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this instance&#8217;s state.</p>
+<p>For Parameterized instances, this includes the state of
+dynamically generated values.</p>
+<p>Subclasses that maintain short-term state should additionally
+save and restore that state using state_push() and
+state_pop().</p>
+<p>Generally, this method is used by operations that need to test
+something without permanently altering the objects&#8217; state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.verbose">
+<tt class="descname">verbose</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a verbose message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.warning">
+<tt class="descname">warning</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a warning, unless module variable
+warnings_as_exceptions is True, then raise an Exception
+containing the arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="featuremapper.analysis.pinwheels.WarningCounter">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.pinwheels.</tt><tt class="descname">WarningCounter</tt><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#WarningCounter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.WarningCounter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A simple class to count &#8216;divide by zero&#8217; and &#8216;invalid value&#8217;
+exceptions to allow a suitable warning message to be generated.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div align="center"><h1>FeatureMapper</h1></div>
+<ul class="global-toc">
+
+<li><a href="../index.html">Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper.html">Reference Manual</a></li>
+<li><a href="http://github.com/ioam/featuremapper">Github Source Code</a></li>
+<li><a href="../site_map.html">Site Map</a></li>
+</ul>
+<h3><a href="../index.html">Table Of Contents</a></h3>
+
+<ul>
+<li><a class="reference internal" href="#">featuremapper.analysis Package</a><ul>
+<li><a class="reference internal" href="#analysis-package"><tt class="docutils literal"><span class="pre">analysis</span></tt> Package</a></li>
+<li><a class="reference internal" href="#hypercolumns-module"><tt class="docutils literal"><span class="pre">hypercolumns</span></tt> Module</a></li>
+<li><a class="reference internal" href="#pinwheels-module"><tt class="docutils literal"><span class="pre">pinwheels</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+	<li><a	href="https://github.com/ioam/featuremapper/edit/master/doc/Reference_Manual/featuremapper.analysis.rst" rel="nofollow">Edit on GitHub</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+
+<li><a href="../index.html">FeatureMapper Home</a></li>
+<li><a href="../Tutorials/index.html">Tutorials</a></li>
+<li><a href="featuremapper.html">Reference Manual</a></li>
+
+
+
+
+
+
+
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, IOAM.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
