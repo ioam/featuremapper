@@ -89,8 +89,8 @@ class PowerSpectrumAnalysis(ViewOperation):
 
         pinwheel_count = sum([pw_view.data.shape[0] for pw_view in pinwheel_views], 0)
 
-        xlabel, ylabel = Dimension('Wavenumber', unit='(k)'), 'FFT Power'
-        (l,b,r,t) = pref.bounds.lbrt()
+        xlabel, ylabel = Dimension('Wavenumber', unit='k'), 'FFT Power'
+        (l, b, r, t) = pref.bounds.lbrt()
         (dim1, dim2) = pref.data.shape
         xdensity = abs(r-l) / dim1
         ydensity = abs(t-b) / dim2
@@ -108,7 +108,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             info['rho'] = pinwheel_count / (kmax ** 2)
             info['rho_metric'] = self.gamma_metric(info['rho'])
 
-        info_table = Table(info)
+        info_table = Table(info, label='Hypercolumn Analysis')
 
         if fit is not None:
             samples = self.fit_samples(dim1/2, 100, fit)
@@ -121,12 +121,12 @@ class PowerSpectrumAnalysis(ViewOperation):
                          label=ylabel, value=ylabel, title='FFT Histogram')
         annotation = Annotation(vlines=[kmax], label='KMax', title='{label} Line')
 
-        views = [hist * curve * annotation , info_table]
+        views = [hist * curve * annotation, info_table]
         if self.p.fit_table and fit is None:
-            fit = dict(('a%i' % i,'-') for i in range(6))
+            fit = dict(('a%i' % i, '-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = Table(fit, title='Hypercolumn Analysis')
+            fit_table = Table(fit, label='Hypercolumn Analysis Fit')
             views.append(fit_table)
         return views
 
