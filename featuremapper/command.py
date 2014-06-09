@@ -103,12 +103,6 @@ class MeasureResponseCommand(PatternPresentingCommand):
     subplot = param.String(default='', doc="""
         Name of map to register as a subplot, if any.""")
 
-    weighted_average = param.Boolean(default=True, doc="""
-        Whether to compute results using a weighted average, or just discrete
-        values. A weighted average can give more precise results, without being
-        limited to a set of discrete values, but the results can have systematic
-        biases due to the averaging, especially for non-cyclic parameters.""")
-
     __abstract = True
 
 
@@ -242,8 +236,6 @@ class SingleInputResponseCommand(MeasureResponseCommand):
                                                             aspect_ratio=1.0))
 
     static_parameters = param.List(default=["scale", "offset", "size"])
-
-    weighted_average = None # Disabled unused parameter
 
     __abstract = True
 
