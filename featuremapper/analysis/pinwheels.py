@@ -72,8 +72,7 @@ class PinwheelAnalysis(ViewOperation):
         (re_contours, im_contours, intersections) = contour_info
 
         pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
-        pinwheels = Points(np.array(pinwheels), bounds,
-                           label=pref.label, title='{label} Pinwheel {type}')
+        pinwheels = Points(np.array(pinwheels), bounds, label=pref.label + ' Pinwheels')
 
         sel = self.get_views(view, 'Selectivity')
         base = pref * sel[0] if sel !=[]  else pref
@@ -237,6 +236,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-options.Pinwheel_Points =    StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
+options.Pinwheels_Points =    StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
 options.Imaginary_Contours = StyleOpts(color= 'k')
 options.Real_Contours =      StyleOpts(color= 'w')
