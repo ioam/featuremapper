@@ -92,8 +92,8 @@ class PowerSpectrumAnalysis(ViewOperation):
         xlabel, ylabel = Dimension('Wavenumber', unit='k'), 'FFT Power'
         (l, b, r, t) = pref.bounds.lbrt()
         (dim1, dim2) = pref.data.shape
-        xdensity = abs(r-l) / dim1
-        ydensity = abs(t-b) / dim2
+        xdensity = dim1 / abs(r-l)
+        ydensity = dim2 / abs(t-b)
 
         if xdensity != ydensity:
             raise Exception("SheetView must have matching x- and y-density")
