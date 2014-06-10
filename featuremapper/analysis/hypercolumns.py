@@ -1,6 +1,6 @@
 """
 This module is used to analyse the hypercolumn structure of preference
-maps. Currently thsi file offers a means to estimate the hypercolumn
+maps. Currently this file offers a means to estimate the hypercolumn
 distance from the Fourier power spectrum but different types of
 analysis (eg. wavelet analysis) may be introduced in future.
 """
