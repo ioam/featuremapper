@@ -1247,5 +1247,6 @@ def pattern_hook(obj,*args, **kwargs):
     return obj[:]
 
 Collector.for_type(np.ndarray, array_hook)
+Collector.for_type(measure_response, measurement_hook, mode='merge')
 Collector.for_type(MeasureResponseCommand,  measurement_hook, mode='merge')
 Collector.for_type(imagen.PatternGenerator, pattern_hook)
