@@ -540,7 +540,6 @@ class FeatureMaps(FeatureResponses):
                         map_label = ' '.join([base_name, map_name.capitalize()])
                         cyclic = (map_name != 'selectivity' and fp.cyclic)
                         value_dimension = Dimension(map_label, cyclic=cyclic, range=fp.range)
-                        title = name + ' {label}'
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
@@ -628,8 +627,8 @@ class FeatureCurves(FeatureResponses):
 
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
-            if name not in results:
-                stack = SheetStack(dimensions=dimensions, timestamp=timestamp)
+            if (curve_label, name) not in results:
+                stack = SheetStack(dimensions=dimensions)
                 stack.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), stack)
 
@@ -643,8 +642,9 @@ class FeatureCurves(FeatureResponses):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
                 sv = SheetView(y_axis_values, output_metadata['bounds'],
-                               label=' '.join([name, curve_label]), value=Dimension('Response'))
-                sv.metadata=metadata.copy()
+                               label=' '.join([name, curve_label]),
+                               value=Dimension('Response'))
+                sv.metadata = metadata.copy()
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
