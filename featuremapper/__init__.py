@@ -102,7 +102,7 @@ class DistributionMatrix(param.Parameterized):
         ### not yet been done.  Alternatively, it could use a different
         ### function name altogether (e.g. update(x,y)).
         self.distribution_matrix + np.fromfunction(
-            np.vectorize(lambda i, j: {bin: new_values[i, j]}),
+            np.vectorize(lambda i, j: {bin: new_values[int(i), int(j)]}),
             new_values.shape)
 
     def apply_DSF(self, dsf):
