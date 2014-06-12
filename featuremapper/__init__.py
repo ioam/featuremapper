@@ -8,7 +8,8 @@ import sys, os
 
 import param
 from param.version import Version
-__version__ = Version(release=(0,2,0), fpath=__file__, commit="$Format:%h$")
+__version__ = Version(release=(0,2,0), fpath=__file__,
+                      commit="$Format:%h$", reponame='featuremapper')
 
 import copy
 from collections import defaultdict
