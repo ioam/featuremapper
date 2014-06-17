@@ -169,12 +169,6 @@
     <span class="n">subplot</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Name of map to register as a subplot, if any.&quot;&quot;&quot;</span><span class="p">)</span>
 
-    <span class="n">weighted_average</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
-<span class="s">        Whether to compute results using a weighted average, or just discrete</span>
-<span class="s">        values. A weighted average can give more precise results, without being</span>
-<span class="s">        limited to a set of discrete values, but the results can have systematic</span>
-<span class="s">        biases due to the averaging, especially for non-cyclic parameters.&quot;&quot;&quot;</span><span class="p">)</span>
-
     <span class="n">__abstract</span> <span class="o">=</span> <span class="bp">True</span>
 
 
@@ -308,8 +302,6 @@
                                                             <span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
 
     <span class="n">static_parameters</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;scale&quot;</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">,</span> <span class="s">&quot;size&quot;</span><span class="p">])</span>
-
-    <span class="n">weighted_average</span> <span class="o">=</span> <span class="bp">None</span> <span class="c"># Disabled unused parameter</span>
 
     <span class="n">__abstract</span> <span class="o">=</span> <span class="bp">True</span>
 
@@ -1321,6 +1313,7 @@
     <span class="k">return</span> <span class="n">obj</span><span class="p">[:]</span>
 
 <span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">array_hook</span><span class="p">)</span>
+<span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">measure_response</span><span class="p">,</span> <span class="n">measurement_hook</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;merge&#39;</span><span class="p">)</span>
 <span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">MeasureResponseCommand</span><span class="p">,</span>  <span class="n">measurement_hook</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;merge&#39;</span><span class="p">)</span>
 <span class="n">Collector</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="n">imagen</span><span class="o">.</span><span class="n">PatternGenerator</span><span class="p">,</span> <span class="n">pattern_hook</span><span class="p">)</span>
 </pre></div>

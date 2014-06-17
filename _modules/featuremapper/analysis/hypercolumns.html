@@ -67,7 +67,7 @@
   <h1>Source code for featuremapper.analysis.hypercolumns</h1><div class="highlight"><pre>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">This module is used to analyse the hypercolumn structure of preference</span>
-<span class="sd">maps. Currently thsi file offers a means to estimate the hypercolumn</span>
+<span class="sd">maps. Currently this file offers a means to estimate the hypercolumn</span>
 <span class="sd">distance from the Fourier power spectrum but different types of</span>
 <span class="sd">analysis (eg. wavelet analysis) may be introduced in future.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -152,15 +152,15 @@
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
 
         <span class="p">[</span><span class="n">pref</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
-        <span class="n">pinwheel_views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Pinwheel&#39;</span><span class="p">,</span> <span class="n">Points</span><span class="p">)</span>
+        <span class="n">pinwheel_views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Pinwheels&#39;</span><span class="p">,</span> <span class="n">Points</span><span class="p">)</span>
 
         <span class="n">pinwheel_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">pw_view</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pw_view</span> <span class="ow">in</span> <span class="n">pinwheel_views</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="s">&#39;Wavenumber&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">&#39;k&#39;</span><span class="p">),</span> <span class="s">&#39;FFT Power&#39;</span>
         <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">lbrt</span><span class="p">()</span>
         <span class="p">(</span><span class="n">dim1</span><span class="p">,</span> <span class="n">dim2</span><span class="p">)</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">xdensity</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim1</span>
-        <span class="n">ydensity</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">dim2</span>
+        <span class="n">xdensity</span> <span class="o">=</span> <span class="n">dim1</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="p">)</span>
+        <span class="n">ydensity</span> <span class="o">=</span> <span class="n">dim2</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">b</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">xdensity</span> <span class="o">!=</span> <span class="n">ydensity</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;SheetView must have matching x- and y-density&quot;</span><span class="p">)</span>
