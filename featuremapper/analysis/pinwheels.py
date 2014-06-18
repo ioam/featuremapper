@@ -68,10 +68,18 @@ class PinwheelAnalysis(ViewOperation):
         [pref] = self.get_views(view, 'Preference')
         bounds = pref.bounds
         polar_map = self.polar_preference(pref.N.data)
-        contour_info = self.polarmap_contours(polar_map, bounds)
-        (re_contours, im_contours, intersections) = contour_info
+        try:
+            contour_info = self.polarmap_contours(polar_map, bounds)
+        except Exception as e:
+            self.warning("Contour identification failed:\n%s" % str(e))
+            contour_info = None
 
-        pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
+        if contour_info is not None:
+            (re_contours, im_contours, intersections) = contour_info
+            pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
+        else:
+            pinwheels, re_contours, im_contours = [], [], []
+
         pinwheels = Points(np.array(pinwheels), bounds, label=pref.label + ' Pinwheels')
 
         sel = self.get_views(view, 'Selectivity')
