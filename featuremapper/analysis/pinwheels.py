@@ -64,7 +64,7 @@ class PinwheelAnalysis(ViewOperation):
     label = param.String(None, allow_None=True, precedence=-1, constant=True,
      doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
-    def _process(self, view):
+    def _process(self, view, key=None):
         [pref] = self.get_views(view, 'Preference')
         bounds = pref.bounds
         polar_map = self.polar_preference(pref.N.data)

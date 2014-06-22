@@ -82,7 +82,7 @@ class PowerSpectrumAnalysis(ViewOperation):
      doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
 
-    def _process(self, view):
+    def _process(self, view, key=None):
 
         [pref] = self.get_views(view, 'Preference')
         pinwheel_views = self.get_views(view, 'Pinwheels', Points)

@@ -46,7 +46,7 @@ class decode_feature(ViewOperation):
     weighted_average = param.Boolean(default=True, doc="""
         Decode as vector average if True or by maximal responding unit.""")
 
-    def _process(self, overlay):
+    def _process(self, overlay, key=None):
         preference = None; selectivity = None; activity = None;
         for sv in overlay:
             if sv.label.endswith('Preference'):
