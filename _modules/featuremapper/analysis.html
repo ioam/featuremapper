@@ -112,7 +112,7 @@
     <span class="n">weighted_average</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Decode as vector average if True or by maximal responding unit.&quot;&quot;&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">preference</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span> <span class="n">selectivity</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span> <span class="n">activity</span> <span class="o">=</span> <span class="bp">None</span><span class="p">;</span>
         <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">overlay</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Preference&#39;</span><span class="p">):</span>
