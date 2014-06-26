@@ -68,7 +68,6 @@ if __name__=="__main__":
 
     if 'upload' in sys.argv:
         import featuremapper
-        featuremapper.__version__.verify()
-        assert str(featuremapper.__version__) == setup_args['version']
+        featuremapper.__version__.verify(setup_args['version'])
 
     setup(**setup_args)
