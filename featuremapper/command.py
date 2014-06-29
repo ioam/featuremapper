@@ -975,7 +975,6 @@ class measure_size_response(UnitCurveCommand):
         return results
 
 
-    # Why not vary frequency too?  Usually it's just one number, but it could be otherwise.
     def _feature_list(self, p):
         return [f.Phase(steps=p.num_phase),
                 f.Frequency(values=p.frequencies),
