@@ -313,13 +313,15 @@ class UnitCurveCommand(FeatureCurveCommand):
 
 
     def _populate_grid(self, results):
-        grid_container = AttrTree()
+        trees = []
         for coord, viewgroup in results.items():
             for path, stack in viewgroup.path_items.items():
+                grid_container = AttrTree()
                 coord_stack = stack.add_dimension(f.Y, 0, coord[1])
                 coord_stack = coord_stack.add_dimension(f.X, 0, coord[0])
                 grid_container.set_path(path, coord_stack)
-        return grid_container
+                trees.append(grid_container)
+        return AttrTree.merge(trees)
 
 
 
