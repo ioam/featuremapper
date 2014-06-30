@@ -379,13 +379,15 @@
 
 
     <span class="k">def</span> <span class="nf">_populate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
-        <span class="n">grid_container</span> <span class="o">=</span> <span class="n">AttrTree</span><span class="p">()</span>
+        <span class="n">trees</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">coord</span><span class="p">,</span> <span class="n">viewgroup</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">stack</span> <span class="ow">in</span> <span class="n">viewgroup</span><span class="o">.</span><span class="n">path_items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">grid_container</span> <span class="o">=</span> <span class="n">AttrTree</span><span class="p">()</span>
                 <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">coord_stack</span> <span class="o">=</span> <span class="n">coord_stack</span><span class="o">.</span><span class="n">add_dimension</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="n">grid_container</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">coord_stack</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">grid_container</span>
+                <span class="n">trees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid_container</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">AttrTree</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">trees</span><span class="p">)</span>
 
 
 
@@ -1039,7 +1041,6 @@
         <span class="k">return</span> <span class="n">results</span>
 
 
-    <span class="c"># Why not vary frequency too?  Usually it&#39;s just one number, but it could be otherwise.</span>
     <span class="k">def</span> <span class="nf">_feature_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">Phase</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">num_phase</span><span class="p">),</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">Frequency</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">frequencies</span><span class="p">),</span>
