@@ -34,3 +34,14 @@ featuremapper.analysis Package
     :inherited-members:
     :show-inheritance:
 
+:mod:`spatialtuning` Module
+---------------------------
+
+.. inheritance-diagram:: featuremapper.analysis.spatialtuning
+
+
+.. automodule:: featuremapper.analysis.spatialtuning
+    :members:
+    :inherited-members:
+    :show-inheritance:
+

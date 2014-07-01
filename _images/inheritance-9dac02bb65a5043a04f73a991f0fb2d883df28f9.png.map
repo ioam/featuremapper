@@ -1,0 +1,12 @@
+<map id="inheritance18d0462045" name="inheritance18d0462045">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="345,66,471,79"/>
+<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="Takes an overlay of two curves as input and computes the contrast&#45;dependent" alt="" coords="505,78,688,91"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="160,66,320,79"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="Baseclass to implement basic size tuning curve fitting procedures." alt="" coords="728,41,904,54"/>
+<area shape="rect" id="node5" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="Normalization model describing response of V1 neurons" alt="" coords="935,2,1149,15"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="DoG model response function to sine grating disk stimulus" alt="" coords="952,28,1132,41"/>
+<area shape="rect" id="node9" href="#featuremapper.analysis.spatialtuning.iDoGModel_DeAngelis" title="Basic integrated difference of Gaussian response function" alt="" coords="939,53,1145,66"/>
+<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.iDoGModel_Sceniak" title="iDoG model response function to sine grating disk stimulus" alt="" coords="943,78,1141,91"/>
+<area shape="rect" id="node7" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="Analysis size&#45;tuning curve to find peak facilitation, peak suppression" alt="" coords="722,66,910,79"/>
+<area shape="rect" id="node11" title="Base class for named objects that support Parameters and message" alt="" coords="3,66,135,79"/>
+</map>
