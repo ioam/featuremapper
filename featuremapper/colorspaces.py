@@ -27,9 +27,9 @@ FeatureColorConverter
 
     These values can be set using::
 
-      featuremapper.color_conversion.set_image_space("XYZ")    # e.g. RGB, XYZ, LMS
-      featuremapper.color_conversion.set_receptor_space("RGB") # e.g. RGB, LMS
-      featuremapper.color_conversion.set_analysis_space("HSV") # e.g. HSV, LCH
+      color_conversion.image_space="XYZ"    # e.g. RGB, XYZ, LMS
+      color_conversion.receptor_space="RGB" # e.g. RGB, LMS
+      color_conversion.analysis_space="HSV" # e.g. HSV, LCH
 
 The other code in this file is primarily implementation for these two
 classes, and will rarely need to be used directly.
@@ -40,12 +40,15 @@ from math import pi
 
 import copy
 import colorsys
+
 import numpy
+
 import param
 
 
 def _threeDdot_dumb(M,a):
     """Return Ma, where M is a 3x3 transformation matrix, for each pixel"""
+
     result = numpy.empty(a.shape,dtype=a.dtype)
 
     for i in range(a.shape[0]):
@@ -57,7 +60,6 @@ def _threeDdot_dumb(M,a):
             result[i,j,2] = L[2]
 
     return result
-
 
 
 def _threeDdot_faster(M,a):
@@ -78,7 +80,6 @@ def _threeDdot_faster(M,a):
 threeDdot = _threeDdot_faster
 
 
-
 def _abc_to_def_array(ABC,fn):
     shape = ABC[:,:,0].shape
     dtype = ABC.dtype
@@ -91,12 +92,10 @@ def _abc_to_def_array(ABC,fn):
 
     return DEF
 
-    
 
 def _rgb_to_hsv_array(RGB):
     """Equivalent to colorsys.rgb_to_hsv, except expects array like :,:,3"""
     return _abc_to_def_array(RGB,colorsys.rgb_to_hsv)
-
 
 
 def _hsv_to_rgb_array(HSV):
@@ -253,8 +252,9 @@ def lch01_to_xyz(LCH, whitepoint):
 
 class ColorSpace(param.Parameterized):
     """
-    Low-level color conversion. The 'convert' method handle color conversion to and from (and through) XYZ,
-    and supports RGB, LCH, LMS and HSV.
+    Low-level color conversion. The 'convert' method handles color
+    conversion to and from (and through) XYZ, and supports RGB, LCH,
+    LMS and HSV.
     """
 
     whitepoint = param.String(default='D65', doc="String name of whitepoint from lookup table.")
@@ -438,9 +438,6 @@ class ColorSpace(param.Parameterized):
 
 
 
-
-
-
 def _swaplch(LCH):
     """Reverse the order of an LCH numpy dstack or tuple for analysis."""
 
@@ -450,7 +447,6 @@ def _swaplch(LCH):
     except: # Tuple
         L,C,H = LCH
         return H,C,L
-
 
 
 
@@ -475,36 +471,10 @@ class FeatureColorConverter(param.Parameterized):
     analysis_space = param.ObjectSelector(default='HSV', objects=['HSV','LCH'], doc="""
         Color space in which analysis is performed.""")
 
-
-    # CEBALERT: should be ClassSelector
-    # JABALERT: Unused?
-    display_sat = param.Number(default=1.0)
-    display_val = param.Number(default=1.0)
-
-     
     swap_polar_HSVorder = {
         'HSV': lambda HSV: HSV,
         'LCH': _swaplch }
     
-    # JABALERT: Is there any reason to have these functions?
-    def set_receptor_space(self, receptor_colorspace):
-        """
-        Set the receptor space.
-        """
-        self.receptor_space = receptor_colorspace
-
-    def set_image_space(self, dataset_colorspace):
-        """
-        Set the color space of input images.
-        """
-        self.image_space = dataset_colorspace
-
-    def set_analysis_space(self, analysis_colorspace):
-        """
-        Set the analysis space to be used by the system.
-        """
-        self.analysis_space = analysis_colorspace
-
 
     def image2receptors(self,i):
         """Transform images i provided into the specified receptor color space."""
@@ -532,30 +502,20 @@ class FeatureColorConverter(param.Parameterized):
         a = self.swap_polar_HSVorder[self.analysis_space](a)
         return self.colorspace.convert(self.analysis_space.lower(), 'gammargb', a)
     
+
     def jitter_hue(self,a,amount):
         """Rotate the hue component of a by the given amount."""
         a[:,:,0] += amount
         a[:,:,0] %= 1.0
+
 
     def multiply_sat(self,a,factor):
         """Scale the saturation of a by the given amount."""
         a[:,:,1] *= factor
 
 
-
-
-# Initialize FeatureMapper.color_conversion object of type FeatureColorConverter
-default_receptor_colorspace='RGB'
-default_dataset_colorspace='XYZ'
-default_analysis_colorspace='HSV'
-
-color_conversion = FeatureColorConverter(
-    analysis_space = default_analysis_colorspace,
-    image_space = default_dataset_colorspace)
-
-color_conversion.set_receptor_space(default_receptor_colorspace)
-
-
+# Provide a shared color_conversion object of type FeatureColorConverter
+color_conversion = FeatureColorConverter()
 
 
 __all__ = ["ColorSpace","FeatureColorConverter"]
