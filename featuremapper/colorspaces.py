@@ -1,39 +1,51 @@
 """
-Color conversion utilities.
-The two main end-objects are:
-  * ColorSpace:
-       Create a ColorSpace object and then use its convert(from, to, what) method to perform color conversion between colorspaces.
+Utilities for converting images between various color spaces, such as:
 
-  * FeatureColorConverter:
-       Defines color spaces to be used in images, receptors (simulated retinas) and analysis (generally, HSV for Hue Analysis).
-       An object is created by default, and its color spaces can be updated. It is still possible to create custom objects, anyway.
-       Customization of the object can be done as, eg,
+  * RGB (for display on computer monitor red, green, and blue channels)
+  * HSV (allowing manipulation of the hue, saturation, and value), 
+  * LMS (estimates of human long, medium, and short cone responses), 
+  * LCH (CIE perceptually uniform luminance, chroma (saturation), and hue)
+  * LAB (CIE opponent black/white, red/green, blue/yellow axes)
+  * XYZ (CIE interchange format)
 
-         featuremapper.color_conversion.set_image_colorspace("XYZ") # format of the dataset used XYZ, LMS
-         featuremapper.color_conversion.set_receptor_responses("RGB") # possible values are RGB and LMS.
-         featuremapper.color_conversion.set_analysis_space("HSV") # HSV, LCH
+See http://en.wikipedia.org/wiki/Color_space for more detailed descriptions.
+
+To use these utilities, users should instantiate one of these two classes:
+
+ColorSpace
+    Provides a convert(from, to, what) method to perform conversion
+    between colorspaces, e.g.  ``convert("rgb", "hsv", X)``, where ``X`` 
+    is assumed to be a numpy.dstack() object with three matching arrays.
+
+FeatureColorConverter
+    Declare a set of color spaces to allow external code to work the
+    same for any combination of color spaces.  Specifically, declares:
+
+    * image color space (the space in which a dataset of images has been stored),
+    * receptor color space (to which the images will be converted), e.g. for a model retina, and
+    * analysis color space (space in which analyses will be performed)
+
+    These values can be set using::
+
+      featuremapper.color_conversion.set_image_space("XYZ")    # e.g. RGB, XYZ, LMS
+      featuremapper.color_conversion.set_receptor_space("RGB") # e.g. RGB, LMS
+      featuremapper.color_conversion.set_analysis_space("HSV") # e.g. HSV, LCH
+
+The other code in this file is primarily implementation for these two
+classes, and will rarely need to be used directly.
 
 """
 
 from math import pi
 
+import copy
+import colorsys
 import numpy
-
 import param
 
-import copy
 
-import colorsys
-
-# SPG: warning, this depends on Topographica !
-#from topo.misc.inlinec import inline
-
-
-## Old CEB colorfns.py file contents
-
-
-## return Ma where M is 3x3 transformation matrix, for each pixel
 def _threeDdot_dumb(M,a):
+    """Return Ma, where M is a 3x3 transformation matrix, for each pixel"""
     result = numpy.empty(a.shape,dtype=a.dtype)
 
     for i in range(a.shape[0]):
@@ -46,6 +58,8 @@ def _threeDdot_dumb(M,a):
 
     return result
 
+
+
 def _threeDdot_faster(M,a):
     swapped = a.swapaxes(0,2)
     shape = swapped.shape
@@ -54,9 +68,7 @@ def _threeDdot_faster(M,a):
     b = result.swapaxes(2,0)
     # need to do asarray to ensure dtype?
     return numpy.asarray(b,dtype=a.dtype)
-
-# CB: probably could make a faster version if do aM instead,
-# e.g. something like (never tested):
+# CB: probably could make a faster version if do aM instead,  e.g. something like (untested):
 #def _threeDdot(M,a):
 #    shape = a.shape
 #    result = np.dot(a.reshape((-1,3)),M)
@@ -64,6 +76,8 @@ def _threeDdot_faster(M,a):
 #    return result
 
 threeDdot = _threeDdot_faster
+
+
 
 def _abc_to_def_array(ABC,fn):
     shape = ABC[:,:,0].shape
@@ -76,28 +90,27 @@ def _abc_to_def_array(ABC,fn):
             DEF[i,j,0],DEF[i,j,1],DEF[i,j,2]=fn(ABC[i,j,0],ABC[i,j,1],ABC[i,j,2])
 
     return DEF
+
     
 
 def _rgb_to_hsv_array(RGB):
-    """
-    Equivalent to colorsys.rgb_to_hsv, except expects array like :,:,3
-    """
+    """Equivalent to colorsys.rgb_to_hsv, except expects array like :,:,3"""
     return _abc_to_def_array(RGB,colorsys.rgb_to_hsv)
 
 
+
 def _hsv_to_rgb_array(HSV):
-    """
-    Equivalent to colorsys.hsv_to_rgb, except expects array like :,:,3
-    """
+    """Equivalent to colorsys.hsv_to_rgb, except expects array like :,:,3"""
     return _abc_to_def_array(HSV,colorsys.hsv_to_rgb)
 
 
+# these aliases can be overriden after loading this file, if
+# optimized versions are available
+rgb_to_hsv = _rgb_to_hsv_array
+hsv_to_rgb = _hsv_to_rgb_array
 
 
-rgb_to_hsv = _rgb_to_hsv_array #_opt
-hsv_to_rgb = _hsv_to_rgb_array #_opt
-
-
+# Should document where these constants are from.
 KAP = 24389/27.0
 EPS = 216/24389.0
 
@@ -145,41 +158,39 @@ def lch_to_lab(LCH):
     L,C,H = numpy.dsplit(LCH,3)
     return numpy.dstack( (L,C*numpy.cos(H),C*numpy.sin(H)) )
 
+
 def lab_to_lch(LAB):
     L,A,B = numpy.dsplit(LAB,3)
     range_ = 2*pi
     x = numpy.arctan2(B,A)
     return numpy.dstack( (L, numpy.hypot(A,B), fmod(x + 2*range_*(1-floor(x/(2*range_))), range_) ) )
-    #return numpy.dstack( (L, numpy.hypot(A,B), wrap(0,2*pi,numpy.arctan2(B,A))) )
-
-
 
 
 def xyz_to_lch(XYZ,whitepoint):
     return lab_to_lch(xyz_to_lab(XYZ,whitepoint))
 
+
 def lch_to_xyz(LCH,whitepoint):
     return lab_to_xyz(lch_to_lab(LCH),whitepoint)
 
-## End of old colorfns.py file contents
 
 
 
-
-
-# started from 
+# Preceding functions started from ceball's colorfns.py file
+# the rest started from 
 # http://projects.scipy.org/scipy/browser/trunk/Lib/sandbox/image/color.py?rev=1698
 
 whitepoints = {'CIE A': ['Normal incandescent', 0.4476, 0.4074],
                'CIE B': ['Direct sunlight', 0.3457, 0.3585],
                'CIE C': ['Average sunlight', 0.3101, 0.3162],
                'CIE E': ['Normalized reference', 1.0/3, 1.0/3],
-               'D50' : ['Bright tungsten', 0.3457, 0.3585],
-               'D55' : ['Cloudy daylight', 0.3324, 0.3474],
-               'D65' : ['Daylight', 0.312713, 0.329016],
-               'D75' : ['?', 0.299, 0.3149],
-               'D93' : ['low-quality old CRT', 0.2848, 0.2932]
+               'D50':   ['Bright tungsten', 0.3457, 0.3585],
+               'D55':   ['Cloudy daylight', 0.3324, 0.3474],
+               'D65':   ['Daylight', 0.312713, 0.329016],
+               'D75':   ['?', 0.299, 0.3149],
+               'D93':   ['low-quality old CRT', 0.2848, 0.2932]
                }
+
 
 def triwhite(chrwhite):
     x,y = chrwhite
@@ -195,7 +206,7 @@ for key in whitepoints.keys():
 transforms = {}
 
 
-# CEBALERT: add reference
+# CEBALERT: add reference.  Inverse computed using scipy.linalg.inv.
 transforms = {}
 transforms['D65'] = sD65 = {}
 
@@ -238,37 +249,37 @@ def lch01_to_xyz(LCH, whitepoint):
     H*=Hmax
     return lch_to_xyz(numpy.dstack((L,C,H)),whitepoint)
 
-###
 
 
-# This started off general but ended up being useful only
-# for the specific transforms I wanted to do.
 class ColorSpace(param.Parameterized):
     """
     Low-level color conversion. The 'convert' method handle color conversion to and from (and through) XYZ,
     and supports RGB, LCH, LMS and HSV.
     """
 
-    whitepoint = param.String(default='D65')
+    whitepoint = param.String(default='D65', doc="String name of whitepoint from lookup table.")
 
+    # JABALERT: Needs docstring
     transforms = param.Dict(default=transforms)
 
-    input_limits = param.NumericTuple((0.0,1.0))
+    input_limits = param.NumericTuple((0.0,1.0),doc="Upper and lower bounds to verify on input values.")
 
-    output_limits = param.NumericTuple((0.0,1.0))
+    output_limits = param.NumericTuple((0.0,1.0),doc="Upper and lower bounds to enforce on output values.")
 
-    output_clip = param.ObjectSelector(default='silent',
-                                       objects=['silent','warn','error','none'])
+    output_clip = param.ObjectSelector(default='silent',objects=['silent','warn','error','none'],doc="""
+        Action to take when the output value will be clipped.""")
 
-    dtype = param.Parameter(default=numpy.float32)
+    dtype = param.Parameter(default=numpy.float32,doc="Datatype to use for result.")
+
 
     def convert(self, from_, to, what):
         """
-        Convert "what" from "from_" colorpace to "to" colorspace. Eg, convert("rgb", "hsv", X)
+        Convert image or color "what" from "from_" colorpace to "to" colorspace. 
+        E.g.: ``convert("rgb", "hsv", X)``, where X is a numpy dstack or a color tuple.
         """
+
         if(from_.lower()==to.lower()):
             return what
-
 
         # Check if there exist an optimized function that performs from_to_to conversion
         direct_conversion = '%s_to_%s'%(from_.lower(),to.lower())
@@ -285,8 +296,9 @@ class ColorSpace(param.Parameterized):
     def _triwp(self):
         return whitepoints[self.whitepoint][3]
 
+
     def _get_shape(self,a):        
-        if hasattr(a,'shape') and a.ndim>0: # i.e. really an array, I hope
+        if hasattr(a,'shape') and a.ndim>0: # i.e. really an array
             return a.shape
         else:
             # also support e.g. tuples
@@ -295,6 +307,7 @@ class ColorSpace(param.Parameterized):
                 return (length,)
             except TypeError:            
                 return None
+
 
     def _put_shape(self,a,shape):
         if shape is None:
@@ -309,6 +322,7 @@ class ColorSpace(param.Parameterized):
         if a.min()<min_ or a.max()>max_:
             raise ValueError('Input out of limits')
         return a, in_shape
+
         
     def _clip(self,a,min_limit,max_limit,action='silent'):
         if action=='none':
@@ -322,6 +336,7 @@ class ColorSpace(param.Parameterized):
                 self.warning('(%s,%s) outside limits (%s,%s)'%(a.min(),a.max(),min_limit,max_limit))
 
         a.clip(min_limit,max_limit,out=a)
+
                     
     def _threeDdot(self,M,a):
         # b = Ma        
@@ -331,6 +346,7 @@ class ColorSpace(param.Parameterized):
         self._put_shape(b,in_shape)
         return b
 
+
     def _ABC_to_DEF_by_fn(self,ABC,fn,*fnargs):
         ABC, in_shape = self._prepare_input(ABC,*self.input_limits)
         DEF = fn(ABC,*fnargs)
@@ -338,22 +354,25 @@ class ColorSpace(param.Parameterized):
         self._put_shape(DEF, in_shape)
         return DEF
 
-    # CEBALERT: I meant to wrap these to use paramoverrides (e.g. to
-    # allow rgb_to_hsv(RGB,output_clip='error') ) but never got round
-    # to it.
-    # CEBALERT: could cut down boilerplate by generating.
+
+    # CEBALERT: Should wrap these to use paramoverrides, e.g. to
+    # allow rgb_to_hsv(RGB,output_clip='error').  May be possible
+    # to cut down boilerplate by generating.
 
     ##  TO XYZ:     RGB, LCH, LMS, HSV(passing through RGB)
     def rgb_to_xyz(self,RGB):
         return self._threeDdot(
             self.transforms[self.whitepoint]['xyz_from_rgb'], RGB)
 
+
     def lch_to_xyz(self,LCH):
         return self._ABC_to_DEF_by_fn(LCH,lch01_to_xyz,self._triwp())
+
 
     def lms_to_xyz(self,LMS):
         return self._threeDdot(
             self.transforms[self.whitepoint]['xyz_from_lms'], LMS)
+
 
     def hsv_to_xyz(self,HSV):
         return self.rgb_to_xyz(self.hsv_to_rgb(HSV))
@@ -366,12 +385,15 @@ class ColorSpace(param.Parameterized):
         return self._threeDdot(
             self.transforms[self.whitepoint]['rgb_from_xyz'], XYZ)
 
+
     def xyz_to_lch(self, XYZ):
         return self._ABC_to_DEF_by_fn(XYZ,xyz_to_lch01,self._triwp())
+
 
     def xyz_to_lms(self,XYZ):
         return self._threeDdot(
             self.transforms[self.whitepoint]['lms_from_xyz'], XYZ)
+
 
     def xyz_to_hsv(self, XYZ):
         return self.rgb_to_hsv( self.xyz_to_rgb(XYZ) ) 
@@ -383,27 +405,33 @@ class ColorSpace(param.Parameterized):
     def _gamma_rgb(RGB):
         return 12.92*RGB*(RGB<=0.0031308) + ((1+0.055)*RGB**(1/2.4) - 0.055) * (RGB>0.0031308)
 
+
     @staticmethod
     def _ungamma_rgb(RGB):
         return RGB/12.92*(RGB<=0.04045) + (((RGB+0.055)/1.055)**2.4) * (RGB>0.04045)
+
 
     # linear rgb to hsv
     def rgb_to_hsv(self,RGB):
         gammaRGB = self._gamma_rgb(RGB)
         return self._ABC_to_DEF_by_fn(gammaRGB,rgb_to_hsv)
 
+
     # hsv to linear rgb
     def hsv_to_rgb(self,HSV):
         gammaRGB = self._ABC_to_DEF_by_fn(HSV,hsv_to_rgb)
         return self._ungamma_rgb(gammaRGB)
+
 
     ### for display
     def hsv_to_gammargb(self,HSV):
         # hsv is already specifying gamma corrected rgb
         return self._ABC_to_DEF_by_fn(HSV,hsv_to_rgb)
 
+
     def lch_to_gammargb(self,LCH):
         return self._gamma_rgb(self.lch_to_rgb(LCH))
+
 
     def lms_to_lch(self,LCH):
         lch_to_xyz
@@ -414,57 +442,51 @@ class ColorSpace(param.Parameterized):
 
 
 def _swaplch(LCH):
-    # brain not working
-    try:
+    """Reverse the order of an LCH numpy dstack or tuple for analysis."""
+
+    try: # Numpy array
         L,C,H = numpy.dsplit(LCH,3)
         return numpy.dstack((H,C,L))
-    except:
+    except: # Tuple
         L,C,H = LCH
         return H,C,L
 
 
 
 
-## SPG: this is the only object that needs to be accessed from the outside.
 class FeatureColorConverter(param.Parameterized):
     """
-    Color conversion class designed to support color space transformations along a pipeline common
-    in color vision modelling : image -> receptors (retinas) -> [higher stages] -> analysis
+    High-level color conversion class designed to support color space
+    transformations along a pipeline common in color vision modelling:
+    image -> receptors (retinas) -> [higher stages] -> analysis
     """
 
-    # CEBALERT: should be class selector
-    colorspace = param.Parameter(default=ColorSpace())
+    # CEBALERT: should be ClassSelector
+    colorspace = param.Parameter(default=ColorSpace(),doc="""
+        Object to use for converting between color spaces.""")
 
-    image_space = param.ObjectSelector(
-        default='XYZ', 
-        objects=['XYZ', 'LMS'],
-        doc="""
-        Color space in which images are encoded.
-        """) # CEBALERT: possibly add sRGB?
+    image_space = param.ObjectSelector(default='XYZ', objects=['XYZ', 'LMS'], doc="""
+        Color space in which images are encoded.""") # CEBALERT: possibly add sRGB?
 
-    receptor_space = param.ObjectSelector(
-        default='RGB',
-        objects=['RGB','LMS'],
-        doc="""
-        Color space to which images are transformed to provide input to later stages of processing.
-        """)
+    receptor_space = param.ObjectSelector(default='RGB', objects=['RGB','LMS'], doc="""
+        Color space to which images will be transformed to provide input
+        to later stages of processing.""")
 
-    analysis_space = param.ObjectSelector(
-        default='HSV',
-        objects=['HSV','LCH'],
-        doc="""
-        Color space in which analysis is performed.
-        """)
+    analysis_space = param.ObjectSelector(default='HSV', objects=['HSV','LCH'], doc="""
+        Color space in which analysis is performed.""")
 
-    # CEBALERT: should be classselector
+
+    # CEBALERT: should be ClassSelector
+    # JABALERT: Unused?
     display_sat = param.Number(default=1.0)
     display_val = param.Number(default=1.0)
 
+     
     swap_polar_HSVorder = {
         'HSV': lambda HSV: HSV,
         'LCH': _swaplch }
     
-
+    # JABALERT: Is there any reason to have these functions?
     def set_receptor_space(self, receptor_colorspace):
         """
         Set the receptor space.
@@ -485,48 +507,47 @@ class FeatureColorConverter(param.Parameterized):
 
 
     def image2receptors(self,i):
-        """
-        Transform input images onto the specified receptor color space.
-
-        """
+        """Transform images i provided into the specified receptor color space."""
         return self.colorspace.convert(self.image_space, self.receptor_space, i)
 
+
     def receptors2analysis(self,r):
-        """
-        Transform receptor space inputs to the analysis color space.
-        """
+        """Transform receptor space inputs to the analysis color space."""
         a = self.colorspace.convert(self.receptor_space, self.analysis_space, r)
         return self.swap_polar_HSVorder[self.analysis_space](a)
 
+
     def analysis2receptors(self,a):
-        """
-        Convert back from the analysis color space to the receptor's.
-        """
+        """Convert back from the analysis color space to the receptor's."""
         a = self.swap_polar_HSVorder[self.analysis_space](a)        
         return self.colorspace.convert(self.analysis_space, self.receptor_space, a)
 
+
     def analysis2display(self,a):
         """
-        Utility conversion function that transforms data from the analysis color space to the display space (currently hard-set to RGB) for visualization.
+        Utility conversion function that transforms data from the
+        analysis color space to the display space (currently hard-set
+        to RGB) for visualization.
         """
         a = self.swap_polar_HSVorder[self.analysis_space](a)
         return self.colorspace.convert(self.analysis_space.lower(), 'gammargb', a)
     
     def jitter_hue(self,a,amount):
+        """Rotate the hue component of a by the given amount."""
         a[:,:,0] += amount
         a[:,:,0] %= 1.0
 
     def multiply_sat(self,a,factor):
+        """Scale the saturation of a by the given amount."""
         a[:,:,1] *= factor
 
 
 
 
-# Initialize FeatureMapper.color_conversion object! (FeatureColorConverter)
+# Initialize FeatureMapper.color_conversion object of type FeatureColorConverter
 default_receptor_colorspace='RGB'
-
-default_dataset_colorspace = 'XYZ'
-default_analysis_colorspace = 'HSV'
+default_dataset_colorspace='XYZ'
+default_analysis_colorspace='HSV'
 
 color_conversion = FeatureColorConverter(
     analysis_space = default_analysis_colorspace,
@@ -537,9 +558,6 @@ color_conversion.set_receptor_space(default_receptor_colorspace)
 
 
 
-__all__ = [
-    "ColorSpace",
-    "FeatureColorConverter"
-]
+__all__ = ["ColorSpace","FeatureColorConverter"]
 
 
