@@ -259,8 +259,8 @@ class ColorSpace(param.Parameterized):
 
     whitepoint = param.String(default='D65', doc="String name of whitepoint from lookup table.")
 
-    # JABALERT: Needs docstring
-    transforms = param.Dict(default=transforms)
+    transforms = param.Dict(default=transforms,doc="""Structure containing the transformation matrices used
+                                                      by this Class. See ``transforms`` in this file.""")
 
     input_limits = param.NumericTuple((0.0,1.0),doc="Upper and lower bounds to verify on input values.")
 
@@ -354,10 +354,6 @@ class ColorSpace(param.Parameterized):
         self._put_shape(DEF, in_shape)
         return DEF
 
-
-    # CEBALERT: Should wrap these to use paramoverrides, e.g. to
-    # allow rgb_to_hsv(RGB,output_clip='error').  May be possible
-    # to cut down boilerplate by generating.
 
     ##  TO XYZ:     RGB, LCH, LMS, HSV(passing through RGB)
     def rgb_to_xyz(self,RGB):
@@ -458,10 +454,11 @@ class FeatureColorConverter(param.Parameterized):
     """
 
     # CEBALERT: should be ClassSelector
+    # SPG: it shouldn't be necessary to support selection of the ColorSpace, as the new object supports any color conversion.
     colorspace = param.Parameter(default=ColorSpace(),doc="""
         Object to use for converting between color spaces.""")
 
-    image_space = param.ObjectSelector(default='XYZ', objects=['XYZ', 'LMS'], doc="""
+    image_space = param.ObjectSelector(default='XYZ', objects=['XYZ', 'LMS', 'RGB'], doc="""
         Color space in which images are encoded.""") # CEBALERT: possibly add sRGB?
 
     receptor_space = param.ObjectSelector(default='RGB', objects=['RGB','LMS'], doc="""
