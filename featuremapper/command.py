@@ -664,7 +664,7 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
 
         return [f.Speed(values=[0]) if p.num_speeds is 0 else
                 f.Speed(range=(0.0, p.max_speed), steps=p.num_speeds),
-                f.Duration(values=np.max(p.durations)),
+                f.Duration(values=[np.max(p.durations)]),
                 f.Frequency(values=p.frequencies),
                 f.Direction(steps=p.num_direction,
                             preference_fn=self.preference_fn),
