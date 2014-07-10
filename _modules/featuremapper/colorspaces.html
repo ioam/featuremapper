@@ -325,8 +325,8 @@
 
     <span class="n">whitepoint</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;D65&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;String name of whitepoint from lookup table.&quot;</span><span class="p">)</span>
 
-    <span class="c"># JABALERT: Needs docstring</span>
-    <span class="n">transforms</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">transforms</span><span class="p">)</span>
+    <span class="n">transforms</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">transforms</span><span class="p">,</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Structure containing the transformation matrices used</span>
+<span class="s">                                                      by this Class. See ``transforms`` in this file.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">input_limits</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">NumericTuple</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;Upper and lower bounds to verify on input values.&quot;</span><span class="p">)</span>
 
@@ -420,10 +420,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_put_shape</span><span class="p">(</span><span class="n">DEF</span><span class="p">,</span> <span class="n">in_shape</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DEF</span>
 
-
-    <span class="c"># CEBALERT: Should wrap these to use paramoverrides, e.g. to</span>
-    <span class="c"># allow rgb_to_hsv(RGB,output_clip=&#39;error&#39;).  May be possible</span>
-    <span class="c"># to cut down boilerplate by generating.</span>
 
     <span class="c">##  TO XYZ:     RGB, LCH, LMS, HSV(passing through RGB)</span>
     <span class="k">def</span> <span class="nf">rgb_to_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">RGB</span><span class="p">):</span>
@@ -524,10 +520,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c"># CEBALERT: should be ClassSelector</span>
+    <span class="c"># SPG: it shouldn&#39;t be necessary to support selection of the ColorSpace, as the new object supports any color conversion.</span>
     <span class="n">colorspace</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">ColorSpace</span><span class="p">(),</span><span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Object to use for converting between color spaces.&quot;&quot;&quot;</span><span class="p">)</span>
 
-    <span class="n">image_space</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;XYZ&#39;</span><span class="p">,</span> <span class="s">&#39;LMS&#39;</span><span class="p">],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+    <span class="n">image_space</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;XYZ&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;XYZ&#39;</span><span class="p">,</span> <span class="s">&#39;LMS&#39;</span><span class="p">,</span> <span class="s">&#39;RGB&#39;</span><span class="p">],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Color space in which images are encoded.&quot;&quot;&quot;</span><span class="p">)</span> <span class="c"># CEBALERT: possibly add sRGB?</span>
 
     <span class="n">receptor_space</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">ObjectSelector</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;RGB&#39;</span><span class="p">,</span> <span class="n">objects</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;RGB&#39;</span><span class="p">,</span><span class="s">&#39;LMS&#39;</span><span class="p">],</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
