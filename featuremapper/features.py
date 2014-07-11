@@ -106,7 +106,7 @@ Ocular           = Integer("Ocular")
 Speed            = Float("Speed")
 
 # Time features
-Time     = Dimension("Time", type=param.Dynamic.time_fn.time_type)
+Time     = Feature("Time", type=param.Dynamic.time_fn.time_type)
 Duration = Time("Duration")
 
 Feature._init = True # All Features created externally have to supply range or values

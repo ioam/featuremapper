@@ -414,7 +414,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             f_vals = mvals[1:]
             act = self._activities[name][f_vals]
             for feature, value in current_values:
-                self._featureresponses[name][f_vals][feature].update(act, value)
+                self._featureresponses[name][f_vals][feature.lower()].update(act, value)
             if p.store_responses:
                 cn, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
