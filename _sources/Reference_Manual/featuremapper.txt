@@ -12,17 +12,6 @@ featuremapper.featuremapper Package
     :inherited-members:
     :show-inheritance:
 
-:mod:`colorspaces` Module
--------------------------
-
-.. inheritance-diagram:: featuremapper.colorspaces
-
-
-.. automodule:: featuremapper.colorspaces
-    :members:
-    :inherited-members:
-    :show-inheritance:
-
 :mod:`command` Module
 ---------------------
 
