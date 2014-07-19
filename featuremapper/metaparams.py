@@ -14,7 +14,7 @@ import numpy as np
 from colorsys import hsv_to_rgb
 
 import param
-from imagen import Translator, Sweeper
+from imagen import Translator, OldSweeper
 
 class contrast2centersurroundscale(param.ParameterizedFunction):
     """
@@ -141,7 +141,7 @@ class direction2translation(param.ParameterizedFunction):
                             self.direction_warned = True
                         step = 0
                     speed = features['speed']
-                    inputs[name] = Sweeper(generator=inputs[name], step=step,
+                    inputs[name] = OldSweeper(generator=inputs[name], step=step,
                                            speed=speed)
                     setattr(inputs[name], 'orientation', orientation)
 
