@@ -14,7 +14,7 @@ import numpy as np
 from colorsys import hsv_to_rgb
 
 import param
-from imagen import Translator, OldSweeper
+from imagen import Sweeper
 
 class contrast2centersurroundscale(param.ParameterizedFunction):
     """
@@ -116,34 +116,28 @@ class direction2translation(param.ParameterizedFunction):
         if 'direction' in features:
             import __main__ as main
 
-            if '_new_motion_model' in main.__dict__ and main.__dict__[
-                '_new_motion_model']:
-            #### new motion model ####
-
+            if '_old_motion_model' in main.__dict__ and main.__dict__['_old_motion_model']:
                 for name in inputs:
-                    inputs[name] = Translator(generator=inputs[name],
-                                              direction=features['direction'],
-                                              speed=features['speed'],
-                                              reset_period=features['duration'])
-            else:
-            #### old motion model ####
-                orientation = features['direction'] + np.pi/2
-
-                for name in inputs.keys():
-                    speed = features['speed']
                     try:
-                        step = int(name[-1])
+                        offset = int(name[-1])
                     except:
                         if not hasattr(self, 'direction_warned'):
                             self.warning('Assuming step is zero; no input lag'
                                          ' number specified at the end of the'
                                          ' input sheet name.')
                             self.direction_warned = True
-                        step = 0
-                    speed = features['speed']
-                    inputs[name] = OldSweeper(generator=inputs[name], step=step,
-                                           speed=speed)
-                    setattr(inputs[name], 'orientation', orientation)
+                        offset = 0
+                    setattr(inputs[name], 'orientation', features['direction']-np.pi/2)
+                    inputs[name] = Sweeper(generator=inputs[name],
+                                           step_offset=offset,
+                                           speed=features['speed'],
+                                           reset_period=1.0)
+            else:
+                for name in inputs:
+                    setattr(inputs[name], 'orientation', features['direction']+np.pi/2)
+                    inputs[name] = Sweeper(generator=inputs[name],
+                                           speed=features['speed'],
+                                           reset_period=features['duration'])
 
 
 
