@@ -54,7 +54,7 @@ class decode_feature(ViewOperation):
                 fname = sv.label[:-len('Preference')]
             if sv.label.endswith('Selectivity'):
                 selectivity = sv
-            if sv.label.endswith('Response') or sv.label.esndswith('Activity'):
+            if sv.label.endswith('Response') or sv.label.endswith('Activity'):
                 activity = sv
 
         if preference is None or activity is None:
