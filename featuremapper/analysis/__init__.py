@@ -32,8 +32,8 @@ class decode_feature(ViewOperation):
     orientation preference as follows and overlay them::
 
        act = measure_response(pattern_generator=imagen.Gaussian(),
-                              durations=[0.1, 0.5, 1.0])['V1']
-       pref = measure_or_pref()['V1'].last
+                              durations=[0.1, 0.5, 1.0])['GaussianResponse']['V1']
+       pref = measure_or_pref()['OrientationPreference']['V1'].last
        ActivityPreferenceStack = act * pref
 
        decode_feature(ActivityPreferenceStack)
@@ -54,12 +54,12 @@ class decode_feature(ViewOperation):
                 fname = sv.label[:-len('Preference')]
             if sv.label.endswith('Selectivity'):
                 selectivity = sv
-            if sv.label.endswith('Activity'):
+            if sv.label.endswith('Response') or sv.label.esndswith('Activity'):
                 activity = sv
 
         if preference is None or activity is None:
-            raise ValueError("DecodeFeature requires overlay with activity "
-                             "and preference as input.")
+            raise ValueError("DecodeFeature requires overlay with response/"
+                             "activity and preference as input.")
         if selectivity is None:
             selectivity = SheetView(np.ones(preference.data.shape),
                                     preference.bounds)
