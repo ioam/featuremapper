@@ -98,8 +98,8 @@
 <span class="sd">    orientation preference as follows and overlay them::</span>
 
 <span class="sd">       act = measure_response(pattern_generator=imagen.Gaussian(),</span>
-<span class="sd">                              durations=[0.1, 0.5, 1.0])[&#39;V1&#39;]</span>
-<span class="sd">       pref = measure_or_pref()[&#39;V1&#39;].last</span>
+<span class="sd">                              durations=[0.1, 0.5, 1.0])[&#39;GaussianResponse&#39;][&#39;V1&#39;]</span>
+<span class="sd">       pref = measure_or_pref()[&#39;OrientationPreference&#39;][&#39;V1&#39;].last</span>
 <span class="sd">       ActivityPreferenceStack = act * pref</span>
 
 <span class="sd">       decode_feature(ActivityPreferenceStack)</span>
@@ -120,12 +120,12 @@
                 <span class="n">fname</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s">&#39;Preference&#39;</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Selectivity&#39;</span><span class="p">):</span>
                 <span class="n">selectivity</span> <span class="o">=</span> <span class="n">sv</span>
-            <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Activity&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Response&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sv</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;Activity&#39;</span><span class="p">):</span>
                 <span class="n">activity</span> <span class="o">=</span> <span class="n">sv</span>
 
         <span class="k">if</span> <span class="n">preference</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">activity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DecodeFeature requires overlay with activity &quot;</span>
-                             <span class="s">&quot;and preference as input.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DecodeFeature requires overlay with response/&quot;</span>
+                             <span class="s">&quot;activity and preference as input.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selectivity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">selectivity</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
                                     <span class="n">preference</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
