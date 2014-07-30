@@ -430,7 +430,7 @@ class measure_rfs(SingleInputResponseCommand):
 
     static_parameters = param.List(default=["scale", "offset"])
 
-    pattern_generator = param.Callable(default=random.UniformRandom(),
+    pattern_generator = param.Callable(default=random.UniformRandom(name='UniformNoise'),
        doc="""Presented pattern for reverse correlation, usually white noise.""")
 
     presentations = param.Number(default=100, doc="""
