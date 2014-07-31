@@ -496,7 +496,7 @@
 
     <span class="n">static_parameters</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;scale&quot;</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">])</span>
 
-    <span class="n">pattern_generator</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">UniformRandom</span><span class="p">(),</span>
+    <span class="n">pattern_generator</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Callable</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">UniformRandom</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;UniformNoise&#39;</span><span class="p">),</span>
        <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Presented pattern for reverse correlation, usually white noise.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">presentations</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
