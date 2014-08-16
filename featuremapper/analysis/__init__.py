@@ -2,8 +2,8 @@ import numpy as np
 
 import param
 
-from imagen.analysis import ViewOperation
 from dataviews import Table, SheetView
+from dataviews.operation import ViewOperation, StackOperation
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
