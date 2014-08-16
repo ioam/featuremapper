@@ -10,9 +10,9 @@ from dataviews import Curve, Table
 from dataviews.operation import ViewOperation
 
 
-#=======================================#
-# Spatial constant conversion functions #
-#=======================================#
+#====================================#
+# Spatial constant conversion methods
+#====================================#
 
 def idog_conv(sc):
     """
@@ -29,11 +29,35 @@ def fr2sp(fr):
 
 class TuningCurveAnalysis(ViewOperation):
 
+    feature = param.String()
+
     def _validate_curve(self, curve):
         if not isinstance(curve, Curve):
             raise Exception('Supplied views need to be curves.')
-        elif not 'Size' in curve.xlabel:
-            raise Exception('Analysis requires size response curves.')
+        elif not self.feature in curve.xlabel:
+            raise Exception('Analysis requires %s response curves.' % self.feature)
+
+
+
+class OrientationContrastAnalysis(TuningCurveAnalysis):
+
+    feature = param.String(default='OrientationSurround')
+
+    def _process(self, curve, key=None):
+        self._validate_curve(curve)
+        ydata = curve.data[:, 1]
+        n_ors = len(ydata)
+        if n_ors % 2:
+            raise Exception("Curve does not have even number of samples.")
+        orthogonal_index = (n_ors+1)/2
+
+        r0 = ydata[0]
+        rorth = ydata[orthogonal_index]
+        try:
+            ocsi = (r0 - rorth) / r0
+        except:
+            ocsi = np.NaN
+        return [Table({'OCSI': ocsi}, label='Orientation Contrast Suppression')]
 
 
 
@@ -44,6 +68,8 @@ class SizeTuningPeaks(TuningCurveAnalysis):
     like contrast dependent size tuning shifts and counter suppression
     indices.
     """
+
+    feature = param.String(default='Size')
 
     def _process(self, curve, key=None):
         self._validate_curve(curve)
@@ -88,7 +114,10 @@ class SizeTuningShift(ViewOperation):
         low_table = SizeTuningPeaks(low_contrast)
         high_table = SizeTuningPeaks(high_contrast)
 
-        shift = low_table['Peak Size'] / high_table['Peak Size']
+        try:
+            shift = low_table['Peak Size'] / high_table['Peak Size']
+        except:
+            shift = np.NaN
         return [Table(dict(CSS=shift, Low=low_table['Peak Size'],
                            High=high_table['Peak Size']),
                       label='Contrast Dependent Size Tuning Shift')]
@@ -97,7 +126,7 @@ class SizeTuningShift(ViewOperation):
 class DoGModelFit(TuningCurveAnalysis):
     """
     Baseclass to implement basic size tuning curve fitting procedures.
-    Subclasses have to implement the fitting_function method with the function
+    Subclasses have to implement the _function method with the function
     that is to be fit to the supplied curve.
     """
 
@@ -114,7 +143,9 @@ class DoGModelFit(TuningCurveAnalysis):
 
     fit_labels = ['K_c', 'K_s', 'a', 'b']
 
-    def fitting_function(self):
+    feature = param.String(default='Size')
+
+    def _function(self):
         raise NotImplementedError
 
     def _fit_curve(self, curve):
@@ -129,7 +160,7 @@ class DoGModelFit(TuningCurveAnalysis):
             init_fit[self.fit_labels.index('b')] = table['Suppression Size']/2.
 
         try:
-            fit, pcov = curve_fit(self.fitting_function, xdata, ydata,
+            fit, pcov = curve_fit(self._function, xdata, ydata,
                                   init_fit, maxfev=self.p.max_iterations)
             fit_data = dict(zip(self.fit_labels, fit))
             K_s = fit[self.fit_labels.index('K_s')]
@@ -137,7 +168,7 @@ class DoGModelFit(TuningCurveAnalysis):
             K_c = fit[self.fit_labels.index('K_c')]
             a = fit[self.fit_labels.index('a')]
             fit_data['SI'] = (K_s*b)/(K_c*a)
-            fitted_ydata = [self.fitting_function(x, *fit) for x in xdata]
+            fitted_ydata = [self._function(x, *fit) for x in xdata]
             if max(fitted_ydata) == 10000: raise Exception()
             fitted_curve = Curve(zip(xdata, fitted_ydata), value='Response',
                                  label='Size Tuning Fit', dimensions=curve.dimensions)
@@ -149,13 +180,11 @@ class DoGModelFit(TuningCurveAnalysis):
         return [fitted_curve, fit_data]
 
 
-class iDoGModel_Sceniak(DoGModelFit):
+class Size_iDoGModel(DoGModelFit):
     """
     iDoG model response function to sine grating disk stimulus
     with optimal spatial frequency and varying disk radius (r).
-
     Ref: Sceniak et al. (2006) - page 3476
-
     Fitting parameters: R_0 - Steady-state response
                         K_c - Center strength
                         a   - Center spatial constant
@@ -169,12 +198,14 @@ class iDoGModel_Sceniak(DoGModelFit):
 
     fit_labels = ['R_0', 'K_c', 'K_s', 'a', 'b']
 
+    feature = param.String(default='Size')
+
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
         return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
 
-    def fitting_function(self, d, R_0, K_c, K_s, a, b):
+    def _function(self, d, R_0, K_c, K_s, a, b):
         # Fitting penalties
         if (K_c <= 0) or (K_s <= 0) or (a <= 0) or (b <= 0):
             return 10000
@@ -194,9 +225,7 @@ class SF_DoGModel(DoGModelFit):
     """
     DoG model response function to sine grating disk stimulus
     with varying spatial frequency (f).
-
     Ref: Sceniak et al. (2006) - page 3476
-
     Fitting parameters: R_0 - Steady-state response
                         K_c - Center strength
                         a   - Center spatial constant
@@ -210,6 +239,8 @@ class SF_DoGModel(DoGModelFit):
 
     fit_labels = ['R_0', 'K_c', 'K_s', 'a', 'b']
 
+    feature = param.String(default='Size')
+
     def _process(self, curve, key=None):
         if 'Contrast' in key:
             self.p.default_contrast = key['Contrast']
@@ -220,7 +251,7 @@ class SF_DoGModel(DoGModelFit):
         return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
 
 
-    def fitting_function(self, f, R_0, K_c, K_s, a, b):
+    def _function(self, f, R_0, K_c, K_s, a, b):
         # Fitting penalties for negative coefficients
         if (a <= 0) or (b <= 0) or (K_c <= 0) or (K_s <= 0) or (R_0 < 0):
             return 10000
@@ -240,13 +271,11 @@ class SF_DoGModel(DoGModelFit):
         return R
 
 
-class iDoGModel_DeAngelis(DoGModelFit):
+class iDoG_DeAngelisModel(DoGModelFit):
     """
     Basic integrated difference of Gaussian response function
     for area summation curves.
-
     Ref: DeAngelis et al. 1994
-
     Fitting parameters: K_c - Center strength
                         a   - Center spatial constant
                         K_s - Surround Strength
@@ -260,7 +289,9 @@ class iDoGModel_DeAngelis(DoGModelFit):
 
     fit_labels = ['R_0', 'K_c', 'K_s', 'a', 'b']
 
-    def fitting_function(self, d, R_0, K_c, K_s, a, b):
+    feature = param.String(default='Size')
+
+    def _function(self, d, R_0, K_c, K_s, a, b):
         if (a <= 0) or (b <= 0) or (K_c <= 0) or (K_s <= 0) or (
             R_0 < 0): return 10000
 
@@ -282,15 +313,7 @@ class NormalizationDoGModel(DoGModelFit):
     """
     Normalization model describing response of V1 neurons
     to sine grating disk stimuli of varying sizes.
-
-    Model includes a contrast parameter, which should be
-    supplied as a value between 0-100. By default the
-    default_contrast parameter is used, however if a Stack
-    with a Contrast dimension the supplied contrast keys
-    are used.
-
-    Ref: Sceniak et al. (2001) - page 1875
-
+    Ref: Sceniak et al. (200q1) - page 1875
     Fitting parameters: K_c -  Center strength
                         a   -  Center spatial constant
                         K_s -  Surround Strength
@@ -300,20 +323,21 @@ class NormalizationDoGModel(DoGModelFit):
 
     beta = param.Number(default=0, doc="Baseline response.")
 
-    default_contrast = param.Number(default=100, doc="""
+    default_contrast = param.Number(default=1.0, doc="""
         Default contrast to use if supplied curve doesn't provide contrast.""")
 
     label = param.String(default='Normalization DoG Model Fit')
 
     fit_labels = ['beta', 'K_c', 'K_s', 'a', 'b']
 
-    def fitting_function(self, d, beta, K_c, K_s, a, b):
+    feature = param.String(default='Size')
+
+    def _function(self, d, beta, K_c, K_s, a, b):
         # Fitting penalty
         if (a <= 0) or (b <= 0) or (b <= a) or (K_c <= 0) or (K_s <= 0):
             return 10000
 
-        C = (self.key['Contrast'] if 'Contrast' in self.key else
-             self.p.default_contrast) / 100
+        C = self.p.default_contrast
         r = d/2.0
         L_c = 0.5 * a * math.sqrt(math.pi) * ss.erf(2 * r / a)
         L_s = 0.5 * b * math.sqrt(math.pi) * ss.erf(2 * r / b)
@@ -322,7 +346,6 @@ class NormalizationDoGModel(DoGModelFit):
 
 
     def _process(self, curve, key=None):
-        self.key = key
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
         return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
