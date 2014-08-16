@@ -49,10 +49,10 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
         n_ors = len(ydata)
         if n_ors % 2:
             raise Exception("Curve does not have even number of samples.")
-        orthogonal_index = (n_ors+1)/2
+        r0_index = int(n_ors/2)
 
-        r0 = ydata[0]
-        rorth = ydata[orthogonal_index]
+        r0 = ydata[r0_index]
+        rorth = ydata[0]
         try:
             ocsi = (r0 - rorth) / r0
         except:
