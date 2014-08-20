@@ -404,6 +404,9 @@ class measure_response(FeatureResponses):
         for override, value in p.extra_keywords().items():
             if override in p.pattern_response_fn.params():
                 p.pattern_response_fn.set_param(override, value)
+            else:
+                self.warning('%s not a parameter of measure_response '
+                             'or the pattern_response_fn.' % override)
 
 
 
