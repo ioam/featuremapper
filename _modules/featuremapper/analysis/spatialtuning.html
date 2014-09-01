@@ -77,9 +77,9 @@
 <span class="kn">from</span> <span class="nn">dataviews.operation</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
 
 
-<span class="c">#=======================================#</span>
-<span class="c"># Spatial constant conversion functions #</span>
-<span class="c">#=======================================#</span>
+<span class="c">#====================================#</span>
+<span class="c"># Spatial constant conversion methods</span>
+<span class="c">#====================================#</span>
 
 <div class="viewcode-block" id="idog_conv"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.idog_conv">[docs]</a><span class="k">def</span> <span class="nf">idog_conv</span><span class="p">(</span><span class="n">sc</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -96,11 +96,35 @@
 </div>
 <span class="k">class</span> <span class="nc">TuningCurveAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
 
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">_validate_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">Curve</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Supplied views need to be curves.&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="s">&#39;Size&#39;</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xlabel</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Analysis requires size response curves.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xlabel</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Analysis requires </span><span class="si">%s</span><span class="s"> response curves.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span><span class="p">)</span>
+
+
+
+<span class="k">class</span> <span class="nc">OrientationContrastAnalysis</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
+
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;OrientationSurround&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">n_ors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_ors</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Curve does not have even number of samples.&quot;</span><span class="p">)</span>
+        <span class="n">r0_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_ors</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">r0</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="n">r0_index</span><span class="p">]</span>
+        <span class="n">rorth</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ocsi</span> <span class="o">=</span> <span class="p">(</span><span class="n">r0</span> <span class="o">-</span> <span class="n">rorth</span><span class="p">)</span> <span class="o">/</span> <span class="n">r0</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">ocsi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">({</span><span class="s">&#39;OCSI&#39;</span><span class="p">:</span> <span class="n">ocsi</span><span class="p">},</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">)]</span>
 
 
 
@@ -111,6 +135,8 @@
 <span class="sd">    like contrast dependent size tuning shifts and counter suppression</span>
 <span class="sd">    indices.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
@@ -155,7 +181,10 @@
         <span class="n">low_table</span> <span class="o">=</span> <span class="n">SizeTuningPeaks</span><span class="p">(</span><span class="n">low_contrast</span><span class="p">)</span>
         <span class="n">high_table</span> <span class="o">=</span> <span class="n">SizeTuningPeaks</span><span class="p">(</span><span class="n">high_contrast</span><span class="p">)</span>
 
-        <span class="n">shift</span> <span class="o">=</span> <span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">CSS</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">Low</span><span class="o">=</span><span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">],</span>
                            <span class="n">High</span><span class="o">=</span><span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
                       <span class="n">label</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">)]</span>
@@ -164,7 +193,7 @@
 <div class="viewcode-block" id="DoGModelFit"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.DoGModelFit">[docs]</a><span class="k">class</span> <span class="nc">DoGModelFit</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Baseclass to implement basic size tuning curve fitting procedures.</span>
-<span class="sd">    Subclasses have to implement the fitting_function method with the function</span>
+<span class="sd">    Subclasses have to implement the _function method with the function</span>
 <span class="sd">    that is to be fit to the supplied curve.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -181,7 +210,9 @@
 
     <span class="n">fit_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;K_c&#39;</span><span class="p">,</span> <span class="s">&#39;K_s&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_fit_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">):</span>
@@ -196,7 +227,7 @@
             <span class="n">init_fit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s">&#39;Suppression Size&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fit</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_function</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span>
+            <span class="n">fit</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span>
                                   <span class="n">init_fit</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">max_iterations</span><span class="p">)</span>
             <span class="n">fit_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="p">,</span> <span class="n">fit</span><span class="p">))</span>
             <span class="n">K_s</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;K_s&#39;</span><span class="p">)]</span>
@@ -204,7 +235,7 @@
             <span class="n">K_c</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;K_c&#39;</span><span class="p">)]</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">)]</span>
             <span class="n">fit_data</span><span class="p">[</span><span class="s">&#39;SI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">K_s</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">K_c</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
-            <span class="n">fitted_ydata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fitting_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xdata</span><span class="p">]</span>
+            <span class="n">fitted_ydata</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">fit</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xdata</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">fitted_ydata</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10000</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">()</span>
             <span class="n">fitted_curve</span> <span class="o">=</span> <span class="n">Curve</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">fitted_ydata</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Response&#39;</span><span class="p">,</span>
                                  <span class="n">label</span><span class="o">=</span><span class="s">&#39;Size Tuning Fit&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">curve</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
@@ -216,13 +247,11 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span><span class="p">]</span>
 
 </div>
-<div class="viewcode-block" id="iDoGModel_Sceniak"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.iDoGModel_Sceniak">[docs]</a><span class="k">class</span> <span class="nc">iDoGModel_Sceniak</span><span class="p">(</span><span class="n">DoGModelFit</span><span class="p">):</span>
+<div class="viewcode-block" id="Size_iDoGModel"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.Size_iDoGModel">[docs]</a><span class="k">class</span> <span class="nc">Size_iDoGModel</span><span class="p">(</span><span class="n">DoGModelFit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    iDoG model response function to sine grating disk stimulus</span>
 <span class="sd">    with optimal spatial frequency and varying disk radius (r).</span>
-
 <span class="sd">    Ref: Sceniak et al. (2006) - page 3476</span>
-
 <span class="sd">    Fitting parameters: R_0 - Steady-state response</span>
 <span class="sd">                        K_c - Center strength</span>
 <span class="sd">                        a   - Center spatial constant</span>
@@ -236,12 +265,14 @@
 
     <span class="n">fit_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;R_0&#39;</span><span class="p">,</span> <span class="s">&#39;K_c&#39;</span><span class="p">,</span> <span class="s">&#39;K_s&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
 
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="c"># Fitting penalties</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">K_c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_s</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">10000</span>
@@ -261,9 +292,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DoG model response function to sine grating disk stimulus</span>
 <span class="sd">    with varying spatial frequency (f).</span>
-
 <span class="sd">    Ref: Sceniak et al. (2006) - page 3476</span>
-
 <span class="sd">    Fitting parameters: R_0 - Steady-state response</span>
 <span class="sd">                        K_c - Center strength</span>
 <span class="sd">                        a   - Center spatial constant</span>
@@ -277,6 +306,8 @@
 
     <span class="n">fit_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;R_0&#39;</span><span class="p">,</span> <span class="s">&#39;K_c&#39;</span><span class="p">,</span> <span class="s">&#39;K_s&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
 
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="s">&#39;Contrast&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">default_contrast</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="s">&#39;Contrast&#39;</span><span class="p">]</span>
@@ -287,7 +318,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
 
 
-    <span class="k">def</span> <span class="nf">fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="c"># Fitting penalties for negative coefficients</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_s</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">R_0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">10000</span>
@@ -307,13 +338,11 @@
         <span class="k">return</span> <span class="n">R</span>
 
 </div>
-<div class="viewcode-block" id="iDoGModel_DeAngelis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.iDoGModel_DeAngelis">[docs]</a><span class="k">class</span> <span class="nc">iDoGModel_DeAngelis</span><span class="p">(</span><span class="n">DoGModelFit</span><span class="p">):</span>
+<div class="viewcode-block" id="iDoG_DeAngelisModel"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel">[docs]</a><span class="k">class</span> <span class="nc">iDoG_DeAngelisModel</span><span class="p">(</span><span class="n">DoGModelFit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic integrated difference of Gaussian response function</span>
 <span class="sd">    for area summation curves.</span>
-
 <span class="sd">    Ref: DeAngelis et al. 1994</span>
-
 <span class="sd">    Fitting parameters: K_c - Center strength</span>
 <span class="sd">                        a   - Center spatial constant</span>
 <span class="sd">                        K_s - Surround Strength</span>
@@ -327,7 +356,9 @@
 
     <span class="n">fit_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;R_0&#39;</span><span class="p">,</span> <span class="s">&#39;K_c&#39;</span><span class="p">,</span> <span class="s">&#39;K_s&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_s</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
             <span class="n">R_0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="mi">10000</span>
 
@@ -349,15 +380,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalization model describing response of V1 neurons</span>
 <span class="sd">    to sine grating disk stimuli of varying sizes.</span>
-
-<span class="sd">    Model includes a contrast parameter, which should be</span>
-<span class="sd">    supplied as a value between 0-100. By default the</span>
-<span class="sd">    default_contrast parameter is used, however if a Stack</span>
-<span class="sd">    with a Contrast dimension the supplied contrast keys</span>
-<span class="sd">    are used.</span>
-
-<span class="sd">    Ref: Sceniak et al. (2001) - page 1875</span>
-
+<span class="sd">    Ref: Sceniak et al. (200q1) - page 1875</span>
 <span class="sd">    Fitting parameters: K_c -  Center strength</span>
 <span class="sd">                        a   -  Center spatial constant</span>
 <span class="sd">                        K_s -  Surround Strength</span>
@@ -367,20 +390,21 @@
 
     <span class="n">beta</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;Baseline response.&quot;</span><span class="p">)</span>
 
-    <span class="n">default_contrast</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+    <span class="n">default_contrast</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Default contrast to use if supplied curve doesn&#39;t provide contrast.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="n">label</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Normalization DoG Model Fit&#39;</span><span class="p">)</span>
 
     <span class="n">fit_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;beta&#39;</span><span class="p">,</span> <span class="s">&#39;K_c&#39;</span><span class="p">,</span> <span class="s">&#39;K_s&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">fitting_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Size&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="c"># Fitting penalty</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="n">a</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_c</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">K_s</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">10000</span>
 
-        <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">[</span><span class="s">&#39;Contrast&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s">&#39;Contrast&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="k">else</span>
-             <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">default_contrast</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">default_contrast</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">d</span><span class="o">/</span><span class="mf">2.0</span>
         <span class="n">L_c</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">ss</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span>
         <span class="n">L_s</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">ss</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span>
@@ -389,7 +413,6 @@
 
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span></div>

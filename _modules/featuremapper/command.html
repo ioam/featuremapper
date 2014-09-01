@@ -470,6 +470,9 @@
         <span class="k">for</span> <span class="n">override</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">extra_keywords</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">override</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="o">.</span><span class="n">params</span><span class="p">():</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">pattern_response_fn</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">override</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> not a parameter of measure_response &#39;</span>
+                             <span class="s">&#39;or the pattern_response_fn.&#39;</span> <span class="o">%</span> <span class="n">override</span><span class="p">)</span>
 
 
 
@@ -1222,6 +1225,11 @@
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">ParamOverrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">allow_extra_keywords</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_presenter_overrides</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">num_orientation</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Use odd number of surround orientation to ensure&quot;</span>
+                            <span class="s">&quot;the orthogonal to the preferred orientation is&quot;</span>
+                            <span class="s">&quot;covered.&quot;</span><span class="p">)</span>
+
         <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">coords</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">or_surrounds</span> <span class="o">=</span> <span class="p">[]</span>
