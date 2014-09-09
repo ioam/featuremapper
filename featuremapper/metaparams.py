@@ -201,6 +201,8 @@ class hue2rgbscale(param.ParameterizedFunction):
 
 
 
+#TFALERT: Should be merged with hue2rgbscale and checking whether
+#there are multiple channels or not.
 class hue2rgbscaleNewRetina(param.ParameterizedFunction):
     """
     Coordinates hue within the new multichannel retina object.
@@ -231,6 +233,31 @@ class ocular2leftrightscale(param.ParameterizedFunction):
                     inputs[name].scale = 2 * features['ocular']
                 elif (name.count('Left')):
                     inputs[name].scale = 2.0 - 2*features['ocular']
+                else:
+                    self.warning('Skipping input region %s; Ocularity is defined '
+                                 'only for Left and Right retinas.' % name)
+
+
+
+#TFALERT: Should be merged with hue2rgbscale and checking whether
+#there are multiple channels or not.
+class ocular2leftrightscaleNewRetina(param.ParameterizedFunction):
+    """
+    Coordinates patterns between two eyes, by looking for the
+    keywords Left and Right in the input names. This class is
+    intended for the new multichannel retina object.
+    """
+
+    def __call__(self, inputs, features):
+        if "ocular" in features:
+            oc = features['ocular']
+            for name in inputs.keys():
+                if (name.count('Right')):
+                    inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
+                                     channel_transforms = [ScaleChannels(channel_factors=[oc, oc, oc])])
+                elif (name.count('Left')):
+                    inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
+                                     channel_transforms = [ScaleChannels(channel_factors=[1.0-oc, 1.0-oc, 1.0-oc])])
                 else:
                     self.warning('Skipping input region %s; Ocularity is defined '
                                  'only for Left and Right retinas.' % name)
