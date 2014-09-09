@@ -14,7 +14,10 @@ import numpy as np
 from colorsys import hsv_to_rgb
 
 import param
+import imagen
 from imagen import Sweeper
+from imagen.patterngenerator import ComposeChannels
+from imagen.image import ScaleChannels
 
 class contrast2centersurroundscale(param.ParameterizedFunction):
     """
@@ -195,6 +198,23 @@ class hue2rgbscale(param.ParameterizedFunction):
                                      ' with names with Red, Green or Blue'
                                      ' substrings.')
                         self.hue_warned = True
+
+
+
+class hue2rgbscaleNewRetina(param.ParameterizedFunction):
+    """
+    Coordinates hue within the new multichannel retina object.
+    """
+
+    def __call__(self, inputs, features):
+        if 'hue' in features:
+            hue_to_rgb = imagen.colorspaces.color_conversion.analysis2working
+            sat_for_analysis = 1.0
+            r,g,b = hue_to_rgb((features['hue'],sat_for_analysis,1.0))
+
+            for name in inputs.keys():
+                inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
+                                     channel_transforms = [ScaleChannels(channel_factors = [r, g, b])])
 
 
 
