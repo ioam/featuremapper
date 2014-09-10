@@ -215,8 +215,9 @@ class hue2rgbscaleNewRetina(param.ParameterizedFunction):
             r,g,b = hue_to_rgb((features['hue'],sat_for_analysis,1.0))
 
             for name in inputs.keys():
-                inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
-                                     channel_transforms = [ScaleChannels(channel_factors = [r, g, b])])
+                inputs[name] = ComposeChannels(
+                    generators=[inputs[name]]*3,
+                    channel_transforms = [ScaleChannels(channel_factors = [r, g, b])])
 
 
 
@@ -254,10 +255,12 @@ class ocular2leftrightscaleNewRetina(param.ParameterizedFunction):
             for name in inputs.keys():
                 if (name.count('Right')):
                     inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
-                                     channel_transforms = [ScaleChannels(channel_factors=[oc, oc, oc])])
+                                     channel_transforms =
+                                        [ScaleChannels(channel_factors=[oc, oc, oc])])
                 elif (name.count('Left')):
                     inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
-                                     channel_transforms = [ScaleChannels(channel_factors=[1.0-oc, 1.0-oc, 1.0-oc])])
+                                     channel_transforms =
+                                        [ScaleChannels(channel_factors=[1.0-oc, 1.0-oc, 1.0-oc])])
                 else:
                     self.warning('Skipping input region %s; Ocularity is defined '
                                  'only for Left and Right retinas.' % name)
