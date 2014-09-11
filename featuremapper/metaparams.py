@@ -14,7 +14,10 @@ import numpy as np
 from colorsys import hsv_to_rgb
 
 import param
+import imagen
 from imagen import Sweeper
+from imagen.patterngenerator import ComposeChannels
+from imagen.image import ScaleChannels
 
 class contrast2centersurroundscale(param.ParameterizedFunction):
     """
@@ -198,6 +201,26 @@ class hue2rgbscale(param.ParameterizedFunction):
 
 
 
+#TFALERT: Should be merged with hue2rgbscale and checking whether
+#there are multiple channels or not.
+class hue2rgbscaleNewRetina(param.ParameterizedFunction):
+    """
+    Coordinates hue within the new multichannel retina object.
+    """
+
+    def __call__(self, inputs, features):
+        if 'hue' in features:
+            hue_to_rgb = imagen.colorspaces.color_conversion.analysis2working
+            sat_for_analysis = 1.0
+            r,g,b = hue_to_rgb((features['hue'],sat_for_analysis,1.0))
+
+            for name in inputs.keys():
+                inputs[name] = ComposeChannels(
+                    generators=[inputs[name]]*3,
+                    channel_transforms = [ScaleChannels(channel_factors = [r, g, b])])
+
+
+
 class ocular2leftrightscale(param.ParameterizedFunction):
     """
     Coordinates patterns between two eyes, by looking for the
@@ -211,6 +234,33 @@ class ocular2leftrightscale(param.ParameterizedFunction):
                     inputs[name].scale = 2 * features['ocular']
                 elif (name.count('Left')):
                     inputs[name].scale = 2.0 - 2*features['ocular']
+                else:
+                    self.warning('Skipping input region %s; Ocularity is defined '
+                                 'only for Left and Right retinas.' % name)
+
+
+
+#TFALERT: Should be merged with hue2rgbscale and checking whether
+#there are multiple channels or not.
+class ocular2leftrightscaleNewRetina(param.ParameterizedFunction):
+    """
+    Coordinates patterns between two eyes, by looking for the
+    keywords Left and Right in the input names. This class is
+    intended for the new multichannel retina object.
+    """
+
+    def __call__(self, inputs, features):
+        if "ocular" in features:
+            oc = features['ocular']
+            for name in inputs.keys():
+                if (name.count('Right')):
+                    inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
+                                     channel_transforms =
+                                        [ScaleChannels(channel_factors=[oc, oc, oc])])
+                elif (name.count('Left')):
+                    inputs[name] = ComposeChannels(generators=[inputs[name]]*3,
+                                     channel_transforms =
+                                        [ScaleChannels(channel_factors=[1.0-oc, 1.0-oc, 1.0-oc])])
                 else:
                     self.warning('Skipping input region %s; Ocularity is defined '
                                  'only for Left and Right retinas.' % name)
