@@ -1,0 +1,12 @@
+<map id="inheritance8cffae34ce" name="inheritance8cffae34ce">
+<area shape="rect" id="node1" href="#featuremapper.metaparams.contrast2centersurroundscale" title="Allows controlling the contrast in orientation contrast patterns, where the" alt="" coords="673,5,1073,30"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="312,178,624,203"/>
+<area shape="rect" id="node3" href="#featuremapper.metaparams.contrast2scale" title="Coordinates complex contrast values in single and compound patterns." alt="" coords="722,54,1025,79"/>
+<area shape="rect" id="node4" href="#featuremapper.metaparams.direction2translation" title="Coordinates the presentation of moving patterns. Currently" alt="" coords="704,103,1043,129"/>
+<area shape="rect" id="node5" href="#featuremapper.metaparams.hue2rgbscale" title="Coordinates hue between inputs with Red, Green or Blue in their" alt="" coords="726,153,1021,178"/>
+<area shape="rect" id="node6" title="Coordinates hue within the new multichannel retina object." alt="" coords="693,202,1053,227"/>
+<area shape="rect" id="node7" href="#featuremapper.metaparams.ocular2leftrightscale" title="Coordinates patterns between two eyes, by looking for the" alt="" coords="705,251,1042,277"/>
+<area shape="rect" id="node8" title="Coordinates patterns between two eyes, by looking for the" alt="" coords="672,301,1075,326"/>
+<area shape="rect" id="node9" href="#featuremapper.metaparams.phasedisparity2leftrightphase" title="Coordinates phase disparity between two eyes, by looking for" alt="" coords="675,350,1072,375"/>
+<area shape="rect" id="node10" title="Base class for named objects that support Parameters and message" alt="" coords="5,178,264,203"/>
+</map>

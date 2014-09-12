@@ -80,7 +80,10 @@
 <span class="kn">from</span> <span class="nn">colorsys</span> <span class="kn">import</span> <span class="n">hsv_to_rgb</span>
 
 <span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">import</span> <span class="nn">imagen</span>
 <span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">Sweeper</span>
+<span class="kn">from</span> <span class="nn">imagen.patterngenerator</span> <span class="kn">import</span> <span class="n">ComposeChannels</span>
+<span class="kn">from</span> <span class="nn">imagen.image</span> <span class="kn">import</span> <span class="n">ScaleChannels</span>
 
 <div class="viewcode-block" id="contrast2centersurroundscale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.metaparams.contrast2centersurroundscale">[docs]</a><span class="k">class</span> <span class="nc">contrast2centersurroundscale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -263,7 +266,27 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">hue_warned</span> <span class="o">=</span> <span class="bp">True</span>
 
 
-</div>
+
+<span class="c">#TFALERT: Should be merged with hue2rgbscale and checking whether</span>
+<span class="c">#there are multiple channels or not.</span></div>
+<span class="k">class</span> <span class="nc">hue2rgbscaleNewRetina</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates hue within the new multichannel retina object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;hue&#39;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">hue_to_rgb</span> <span class="o">=</span> <span class="n">imagen</span><span class="o">.</span><span class="n">colorspaces</span><span class="o">.</span><span class="n">color_conversion</span><span class="o">.</span><span class="n">analysis2working</span>
+            <span class="n">sat_for_analysis</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">hue_to_rgb</span><span class="p">((</span><span class="n">features</span><span class="p">[</span><span class="s">&#39;hue&#39;</span><span class="p">],</span><span class="n">sat_for_analysis</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ComposeChannels</span><span class="p">(</span>
+                    <span class="n">generators</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="n">channel_transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScaleChannels</span><span class="p">(</span><span class="n">channel_factors</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">])])</span>
+
+
+
 <div class="viewcode-block" id="ocular2leftrightscale"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.metaparams.ocular2leftrightscale">[docs]</a><span class="k">class</span> <span class="nc">ocular2leftrightscale</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Coordinates patterns between two eyes, by looking for the</span>
@@ -280,7 +303,34 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Skipping input region </span><span class="si">%s</span><span class="s">; Ocularity is defined &#39;</span>
                                  <span class="s">&#39;only for Left and Right retinas.&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
-</div>
+
+
+
+<span class="c">#TFALERT: Should be merged with hue2rgbscale and checking whether</span>
+<span class="c">#there are multiple channels or not.</span></div>
+<span class="k">class</span> <span class="nc">ocular2leftrightscaleNewRetina</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates patterns between two eyes, by looking for the</span>
+<span class="sd">    keywords Left and Right in the input names. This class is</span>
+<span class="sd">    intended for the new multichannel retina object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot;ocular&quot;</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">oc</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s">&#39;ocular&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Right&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ComposeChannels</span><span class="p">(</span><span class="n">generators</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
+                                     <span class="n">channel_transforms</span> <span class="o">=</span>
+                                        <span class="p">[</span><span class="n">ScaleChannels</span><span class="p">(</span><span class="n">channel_factors</span><span class="o">=</span><span class="p">[</span><span class="n">oc</span><span class="p">,</span> <span class="n">oc</span><span class="p">,</span> <span class="n">oc</span><span class="p">])])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;Left&#39;</span><span class="p">)):</span>
+                    <span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ComposeChannels</span><span class="p">(</span><span class="n">generators</span><span class="o">=</span><span class="p">[</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
+                                     <span class="n">channel_transforms</span> <span class="o">=</span>
+                                        <span class="p">[</span><span class="n">ScaleChannels</span><span class="p">(</span><span class="n">channel_factors</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="o">-</span><span class="n">oc</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">oc</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">oc</span><span class="p">])])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Skipping input region </span><span class="si">%s</span><span class="s">; Ocularity is defined &#39;</span>
+                                 <span class="s">&#39;only for Left and Right retinas.&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;contrast2centersurroundscale&#39;</span><span class="p">,</span>
            <span class="s">&#39;contrast2scale&#39;</span><span class="p">,</span>
            <span class="s">&#39;hue2rgbscale&#39;</span><span class="p">,</span>
