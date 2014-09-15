@@ -78,7 +78,7 @@ class PinwheelAnalysis(ViewOperation):
             (re_contours, im_contours, intersections) = contour_info
             pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
         else:
-            pinwheels, re_contours, im_contours = [], [], []
+            pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
         pinwheels = Points(np.array(pinwheels), bounds, label=pref.label + ' Pinwheels')
 
