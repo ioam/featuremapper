@@ -244,6 +244,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-options.Pinwheels_Points =    StyleOpts(color= 'f0f0f0', marker= 'o', edgecolor= 'k')
+options.Pinwheels_Points =    StyleOpts(color= '#f0f0f0', marker= 'o', edgecolor= 'k')
 options.Imaginary_Contours = StyleOpts(color= 'k', linewidth=1.5)
 options.Real_Contours =      StyleOpts(color= 'w', linewidth=1.5)
