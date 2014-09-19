@@ -86,9 +86,9 @@ class PinwheelAnalysis(ViewOperation):
         base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
             re_lines = Contours(re_contours, bounds,
-                                label=pref.label, title='Real {label} {type}')
+                                label='Real', title='{label} %s {type}' % pref.label)
             im_lines = Contours(im_contours, bounds,
-                                label=pref.label, title='Imaginary {label} {type}')
+                                label='Imaginary', title='{label} %s {type}' % pref.label)
             return [pref * re_lines * im_lines * pinwheels]
         else:
             return [pref * pinwheels]
@@ -244,6 +244,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-options.Pinwheels_Points =    StyleOpts(color= 'w', marker= 'o', edgecolor= 'k')
-options.Imaginary_Contours = StyleOpts(color= 'k')
-options.Real_Contours =      StyleOpts(color= 'w')
+options.Pinwheels_Points =    StyleOpts(color= 'f0f0f0', marker= 'o', edgecolor= 'k')
+options.Imaginary_Contours = StyleOpts(color= 'k', linewidth=1.5)
+options.Real_Contours =      StyleOpts(color= 'w', linewidth=1.5)
