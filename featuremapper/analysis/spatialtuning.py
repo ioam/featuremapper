@@ -61,6 +61,36 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
 
 
 
+class FrequencyTuningAnalysis(TuningCurveAnalysis):
+    """
+    Analyzes frequency-tuning curve to find the preferred frequency, lower and
+    upper cutoff frequencies as well as the Q-Factor and bandwidth.
+    """
+
+    feature = param.String(default='Frequency')
+
+    def _process(self, curve, key=None):
+        self._validate_curve(curve)
+        xdata = curve.data[:, 0]
+        ydata = curve.data[:, 1]
+
+        peak_strength = np.max(ydata)
+        peak_idx = np.argmax(ydata)
+        peak_freq = xdata[peak_idx]
+        cutoff_value = peak_strength - (0.707 * peak_strength)
+        cutoff_diff = ydata - cutoff_value
+        lower_cutoff_idx = np.argmin(cutoff_diff[:peak_idx]) if peak_idx else 0
+        upper_cutoff_idx = peak_idx + np.argmin(cutoff_diff[peak_idx:])
+        lower_cutoff = xdata[lower_cutoff_idx]
+        upper_cutoff = xdata[upper_cutoff_idx]
+        qfactor = peak_freq / (upper_cutoff - lower_cutoff) if peak_idx else 0
+
+        table_data = {'Peak': peak_freq, 'Lower': lower_cutoff,
+                      'Upper': upper_cutoff, 'QFactor': qfactor,
+                      'Bandwidth': upper_cutoff - lower_cutoff}
+        return [Table(table_data, label='Frequency Tuning Analysis')]
+
+
 class SizeTuningPeaks(TuningCurveAnalysis):
     """
     Analysis size-tuning curve to find peak facilitation, peak suppression
