@@ -77,7 +77,7 @@ class FrequencyTuningAnalysis(TuningCurveAnalysis):
         peak_strength = np.max(ydata)
         peak_idx = np.argmax(ydata)
         peak_freq = xdata[peak_idx]
-        cutoff_value = peak_strength - (0.707 * peak_strength)
+        cutoff_value = peak_strength * 0.707
         cutoff_diff = ydata - cutoff_value
         lower_cutoff_idx = np.argmin(cutoff_diff[:peak_idx]) if peak_idx else 0
         upper_cutoff_idx = peak_idx + np.argmin(cutoff_diff[peak_idx:])
