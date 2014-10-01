@@ -1,0 +1,13 @@
+<map id="inheritance18d0462045" name="inheritance18d0462045">
+<area shape="rect" id="node1" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="334,88,456,101"/>
+<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="Takes an overlay of two curves as input and computes the contrast&#45;dependent" alt="" coords="489,100,667,113"/>
+<area shape="rect" id="node2" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="155,88,310,101"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="Baseclass to implement basic size tuning curve fitting procedures." alt="" coords="723,39,893,51"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="Normalization model describing response of V1 neurons" alt="" coords="942,2,1149,15"/>
+<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="DoG model response function to sine grating disk stimulus" alt="" coords="958,27,1132,39"/>
+<area shape="rect" id="node11" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="iDoG model response function to sine grating disk stimulus" alt="" coords="955,51,1136,64"/>
+<area shape="rect" id="node12" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="Basic integrated difference of Gaussian response function" alt="" coords="945,76,1145,88"/>
+<area shape="rect" id="node5" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="Analyzes frequency&#45;tuning curve to find the preferred frequency, lower and" alt="" coords="704,63,912,76"/>
+<area shape="rect" id="node9" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="Analysis size&#45;tuning curve to find peak facilitation, peak suppression" alt="" coords="717,112,899,125"/>
+<area shape="rect" id="node13" title="Base class for named objects that support Parameters and message" alt="" coords="3,88,131,101"/>
+</map>

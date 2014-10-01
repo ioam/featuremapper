@@ -128,6 +128,36 @@
 
 
 
+<div class="viewcode-block" id="FrequencyTuningAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis">[docs]</a><span class="k">class</span> <span class="nc">FrequencyTuningAnalysis</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyzes frequency-tuning curve to find the preferred frequency, lower and</span>
+<span class="sd">    upper cutoff frequencies as well as the Q-Factor and bandwidth.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;Frequency&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">peak_strength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="n">peak_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="n">peak_freq</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">peak_idx</span><span class="p">]</span>
+        <span class="n">cutoff_value</span> <span class="o">=</span> <span class="n">peak_strength</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.707</span> <span class="o">*</span> <span class="n">peak_strength</span><span class="p">)</span>
+        <span class="n">cutoff_diff</span> <span class="o">=</span> <span class="n">ydata</span> <span class="o">-</span> <span class="n">cutoff_value</span>
+        <span class="n">lower_cutoff_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">cutoff_diff</span><span class="p">[:</span><span class="n">peak_idx</span><span class="p">])</span> <span class="k">if</span> <span class="n">peak_idx</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">upper_cutoff_idx</span> <span class="o">=</span> <span class="n">peak_idx</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">cutoff_diff</span><span class="p">[</span><span class="n">peak_idx</span><span class="p">:])</span>
+        <span class="n">lower_cutoff</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">lower_cutoff_idx</span><span class="p">]</span>
+        <span class="n">upper_cutoff</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">upper_cutoff_idx</span><span class="p">]</span>
+        <span class="n">qfactor</span> <span class="o">=</span> <span class="n">peak_freq</span> <span class="o">/</span> <span class="p">(</span><span class="n">upper_cutoff</span> <span class="o">-</span> <span class="n">lower_cutoff</span><span class="p">)</span> <span class="k">if</span> <span class="n">peak_idx</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="n">table_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Peak&#39;</span><span class="p">:</span> <span class="n">peak_freq</span><span class="p">,</span> <span class="s">&#39;Lower&#39;</span><span class="p">:</span> <span class="n">lower_cutoff</span><span class="p">,</span>
+                      <span class="s">&#39;Upper&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span><span class="p">,</span> <span class="s">&#39;QFactor&#39;</span><span class="p">:</span> <span class="n">qfactor</span><span class="p">,</span>
+                      <span class="s">&#39;Bandwidth&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span> <span class="o">-</span> <span class="n">lower_cutoff</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Frequency Tuning Analysis&#39;</span><span class="p">)]</span>
+
+</div>
 <div class="viewcode-block" id="SizeTuningPeaks"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.SizeTuningPeaks">[docs]</a><span class="k">class</span> <span class="nc">SizeTuningPeaks</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analysis size-tuning curve to find peak facilitation, peak suppression</span>
