@@ -61,6 +61,10 @@ class PinwheelAnalysis(ViewOperation):
       Whether or not to include the computed contours for the real and
       imaginary components of the map.""")
 
+    silence_warnings =param.Boolean(default=True, doc="""
+      Whether or not to show warnings about invalid intersection
+      events when locating pinwheels.""")
+
     label = param.String(None, allow_None=True, precedence=-1, constant=True,
      doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
@@ -76,7 +80,8 @@ class PinwheelAnalysis(ViewOperation):
 
         if contour_info is not None:
             (re_contours, im_contours, intersections) = contour_info
-            pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections))
+            pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections),
+                                                silence_warnings=self.p.silence_warnings)
         else:
             pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
@@ -223,7 +228,8 @@ class PinwheelAnalysis(ViewOperation):
         return xi[aall(xconds)], yi[aall(yconds)]
 
 
-    def identify_pinwheels(self, re_contours, im_contours, intersections):
+    def identify_pinwheels(self, re_contours, im_contours, intersections,
+                                                     silence_warnings=True):
         """
         Locates the pinwheels from the intersection of the real and
         imaginary contours of of polar OR map.
@@ -239,7 +245,8 @@ class PinwheelAnalysis(ViewOperation):
             np.seterr(divide='raise', invalid='raise')
             pinwheels += zip(x, y)
 
-        warning_counter.warn()
+        if not silence_warnings:
+            warning_counter.warn()
         return pinwheels
 
 
