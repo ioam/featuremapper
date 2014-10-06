@@ -128,6 +128,10 @@
 <span class="s">      Whether or not to include the computed contours for the real and</span>
 <span class="s">      imaginary components of the map.&quot;&quot;&quot;</span><span class="p">)</span>
 
+    <span class="n">silence_warnings</span> <span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">      Whether or not to show warnings about invalid intersection</span>
+<span class="s">      events when locating pinwheels.&quot;&quot;&quot;</span><span class="p">)</span>
+
     <span class="n">label</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">allow_None</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">precedence</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
      <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Label suffixes are fixed as there are too many labels to specify.&quot;&quot;&quot;</span><span class="p">)</span>
 
@@ -143,7 +147,8 @@
 
         <span class="k">if</span> <span class="n">contour_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">)</span> <span class="o">=</span> <span class="n">contour_info</span>
-            <span class="n">pinwheels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify_pinwheels</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">))</span>
+            <span class="n">pinwheels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identify_pinwheels</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">),</span>
+                                                <span class="n">silence_warnings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">silence_warnings</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pinwheels</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[],[]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[]</span>
 
@@ -290,7 +295,8 @@
         <span class="k">return</span> <span class="n">xi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">xconds</span><span class="p">)],</span> <span class="n">yi</span><span class="p">[</span><span class="n">aall</span><span class="p">(</span><span class="n">yconds</span><span class="p">)]</span>
 
 </div>
-<div class="viewcode-block" id="PinwheelAnalysis.identify_pinwheels"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">[docs]</a>    <span class="k">def</span> <span class="nf">identify_pinwheels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">):</span>
+<div class="viewcode-block" id="PinwheelAnalysis.identify_pinwheels"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.identify_pinwheels">[docs]</a>    <span class="k">def</span> <span class="nf">identify_pinwheels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span><span class="p">,</span> <span class="n">intersections</span><span class="p">,</span>
+                                                     <span class="n">silence_warnings</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Locates the pinwheels from the intersection of the real and</span>
 <span class="sd">        imaginary contours of of polar OR map.</span>
@@ -306,7 +312,8 @@
             <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">)</span>
             <span class="n">pinwheels</span> <span class="o">+=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-        <span class="n">warning_counter</span><span class="o">.</span><span class="n">warn</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">silence_warnings</span><span class="p">:</span>
+            <span class="n">warning_counter</span><span class="o">.</span><span class="n">warn</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">pinwheels</span>
 
 
