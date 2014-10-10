@@ -20,7 +20,7 @@ import numpy as np
 from param.parameterized import ParamOverrides, bothmethod
 from dataviews.ndmapping import AttrDict, NdMapping, Dimension
 from dataviews.options import options, channels, StyleOpts, ChannelOpts
-from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid
+from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid, SheetCoordinateSystem
 from dataviews.collector import AttrTree
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
@@ -662,6 +662,10 @@ class ReverseCorrelation(FeatureResponses):
 
     continue_measurement = param.Boolean(default=True)
 
+    roi = param.NumericTuple(default=(0, 0, 0, 0), doc="""
+       If non-zero, specifies the subregion to perform reverse correlation
+       on.""")
+
     def __call__(self, features, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self.features = features
@@ -676,6 +680,23 @@ class ReverseCorrelation(FeatureResponses):
             p.measurement_storage_hook(results)
 
         return results
+
+
+    def _compute_roi(self, p, out_label):
+        rows, cols = self.metadata.outputs[out_label]['shape']
+        if p.roi != (0, 0, 0, 0):
+            out_bounds = self.metadata.outputs[out_label]['bounds']
+            l, b, r, t = out_bounds.lbrt()
+            xdensity = cols / (r - l)
+            ydensity = rows / (t - b)
+            scs = SheetCoordinateSystem(out_bounds, xdensity, ydensity)
+            l, b, r, t = p.roi
+            r0, c0 = scs.sheet2matrixidx(l, b)
+            r1, c1 = scs.sheet2matrixidx(r, t)
+            rows, cols = range(r1, r0), range(c0, c1)
+        else:
+            rows, cols = range(rows), range(cols)
+        return rows, cols
 
 
     def _initialize_featureresponses(self, p):
@@ -707,9 +728,10 @@ class ReverseCorrelation(FeatureResponses):
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
 
-            rows, cols = self.metadata.outputs[out_label]['shape']
+            rows, cols = self._compute_roi(p, out_label)
+
             rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype)
-                                  for r in range(rows)] for c in range(cols)])
+                                  for r in rows] for c in cols])
 
             self._featureresponses[in_label][out_label][duration] = rc_array
 
@@ -743,14 +765,14 @@ class ReverseCorrelation(FeatureResponses):
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
                 for d in p.durations:
-                    rows, cols = output_metadata['shape']
+                    rows, cols = self._compute_roi(p, out_label)
                     in_response = responses[(in_label, d)]
                     out_response = responses[(out_label, d)]
                     feature_responses = self._featureresponses[in_label][out_label][d]
-                    for ii in range(rows):
-                        for jj in range(cols):
+                    for i, ii in enumerate(rows):
+                        for j, jj in enumerate(cols):
                             delta_rf = out_response[ii, jj] * in_response
-                            feature_responses[ii, jj] += delta_rf
+                            feature_responses[i, j] += delta_rf
                     if p.store_responses:
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
@@ -766,7 +788,7 @@ class ReverseCorrelation(FeatureResponses):
         results = AttrTree()
 
         timestamp = self.metadata.timestamp
-        dimensions = [features.Time(), features.Duration()]
+        dimensions = [features.Time, features.Duration]
         pattern_dimensions = self.outer + self.inner
         pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
 
@@ -774,7 +796,7 @@ class ReverseCorrelation(FeatureResponses):
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
             output_metadata = self.metadata.outputs[out_label]
-            rows, cols = output_metadata['shape']
+            rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
             title = ' '.join([p.measurement_prefix, out_label, '{label}'])
             view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
@@ -782,10 +804,10 @@ class ReverseCorrelation(FeatureResponses):
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
-            for ii in range(rows):
-                for jj in range(cols):
+            for i, ii in enumerate(rows):
+                for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
-                    sv = SheetView(rc_response[ii, jj], input_metadata['bounds'],
+                    sv = SheetView(rc_response[i, j], input_metadata['bounds'],
                                    title=title, label='Receptive Field')
                     sv.metadata=AttrDict(timestamp=timestamp)
                     view[coord] = SheetStack((time_key, sv), dimensions=dimensions)

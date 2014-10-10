@@ -439,6 +439,10 @@ class measure_rfs(SingleInputResponseCommand):
     presentations = param.Number(default=100, doc="""
        Number of presentations to run the reverse correlation for.""")
 
+    roi = param.NumericTuple(default=(0, 0, 0, 0), doc="""
+       If non-zero ROI bounds is specified only the RFs in that
+       subregion are recorded.""")
+
     __abstract = True
 
 
@@ -448,7 +452,7 @@ class measure_rfs(SingleInputResponseCommand):
         static_params = dict([(s, p[s]) for s in p.static_parameters])
         results = ReverseCorrelation(self._feature_list(p),
                                      durations=p.durations, inputs=p.inputs,
-                                     outputs=p.outputs,
+                                     outputs=p.outputs, roi=p.roi,
                                      static_features=static_params,
                                      pattern_response_fn=p.pattern_response_fn,
                                      pattern_generator=p.pattern_generator)
