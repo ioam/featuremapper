@@ -2,8 +2,8 @@ import numpy as np
 
 import param
 
-from dataviews import Table, SheetView
-from dataviews.operation import ViewOperation, StackOperation
+from holoviews.core import ViewOperation
+from holoviews.views import SheetMatrix, ItemTable
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
@@ -13,7 +13,7 @@ class decode_feature(ViewOperation):
     """
     Estimate the value of a feature from the current activity pattern
     on a sheet and a preference map of the sheet. The activity and
-    preference should be supplied as an Overlay or a Stack of Overlay
+    preference should be supplied as an Overlay or a HoloMap of Overlay
     objects.
 
     If weighted_average is False, the feature value returned is the
@@ -61,7 +61,7 @@ class decode_feature(ViewOperation):
             raise ValueError("DecodeFeature requires overlay with response/"
                              "activity and preference as input.")
         if selectivity is None:
-            selectivity = SheetView(np.ones(preference.data.shape),
+            selectivity = SheetMatrix(np.ones(preference.data.shape),
                                     preference.bounds)
 
         cr = preference.cyclic_range
@@ -84,5 +84,5 @@ class decode_feature(ViewOperation):
             if cyclic: difference = difference % cr
             ret.update({"Decoding Error": difference})
 
-        return [Table(ret)]
+        return [ItemTable(ret)]
 

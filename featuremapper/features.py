@@ -1,7 +1,8 @@
 import numpy as np
 
 import param
-from dataviews.ndmapping import Dimension
+
+from holoviews.core import Dimension
 
 from distribution import DistributionStatisticFn, DSF_WeightedAverage
 

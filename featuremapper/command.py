@@ -22,14 +22,14 @@ import numpy as np
 
 import param
 from param import ParameterizedFunction, ParamOverrides
-from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
-    GaussiansCorner, OrientationContrast
-from dataviews.ndmapping import AttrDict
-from dataviews.sheetviews import SheetStack, SheetView, CoordinateGrid
-from dataviews.collector import AttrTree, Collector
+
+from holoviews.interface.collector import AttrDict, AttrTree, Collector
+from holoviews.views import SheetMatrix
 
 import imagen
 from imagen import random
+from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
+    GaussiansCorner, OrientationContrast
 
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
@@ -37,7 +37,6 @@ import features as f
 from metaparams import *
 from distribution import DSF_MaxValue, DistributionStatisticFn, \
     DSF_WeightedAverage, DSF_BimodalPeaks
-
 
 
 class PatternPresentingCommand(ParameterizedFunction):
@@ -389,11 +388,11 @@ class measure_response(FeatureResponses):
             label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
             if path not in results:
-                stack = SheetStack(dimensions=dims)
+                stack = ViewMap(dimensions=dims)
                 stack.metadata = AttrDict(**metadata)
                 results.set_path(path, stack)
 
-            sv = SheetView(response, metadata['bounds'], label=label, value='Activity')
+            sv = SheetMatrix(response, metadata['bounds'], label=label, value='Activity')
             sv.metadata=AttrDict(timestamp=time)
             results.path_items[path][(time, duration)] = sv
         return results
@@ -1251,7 +1250,7 @@ __all__ = [
 
 
 def array_hook(obj, *args, **kwargs):
-    return None if obj is None else SheetView(obj.copy(), **kwargs)
+    return None if obj is None else SheetMatrix(obj.copy(), **kwargs)
 
 def measurement_hook(obj, *args, **kwargs):
     return obj(*args, **kwargs)

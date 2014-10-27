@@ -1,12 +1,15 @@
-import sys, cmath, math
+import sys
+import cmath
+import math
 import numpy as np
+
 from matplotlib import pyplot as plt
 
 import param
 from imagen.analysis import ViewOperation
-from dataviews import Contours, Points
 
-from dataviews.options import options, StyleOpts
+from holoviews.core.options import options, StyleOpts
+from holoviews.views import Contours, Points
 
 __author__ = "Jean-Luc Stevens"
 
@@ -43,13 +46,13 @@ class WarningCounter(object):
 
 class PinwheelAnalysis(ViewOperation):
     """
-    Given a SheetView or SheetStack of a cyclic feature preference,
+    Given a SheetMatrix or ViewMap of a cyclic feature preference,
     compute the position of all pinwheel singularities in the
     map. Optionally includes the contours for the real and imaginary
     components of the preference map used to determine the pinwheel
     locations.
 
-    Returns the original SheetView input overlayed with a Points
+    Returns the original SheetMatrix input overlayed with a Points
     object containing the computed pinwheel locations and (optionally)
     Contours overlays including the real and imaginary contour lines
     respectively.
