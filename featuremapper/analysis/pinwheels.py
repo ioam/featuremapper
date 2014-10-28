@@ -88,15 +88,15 @@ class PinwheelAnalysis(ViewOperation):
         else:
             pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
-        pinwheels = Points(np.array(pinwheels), bounds, label=pref.label + ' Pinwheels')
+        pinwheels = Points(np.array(pinwheels), label=pref.label + ' Pinwheels')
 
         sel = self.get_views(view, 'Selectivity')
         base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
-            re_lines = Contours(re_contours, bounds,
-                                label='Real', title='{label} %s {type}' % pref.label)
-            im_lines = Contours(im_contours, bounds,
-                                label='Imaginary', title='{label} %s {type}' % pref.label)
+            re_lines = Contours(re_contours, label='Real',
+                                title='{label} %s {type}' % pref.label)
+            im_lines = Contours(im_contours, label='Imaginary',
+                                title='{label} %s {type}' % pref.label)
             return [pref * re_lines * im_lines * pinwheels]
         else:
             return [pref * pinwheels]
