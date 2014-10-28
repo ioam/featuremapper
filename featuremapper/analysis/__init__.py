@@ -13,7 +13,7 @@ class decode_feature(ViewOperation):
     """
     Estimate the value of a feature from the current activity pattern
     on a sheet and a preference map of the sheet. The activity and
-    preference should be supplied as an Overlay or a HoloMap of Overlay
+    preference should be supplied as an Overlay or a ViewMap of Overlay
     objects.
 
     If weighted_average is False, the feature value returned is the
