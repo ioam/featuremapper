@@ -13,11 +13,11 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 import param
-from dataviews.operation  import ViewOperation
 from imagen.analysis import fft_power_spectrum
 
-from dataviews import Dimension, Curve, Points, Table, Annotation, Histogram
-from dataviews.options import options, StyleOpts
+from holoviews.core import Dimension, ViewOperation
+from holoviews.core.options import options, StyleOpts
+from holoviews.views import Curve, Histogram, ItemTable, Points, Annotation
 
 try: # 2.7+
     gamma = math.gamma
@@ -96,7 +96,7 @@ class PowerSpectrumAnalysis(ViewOperation):
         ydensity = dim2 / abs(t-b)
 
         if xdensity != ydensity:
-            raise Exception("SheetView must have matching x- and y-density")
+            raise Exception("SheetMatrix must have matching x- and y-density")
 
         self._density = xdensity
 
@@ -108,7 +108,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             info['rho'] = pinwheel_count / (kmax ** 2)
             info['rho_metric'] = self.gamma_metric(info['rho'])
 
-        info_table = Table(info, label='Hypercolumn Analysis')
+        info_table = ItemTable(info, label='Hypercolumn Analysis')
 
         if fit is not None:
             samples = self.fit_samples(dim1/2, 100, fit)
@@ -126,7 +126,7 @@ class PowerSpectrumAnalysis(ViewOperation):
             fit = dict(('a%i' % i, '-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = Table(fit, label='Hypercolumn Analysis Fit')
+            fit_table = ItemTable(fit, label='Hypercolumn Analysis Fit')
             views.append(fit_table)
         return views
 

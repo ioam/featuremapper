@@ -4,7 +4,6 @@ FeatureResponses and associated functions and classes.
 These classes implement map and tuning curve measurement based
 on measuring responses while varying features of an input pattern.
 """
-import sys, os
 
 import param
 from param.version import Version
@@ -18,10 +17,10 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from dataviews.ndmapping import AttrDict, NdMapping, Dimension
-from dataviews.options import options, channels, StyleOpts, ChannelOpts
-from dataviews.sheetviews import SheetView, SheetStack, CoordinateGrid, SheetCoordinateSystem
-from dataviews.collector import AttrTree
+from holoviews.core import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem
+from holoviews.core.options import options, channels, StyleOpts, ChannelOpts
+from holoviews.interface.collector import AttrTree, AttrDict
+from holoviews.views import SheetMatrix
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 from . import features
@@ -281,7 +280,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         self._activities = defaultdict(ndmapping_fn)
         if p.store_responses:
             response_dimensions = [features.Time]+dimensions+list(self.inner)
-            response_stack_fn = lambda: SheetStack(dimensions=response_dimensions)
+            response_stack_fn = lambda: ViewMap(dimensions=response_dimensions)
             self._responses = defaultdict(response_stack_fn)
 
         for label in self.measurement_product:
@@ -418,7 +417,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             if p.store_responses:
                 cn, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = SheetView(act.copy(), bounds,
+                self._responses[name][key] = SheetMatrix(act.copy(), bounds,
                                                        label='Response')
 
 
@@ -493,7 +492,7 @@ class FeatureMaps(FeatureResponses):
 
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
-        type_str = 'SheetView'
+        type_str = 'SheetMatrix'
         style_str = options.normalize_key(fname + map_type.capitalize()) +'_' + type_str
         if style_str not in options.keys():
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
@@ -544,13 +543,13 @@ class FeatureMaps(FeatureResponses):
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
-                        sv = SheetView(map_view, output_metadata['bounds'],
+                        sv = SheetMatrix(map_view, output_metadata['bounds'],
                                        label=' '.join([name, map_label]),
                                        value=value_dimension)
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            stack = SheetStack((key, sv), dimensions=dimensions)
+                            stack = ViewMap((key, sv), dimensions=dimensions)
                             stack.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), stack)
                         else:
@@ -629,22 +628,22 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
-                stack = SheetStack(dimensions=dimensions)
+                stack = ViewMap(dimensions=dimensions)
                 stack.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), stack)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
 
-            # Populate the SheetStack with measurements for each x value
+            # Populate the ViewMap with measurements for each x value
             for x in curve_responses[0, 0]._data.iterkeys():
                 y_axis_values = np.zeros(output_metadata['shape'], activity_dtype)
                 for i in range(rows):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                sv = SheetView(y_axis_values, output_metadata['bounds'],
-                               label=' '.join([name, curve_label]),
-                               value=Dimension('Response'))
+                sv = SheetMatrix(y_axis_values, output_metadata['bounds'],
+                                 label=' '.join([name, curve_label]),
+                                 value=Dimension('Response'))
                 sv.metadata = metadata.copy()
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
@@ -719,7 +718,7 @@ class ReverseCorrelation(FeatureResponses):
 
         if p.store_responses:
             response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
-            response_stack_fn = lambda: SheetStack(dimensions=response_dimensions)
+            response_stack_fn = lambda: ViewMap(dimensions=response_dimensions)
             self._responses = defaultdict(response_stack_fn)
 
         # Set up the featureresponses measurement dict
@@ -776,7 +775,7 @@ class ReverseCorrelation(FeatureResponses):
                     if p.store_responses:
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
-                        self._responses[out_label][key] = SheetView(out_response.copy(), bounds,
+                        self._responses[out_label][key] = SheetMatrix(out_response.copy(), bounds,
                                                                     label='Response')
 
 
@@ -799,18 +798,17 @@ class ReverseCorrelation(FeatureResponses):
             rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
             title = ' '.join([p.measurement_prefix, out_label, '{label}'])
-            view = CoordinateGrid(output_metadata['bounds'], output_metadata['shape'],
-                                  title=title, label='RFs')
+            view = Grid({}, output_metadata['shape'], title=title, label='RFs')
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
-                    sv = SheetView(rc_response[i, j], input_metadata['bounds'],
+                    sv = SheetMatrix(rc_response[i, j], input_metadata['bounds'],
                                    title=title, label='Receptive Field')
-                    sv.metadata=AttrDict(timestamp=timestamp)
-                    view[coord] = SheetStack((time_key, sv), dimensions=dimensions)
+                    sv.metadata = AttrDict(timestamp=timestamp)
+                    view[coord] = ViewMap((time_key, sv), dimensions=dimensions)
                     view[coord].metadata = AttrDict(**input_metadata)
 
             label = '%s_Reverse_Correlation' % out_label

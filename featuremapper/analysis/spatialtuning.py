@@ -6,8 +6,8 @@ from scipy.optimize import curve_fit
 
 import param
 
-from dataviews import Curve, Table
-from dataviews.operation import ViewOperation
+from holoviews.core.operation import ViewOperation
+from holoviews.views import Curve, ItemTable
 
 
 #====================================#
@@ -57,7 +57,7 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
             ocsi = (r0 - rorth) / r0
         except:
             ocsi = np.NaN
-        return [Table({'OCSI': ocsi}, label='Orientation Contrast Suppression')]
+        return [ItemTable({'OCSI': ocsi}, label='Orientation Contrast Suppression')]
 
 
 
@@ -88,7 +88,7 @@ class FrequencyTuningAnalysis(TuningCurveAnalysis):
         table_data = {'Peak': peak_freq, 'Lower': lower_cutoff,
                       'Upper': upper_cutoff, 'QFactor': qfactor,
                       'Bandwidth': upper_cutoff - lower_cutoff}
-        return [Table(table_data, label='Frequency Tuning Analysis')]
+        return [ItemTable(table_data, label='Frequency Tuning Analysis')]
 
 
 class SizeTuningPeaks(TuningCurveAnalysis):
@@ -126,7 +126,7 @@ class SizeTuningPeaks(TuningCurveAnalysis):
         else:
             table_data['SI'] = 0
             table_data['CSI'] = 0
-        return [Table(table_data, label='Size Tuning Analysis')]
+        return [ItemTable(table_data, label='Size Tuning Analysis')]
 
 
 
@@ -148,7 +148,7 @@ class SizeTuningShift(ViewOperation):
             shift = low_table['Peak Size'] / high_table['Peak Size']
         except:
             shift = np.NaN
-        return [Table(dict(CSS=shift, Low=low_table['Peak Size'],
+        return [ItemTable(dict(CSS=shift, Low=low_table['Peak Size'],
                            High=high_table['Peak Size']),
                       label='Contrast Dependent Size Tuning Shift')]
 
@@ -233,7 +233,7 @@ class Size_iDoGModel(DoGModelFit):
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
-        return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
+        return [curve*fitted_curve, ItemTable(fit_data, label=self.p.label)]
 
     def _function(self, d, R_0, K_c, K_s, a, b):
         # Fitting penalties
@@ -278,7 +278,7 @@ class SF_DoGModel(DoGModelFit):
 
         fitted_curve, fit_data = self._fit_curve(curve)
 
-        return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
+        return [curve*fitted_curve, ItemTable(fit_data, label=self.p.label)]
 
 
     def _function(self, f, R_0, K_c, K_s, a, b):
@@ -335,7 +335,7 @@ class iDoG_DeAngelisModel(DoGModelFit):
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
-        return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
+        return [curve*fitted_curve, ItemTable(fit_data, label=self.p.label)]
 
 
 
@@ -378,4 +378,4 @@ class NormalizationDoGModel(DoGModelFit):
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
-        return [curve*fitted_curve, Table(fit_data, label=self.p.label)]
+        return [curve*fitted_curve, ItemTable(fit_data, label=self.p.label)]

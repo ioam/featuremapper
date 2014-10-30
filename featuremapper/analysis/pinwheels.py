@@ -1,12 +1,15 @@
-import sys, cmath, math
+import sys
+import cmath
+import math
 import numpy as np
+
 from matplotlib import pyplot as plt
 
 import param
 from imagen.analysis import ViewOperation
-from dataviews import Contours, Points
 
-from dataviews.options import options, StyleOpts
+from holoviews.core.options import options, StyleOpts
+from holoviews.views import Contours, Points
 
 __author__ = "Jean-Luc Stevens"
 
@@ -43,13 +46,13 @@ class WarningCounter(object):
 
 class PinwheelAnalysis(ViewOperation):
     """
-    Given a SheetView or SheetStack of a cyclic feature preference,
+    Given a SheetMatrix or ViewMap of a cyclic feature preference,
     compute the position of all pinwheel singularities in the
     map. Optionally includes the contours for the real and imaginary
     components of the preference map used to determine the pinwheel
     locations.
 
-    Returns the original SheetView input overlayed with a Points
+    Returns the original SheetMatrix input overlayed with a Points
     object containing the computed pinwheel locations and (optionally)
     Contours overlays including the real and imaginary contour lines
     respectively.
@@ -85,15 +88,15 @@ class PinwheelAnalysis(ViewOperation):
         else:
             pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
-        pinwheels = Points(np.array(pinwheels), bounds, label=pref.label + ' Pinwheels')
+        pinwheels = Points(np.array(pinwheels), label=pref.label + ' Pinwheels')
 
         sel = self.get_views(view, 'Selectivity')
         base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
-            re_lines = Contours(re_contours, bounds,
-                                label='Real', title='{label} %s {type}' % pref.label)
-            im_lines = Contours(im_contours, bounds,
-                                label='Imaginary', title='{label} %s {type}' % pref.label)
+            re_lines = Contours(re_contours, label='Real',
+                                title='{label} %s {type}' % pref.label)
+            im_lines = Contours(im_contours, label='Imaginary',
+                                title='{label} %s {type}' % pref.label)
             return [pref * re_lines * im_lines * pinwheels]
         else:
             return [pref * pinwheels]

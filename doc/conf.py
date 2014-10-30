@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from .builder.shared_conf import *
 
-paths = ['../param/', '../imagen/', '../dataviews/', '.', '..']
+paths = ['../param/', '../imagen/', '../holoviews/', '.', '..']
 add_paths(paths)
 
 # General information about the project.
@@ -81,7 +81,7 @@ texinfo_documents = [
 intersphinx_mapping = {'http://docs.python.org/': None,
                        'http://ioam.github.io/param/': None,
                        'http://ioam.github.io/imagen/': None,
-                       'http://ioam.github.io/dataviews/': None,
+                       'http://ioam.github.io/holoviews/': None,
                        'http://ipython.org/ipython-doc/2/' : None}
 
 from builder.paramdoc import param_formatter
