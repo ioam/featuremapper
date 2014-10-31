@@ -88,14 +88,14 @@
 
 <span class="kn">import</span> <span class="nn">param</span>
 <span class="kn">from</span> <span class="nn">param</span> <span class="kn">import</span> <span class="n">ParameterizedFunction</span><span class="p">,</span> <span class="n">ParamOverrides</span>
-<span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">SineGrating</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">RawRectangle</span><span class="p">,</span> <span class="n">Disk</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> \
-    <span class="n">GaussiansCorner</span><span class="p">,</span> <span class="n">OrientationContrast</span>
-<span class="kn">from</span> <span class="nn">dataviews.ndmapping</span> <span class="kn">import</span> <span class="n">AttrDict</span>
-<span class="kn">from</span> <span class="nn">dataviews.sheetviews</span> <span class="kn">import</span> <span class="n">SheetStack</span><span class="p">,</span> <span class="n">SheetView</span><span class="p">,</span> <span class="n">CoordinateGrid</span>
-<span class="kn">from</span> <span class="nn">dataviews.collector</span> <span class="kn">import</span> <span class="n">AttrTree</span><span class="p">,</span> <span class="n">Collector</span>
+
+<span class="kn">from</span> <span class="nn">holoviews.interface.collector</span> <span class="kn">import</span> <span class="n">AttrDict</span><span class="p">,</span> <span class="n">AttrTree</span><span class="p">,</span> <span class="n">Collector</span>
+<span class="kn">from</span> <span class="nn">holoviews.view</span> <span class="kn">import</span> <span class="n">SheetMatrix</span>
 
 <span class="kn">import</span> <span class="nn">imagen</span>
 <span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">from</span> <span class="nn">imagen</span> <span class="kn">import</span> <span class="n">SineGrating</span><span class="p">,</span> <span class="n">Gaussian</span><span class="p">,</span> <span class="n">RawRectangle</span><span class="p">,</span> <span class="n">Disk</span><span class="p">,</span> <span class="n">Composite</span><span class="p">,</span> \
+    <span class="n">GaussiansCorner</span><span class="p">,</span> <span class="n">OrientationContrast</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper</span> <span class="kn">import</span> <span class="n">FeatureResponses</span><span class="p">,</span> <span class="n">FeatureMaps</span><span class="p">,</span> <span class="n">FeatureCurves</span><span class="p">,</span> \
     <span class="n">ReverseCorrelation</span>
@@ -103,7 +103,6 @@
 <span class="kn">from</span> <span class="nn">metaparams</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">distribution</span> <span class="kn">import</span> <span class="n">DSF_MaxValue</span><span class="p">,</span> <span class="n">DistributionStatisticFn</span><span class="p">,</span> \
     <span class="n">DSF_WeightedAverage</span><span class="p">,</span> <span class="n">DSF_BimodalPeaks</span>
-
 
 
 <span class="k">class</span> <span class="nc">PatternPresentingCommand</span><span class="p">(</span><span class="n">ParameterizedFunction</span><span class="p">):</span>
@@ -455,11 +454,11 @@
             <span class="n">label</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">name</span><span class="p">,</span> <span class="n">response_label</span><span class="p">])</span>
             <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s">&#39;outputs&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-                <span class="n">stack</span> <span class="o">=</span> <span class="n">SheetStack</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">ViewMap</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
                 <span class="n">stack</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="o">**</span><span class="n">metadata</span><span class="p">)</span>
                 <span class="n">results</span><span class="o">.</span><span class="n">set_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span>
 
-            <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Activity&#39;</span><span class="p">)</span>
+            <span class="n">sv</span> <span class="o">=</span> <span class="n">SheetMatrix</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">metadata</span><span class="p">[</span><span class="s">&#39;bounds&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Activity&#39;</span><span class="p">)</span>
             <span class="n">sv</span><span class="o">.</span><span class="n">metadata</span><span class="o">=</span><span class="n">AttrDict</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
             <span class="n">results</span><span class="o">.</span><span class="n">path_items</span><span class="p">[</span><span class="n">path</span><span class="p">][(</span><span class="n">time</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sv</span>
         <span class="k">return</span> <span class="n">results</span>
@@ -1317,7 +1316,7 @@
 
 
 <span class="k">def</span> <span class="nf">array_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">None</span> <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">SheetMatrix</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">measurement_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">obj</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

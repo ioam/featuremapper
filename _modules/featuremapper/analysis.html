@@ -68,8 +68,8 @@
 
 <span class="kn">import</span> <span class="nn">param</span>
 
-<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">SheetView</span>
-<span class="kn">from</span> <span class="nn">dataviews.operation</span> <span class="kn">import</span> <span class="n">ViewOperation</span><span class="p">,</span> <span class="n">StackOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.core</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.view</span> <span class="kn">import</span> <span class="n">SheetMatrix</span><span class="p">,</span> <span class="n">ItemTable</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span><span class="p">,</span> \
     <span class="n">DSF_MaxValue</span>
@@ -79,7 +79,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the value of a feature from the current activity pattern</span>
 <span class="sd">    on a sheet and a preference map of the sheet. The activity and</span>
-<span class="sd">    preference should be supplied as an Overlay or a Stack of Overlay</span>
+<span class="sd">    preference should be supplied as an Overlay or a ViewMap of Overlay</span>
 <span class="sd">    objects.</span>
 
 <span class="sd">    If weighted_average is False, the feature value returned is the</span>
@@ -127,7 +127,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DecodeFeature requires overlay with response/&quot;</span>
                              <span class="s">&quot;activity and preference as input.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selectivity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">selectivity</span> <span class="o">=</span> <span class="n">SheetView</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="n">selectivity</span> <span class="o">=</span> <span class="n">SheetMatrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
                                     <span class="n">preference</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
 
         <span class="n">cr</span> <span class="o">=</span> <span class="n">preference</span><span class="o">.</span><span class="n">cyclic_range</span>
@@ -150,7 +150,7 @@
             <span class="k">if</span> <span class="n">cyclic</span><span class="p">:</span> <span class="n">difference</span> <span class="o">=</span> <span class="n">difference</span> <span class="o">%</span> <span class="n">cr</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&quot;Decoding Error&quot;</span><span class="p">:</span> <span class="n">difference</span><span class="p">})</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="n">ret</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">(</span><span class="n">ret</span><span class="p">)]</span>
 </pre></div></div>
 
           </div>

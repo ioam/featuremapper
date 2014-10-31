@@ -1,4 +1,4 @@
-.. DataViews documentation master file, created by
+.. imagen documentation master file, created by
    sphinx-quickstart on Wed May 14 14:25:57 2014.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -21,8 +21,8 @@ Installation
 ____________
 
 FeatureMapper requires `Param <http://ioam.github.com/param/>`_,
-`ImaGen <http://ioam.github.com/dataviews/>`_, and
-`DataViews <http://ioam.github.com/dataviews/>`_.
+`ImaGen <http://ioam.github.com/imagen/>`_, and
+`holoviews <http://ioam.github.com/holoviews/>`_.
 
 Authors and Contributors
 ________________________

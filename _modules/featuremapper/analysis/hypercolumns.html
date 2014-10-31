@@ -80,11 +80,11 @@
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
 
 <span class="kn">import</span> <span class="nn">param</span>
-<span class="kn">from</span> <span class="nn">dataviews.operation</span>  <span class="kn">import</span> <span class="n">ViewOperation</span>
 <span class="kn">from</span> <span class="nn">imagen.analysis</span> <span class="kn">import</span> <span class="n">fft_power_spectrum</span>
 
-<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Dimension</span><span class="p">,</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">Annotation</span><span class="p">,</span> <span class="n">Histogram</span>
-<span class="kn">from</span> <span class="nn">dataviews.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+<span class="kn">from</span> <span class="nn">holoviews.core</span> <span class="kn">import</span> <span class="n">Dimension</span><span class="p">,</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.core.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+<span class="kn">from</span> <span class="nn">holoviews.view</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">Histogram</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Annotation</span>
 
 <span class="k">try</span><span class="p">:</span> <span class="c"># 2.7+</span>
     <span class="n">gamma</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span>
@@ -163,7 +163,7 @@
         <span class="n">ydensity</span> <span class="o">=</span> <span class="n">dim2</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">b</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">xdensity</span> <span class="o">!=</span> <span class="n">ydensity</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;SheetView must have matching x- and y-density&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;SheetMatrix must have matching x- and y-density&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_density</span> <span class="o">=</span> <span class="n">xdensity</span>
 
@@ -175,7 +175,7 @@
             <span class="n">info</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pinwheel_count</span> <span class="o">/</span> <span class="p">(</span><span class="n">kmax</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">info</span><span class="p">[</span><span class="s">&#39;rho_metric&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma_metric</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;rho&#39;</span><span class="p">])</span>
 
-        <span class="n">info_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Hypercolumn Analysis&#39;</span><span class="p">)</span>
+        <span class="n">info_table</span> <span class="o">=</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Hypercolumn Analysis&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">fit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_samples</span><span class="p">(</span><span class="n">dim1</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">fit</span><span class="p">)</span>
@@ -193,7 +193,7 @@
             <span class="n">fit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="s">&#39;a</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">i</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">fit_table</span><span class="p">:</span>
-            <span class="n">fit_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Hypercolumn Analysis Fit&#39;</span><span class="p">)</span>
+            <span class="n">fit_table</span> <span class="o">=</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Hypercolumn Analysis Fit&#39;</span><span class="p">)</span>
             <span class="n">views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fit_table</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">views</span>
 

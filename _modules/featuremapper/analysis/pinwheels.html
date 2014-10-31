@@ -65,15 +65,18 @@
           <div class="body">
             
   <h1>Source code for featuremapper.analysis.pinwheels</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">cmath</span><span class="o">,</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">cmath</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
 <span class="kn">import</span> <span class="nn">param</span>
 <span class="kn">from</span> <span class="nn">imagen.analysis</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
-<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Contours</span><span class="p">,</span> <span class="n">Points</span>
 
-<span class="kn">from</span> <span class="nn">dataviews.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+<span class="kn">from</span> <span class="nn">holoviews.core.options</span> <span class="kn">import</span> <span class="n">options</span><span class="p">,</span> <span class="n">StyleOpts</span>
+<span class="kn">from</span> <span class="nn">holoviews.view</span> <span class="kn">import</span> <span class="n">Contours</span><span class="p">,</span> <span class="n">Points</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Jean-Luc Stevens&quot;</span>
 
@@ -110,13 +113,13 @@
 </div>
 <div class="viewcode-block" id="PinwheelAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PinwheelAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Given a SheetView or SheetStack of a cyclic feature preference,</span>
+<span class="sd">    Given a SheetMatrix or ViewMap of a cyclic feature preference,</span>
 <span class="sd">    compute the position of all pinwheel singularities in the</span>
 <span class="sd">    map. Optionally includes the contours for the real and imaginary</span>
 <span class="sd">    components of the preference map used to determine the pinwheel</span>
 <span class="sd">    locations.</span>
 
-<span class="sd">    Returns the original SheetView input overlayed with a Points</span>
+<span class="sd">    Returns the original SheetMatrix input overlayed with a Points</span>
 <span class="sd">    object containing the computed pinwheel locations and (optionally)</span>
 <span class="sd">    Contours overlays including the real and imaginary contour lines</span>
 <span class="sd">    respectively.</span>
@@ -152,15 +155,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pinwheels</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[],[]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[]</span>
 
-        <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s">&#39; Pinwheels&#39;</span><span class="p">)</span>
+        <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s">&#39; Pinwheels&#39;</span><span class="p">)</span>
 
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Selectivity&#39;</span><span class="p">)</span>
         <span class="n">base</span> <span class="o">=</span> <span class="n">pref</span> <span class="o">*</span> <span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">sel</span> <span class="o">!=</span><span class="p">[]</span>  <span class="k">else</span> <span class="n">pref</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">include_contours</span><span class="p">:</span>
-            <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
-                                <span class="n">label</span><span class="o">=</span><span class="s">&#39;Real&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-            <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
-                                <span class="n">label</span><span class="o">=</span><span class="s">&#39;Imaginary&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Real&#39;</span><span class="p">,</span>
+                                <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Imaginary&#39;</span><span class="p">,</span>
+                                <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>

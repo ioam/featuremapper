@@ -73,8 +73,8 @@
 
 <span class="kn">import</span> <span class="nn">param</span>
 
-<span class="kn">from</span> <span class="nn">dataviews</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">Table</span>
-<span class="kn">from</span> <span class="nn">dataviews.operation</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.core.operation</span> <span class="kn">import</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.view</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">ItemTable</span>
 
 
 <span class="c">#====================================#</span>
@@ -124,7 +124,7 @@
             <span class="n">ocsi</span> <span class="o">=</span> <span class="p">(</span><span class="n">r0</span> <span class="o">-</span> <span class="n">rorth</span><span class="p">)</span> <span class="o">/</span> <span class="n">r0</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">ocsi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">({</span><span class="s">&#39;OCSI&#39;</span><span class="p">:</span> <span class="n">ocsi</span><span class="p">},</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">({</span><span class="s">&#39;OCSI&#39;</span><span class="p">:</span> <span class="n">ocsi</span><span class="p">},</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">)]</span>
 
 
 
@@ -155,7 +155,7 @@
         <span class="n">table_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Peak&#39;</span><span class="p">:</span> <span class="n">peak_freq</span><span class="p">,</span> <span class="s">&#39;Lower&#39;</span><span class="p">:</span> <span class="n">lower_cutoff</span><span class="p">,</span>
                       <span class="s">&#39;Upper&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span><span class="p">,</span> <span class="s">&#39;QFactor&#39;</span><span class="p">:</span> <span class="n">qfactor</span><span class="p">,</span>
                       <span class="s">&#39;Bandwidth&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span> <span class="o">-</span> <span class="n">lower_cutoff</span><span class="p">}</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Frequency Tuning Analysis&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Frequency Tuning Analysis&#39;</span><span class="p">)]</span>
 
 </div>
 <div class="viewcode-block" id="SizeTuningPeaks"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.SizeTuningPeaks">[docs]</a><span class="k">class</span> <span class="nc">SizeTuningPeaks</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
@@ -193,7 +193,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">table_data</span><span class="p">[</span><span class="s">&#39;SI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">table_data</span><span class="p">[</span><span class="s">&#39;CSI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Size Tuning Analysis&#39;</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Size Tuning Analysis&#39;</span><span class="p">)]</span>
 
 
 </div>
@@ -215,7 +215,7 @@
             <span class="n">shift</span> <span class="o">=</span> <span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Table</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">CSS</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">Low</span><span class="o">=</span><span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">],</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">CSS</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">Low</span><span class="o">=</span><span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">],</span>
                            <span class="n">High</span><span class="o">=</span><span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
                       <span class="n">label</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">)]</span>
 
@@ -300,7 +300,7 @@
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="c"># Fitting penalties</span>
@@ -345,7 +345,7 @@
 
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
 
 
     <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">R_0</span><span class="p">,</span> <span class="n">K_c</span><span class="p">,</span> <span class="n">K_s</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
@@ -402,7 +402,7 @@
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span>
 
 
 </div>
@@ -445,7 +445,7 @@
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
         <span class="n">fitted_curve</span><span class="p">,</span> <span class="n">fit_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">Table</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">curve</span><span class="o">*</span><span class="n">fitted_curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">fit_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">label</span><span class="p">)]</span></div>
 </pre></div>
 
           </div>
