@@ -15,9 +15,9 @@ from scipy.optimize import curve_fit
 import param
 from imagen.analysis import fft_power_spectrum
 
-from holoviews.core import Dimension, ViewOperation
+from holoviews import Dimension, ViewOperation
 from holoviews.core.options import options, StyleOpts
-from holoviews.view import Curve, Histogram, ItemTable, Points, Annotation
+from holoviews import Curve, Histogram, ItemTable, Points, Annotation
 
 try: # 2.7+
     gamma = math.gamma

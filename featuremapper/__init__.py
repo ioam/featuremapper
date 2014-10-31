@@ -17,10 +17,9 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews.core import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem
+from holoviews import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem, SheetMatrix
 from holoviews.core.options import options, channels, StyleOpts, ChannelOpts
 from holoviews.interface.collector import AttrTree, AttrDict
-from holoviews.view import SheetMatrix
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 from . import features

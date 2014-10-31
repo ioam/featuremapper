@@ -2,8 +2,7 @@ import numpy as np
 
 import param
 
-from holoviews.core import ViewOperation
-from holoviews.view import SheetMatrix, ItemTable
+from holoviews import SheetMatrix, ItemTable, ViewOperation
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue

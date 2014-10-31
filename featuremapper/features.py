@@ -2,7 +2,7 @@ import numpy as np
 
 import param
 
-from holoviews.core import Dimension
+from holoviews import Dimension
 
 from distribution import DistributionStatisticFn, DSF_WeightedAverage
 
