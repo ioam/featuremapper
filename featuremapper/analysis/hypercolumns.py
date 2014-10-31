@@ -17,7 +17,7 @@ from imagen.analysis import fft_power_spectrum
 
 from holoviews.core import Dimension, ViewOperation
 from holoviews.core.options import options, StyleOpts
-from holoviews.views import Curve, Histogram, ItemTable, Points, Annotation
+from holoviews.view import Curve, Histogram, ItemTable, Points, Annotation
 
 try: # 2.7+
     gamma = math.gamma

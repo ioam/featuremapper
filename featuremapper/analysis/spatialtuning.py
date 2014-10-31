@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 import param
 
 from holoviews.core.operation import ViewOperation
-from holoviews.views import Curve, ItemTable
+from holoviews.view import Curve, ItemTable
 
 
 #====================================#

@@ -20,7 +20,7 @@ from param.parameterized import ParamOverrides, bothmethod
 from holoviews.core import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem
 from holoviews.core.options import options, channels, StyleOpts, ChannelOpts
 from holoviews.interface.collector import AttrTree, AttrDict
-from holoviews.views import SheetMatrix
+from holoviews.view import SheetMatrix
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 from . import features

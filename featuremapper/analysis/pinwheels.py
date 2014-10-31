@@ -9,7 +9,7 @@ import param
 from imagen.analysis import ViewOperation
 
 from holoviews.core.options import options, StyleOpts
-from holoviews.views import Contours, Points
+from holoviews.view import Contours, Points
 
 __author__ = "Jean-Luc Stevens"
 
