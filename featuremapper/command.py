@@ -24,7 +24,7 @@ import param
 from param import ParameterizedFunction, ParamOverrides
 
 from holoviews.interface.collector import AttrDict, AttrTree, Collector
-from holoviews import SheetMatrix
+from holoviews import SheetMatrix, ViewMap
 
 import imagen
 from imagen import random
