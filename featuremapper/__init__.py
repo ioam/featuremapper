@@ -279,8 +279,8 @@ class FeatureResponses(PatternDrivenAnalysis):
         self._activities = defaultdict(ndmapping_fn)
         if p.store_responses:
             response_dimensions = [features.Time]+dimensions+list(self.inner)
-            response_stack_fn = lambda: ViewMap(dimensions=response_dimensions)
-            self._responses = defaultdict(response_stack_fn)
+            response_map_fn = lambda: ViewMap(dimensions=response_dimensions)
+            self._responses = defaultdict(response_map_fn)
 
         for label in self.measurement_product:
             out_label = label[0]
@@ -548,9 +548,9 @@ class FeatureMaps(FeatureResponses):
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            stack = ViewMap((key, sv), dimensions=dimensions)
-                            stack.metadata = AttrDict(**output_metadata)
-                            results.set_path((map_index, name), stack)
+                            vmap = ViewMap((key, sv), dimensions=dimensions)
+                            vmap.metadata = AttrDict(**output_metadata)
+                            results.set_path((map_index, name), vmap)
                         else:
                             results.path_items[(map_index, name)][key] = sv
                 if p.store_responses:
@@ -627,9 +627,9 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
-                stack = ViewMap(dimensions=dimensions)
-                stack.metadata = AttrDict(**output_metadata)
-                results.set_path((curve_label, name), stack)
+                vmap = ViewMap(dimensions=dimensions)
+                vmap.metadata = AttrDict(**output_metadata)
+                results.set_path((curve_label, name), vmap)
 
             metadata = AttrDict(timestamp=timestamp, **output_metadata)
 
@@ -717,8 +717,8 @@ class ReverseCorrelation(FeatureResponses):
 
         if p.store_responses:
             response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
-            response_stack_fn = lambda: ViewMap(dimensions=response_dimensions)
-            self._responses = defaultdict(response_stack_fn)
+            response_map_fn = lambda: ViewMap(dimensions=response_dimensions)
+            self._responses = defaultdict(response_map_fn)
 
         # Set up the featureresponses measurement dict
         self._featureresponses = defaultdict(lambda: defaultdict(dict))

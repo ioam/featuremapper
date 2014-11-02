@@ -316,9 +316,9 @@ class UnitCurveCommand(FeatureCurveCommand):
         for coord, viewgroup in results.items():
             for path, stack in viewgroup.path_items.items():
                 grid_container = AttrTree()
-                coord_stack = stack.add_dimension(f.Y, 0, coord[1])
-                coord_stack = coord_stack.add_dimension(f.X, 0, coord[0])
-                grid_container.set_path(path, coord_stack)
+                coord_map = stack.add_dimension(f.Y, 0, coord[1])
+                coord_map = coord_map.add_dimension(f.X, 0, coord[0])
+                grid_container.set_path(path, coord_map)
                 trees.append(grid_container)
         return AttrTree.merge(trees)
 
@@ -388,9 +388,9 @@ class measure_response(FeatureResponses):
             label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
             if path not in results:
-                stack = ViewMap(dimensions=dims)
-                stack.metadata = AttrDict(**metadata)
-                results.set_path(path, stack)
+                vmap = ViewMap(dimensions=dims)
+                vmap.metadata = AttrDict(**metadata)
+                results.set_path(path, vmap)
 
             sv = SheetMatrix(response, metadata['bounds'], label=label, value='Activity')
             sv.metadata=AttrDict(timestamp=time)
