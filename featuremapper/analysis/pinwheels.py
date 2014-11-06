@@ -46,13 +46,13 @@ class WarningCounter(object):
 
 class PinwheelAnalysis(ViewOperation):
     """
-    Given a SheetMatrix or ViewMap of a cyclic feature preference,
+    Given a Matrix or ViewMap of a cyclic feature preference,
     compute the position of all pinwheel singularities in the
     map. Optionally includes the contours for the real and imaginary
     components of the preference map used to determine the pinwheel
     locations.
 
-    Returns the original SheetMatrix input overlayed with a Points
+    Returns the original Matrix input overlayed with a Points
     object containing the computed pinwheel locations and (optionally)
     Contours overlays including the real and imaginary contour lines
     respectively.

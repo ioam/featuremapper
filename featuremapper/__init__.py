@@ -17,7 +17,7 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem, SheetMatrix
+from holoviews import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem, Matrix
 from holoviews.core.options import options, channels, StyleOpts, ChannelOpts
 from holoviews.interface.collector import AttrTree, AttrDict
 
@@ -416,8 +416,8 @@ class FeatureResponses(PatternDrivenAnalysis):
             if p.store_responses:
                 cn, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = SheetMatrix(act.copy(), bounds,
-                                                       label='Response')
+                self._responses[name][key] = Matrix(act.copy(), bounds,
+                                                    label='Response')
 
 
     @bothmethod
@@ -491,7 +491,7 @@ class FeatureMaps(FeatureResponses):
 
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
-        type_str = 'SheetMatrix'
+        type_str = 'Matrix'
         style_str = options.normalize_key(fname + map_type.capitalize()) +'_' + type_str
         if style_str not in options.keys():
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
@@ -542,9 +542,9 @@ class FeatureMaps(FeatureResponses):
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
-                        sv = SheetMatrix(map_view, output_metadata['bounds'],
-                                       label=' '.join([name, map_label]),
-                                       value=value_dimension)
+                        sv = Matrix(map_view, output_metadata['bounds'],
+                                    label=' '.join([name, map_label]),
+                                    value=value_dimension)
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
@@ -640,15 +640,15 @@ class FeatureCurves(FeatureResponses):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                sv = SheetMatrix(y_axis_values, output_metadata['bounds'],
-                                 label=' '.join([name, curve_label]),
-                                 value=Dimension('Response'))
+                sv = Matrix(y_axis_values, output_metadata['bounds'],
+                            label=' '.join([name, curve_label]),
+                            value=Dimension('Response'))
                 sv.metadata = metadata.copy()
                 results.path_items[(curve_label, name)][key] = sv
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                 results.set_path(('%s_%s_%s' % info, name), self._responses[name])
-            
+
         return results
 
 
@@ -774,8 +774,8 @@ class ReverseCorrelation(FeatureResponses):
                     if p.store_responses:
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
-                        self._responses[out_label][key] = SheetMatrix(out_response.copy(), bounds,
-                                                                    label='Response')
+                        self._responses[out_label][key] = Matrix(out_response.copy(), bounds,
+                                                                 label='Response')
 
 
     def _collate_results(self, p):
@@ -804,8 +804,8 @@ class ReverseCorrelation(FeatureResponses):
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
-                    sv = SheetMatrix(rc_response[i, j], input_metadata['bounds'],
-                                   title=title, label='Receptive Field')
+                    sv = Matrix(rc_response[i, j], input_metadata['bounds'],
+                                title=title, label='Receptive Field')
                     sv.metadata = AttrDict(timestamp=timestamp)
                     view[coord] = ViewMap((time_key, sv), dimensions=dimensions)
                     view[coord].metadata = AttrDict(**input_metadata)

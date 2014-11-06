@@ -96,7 +96,7 @@ class PowerSpectrumAnalysis(ViewOperation):
         ydensity = dim2 / abs(t-b)
 
         if xdensity != ydensity:
-            raise Exception("SheetMatrix must have matching x- and y-density")
+            raise Exception("Matrix must have matching x- and y-density")
 
         self._density = xdensity
 

@@ -2,7 +2,7 @@ import numpy as np
 
 import param
 
-from holoviews import SheetMatrix, ItemTable, ViewOperation
+from holoviews import Matrix, ItemTable, ViewOperation
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
@@ -60,8 +60,8 @@ class decode_feature(ViewOperation):
             raise ValueError("DecodeFeature requires overlay with response/"
                              "activity and preference as input.")
         if selectivity is None:
-            selectivity = SheetMatrix(np.ones(preference.data.shape),
-                                    preference.bounds)
+            selectivity = Matrix(np.ones(preference.data.shape),
+                                 preference.bounds)
 
         cr = preference.cyclic_range
         cyclic = False if cr is None else True
