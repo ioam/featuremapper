@@ -818,10 +818,10 @@ class ReverseCorrelation(FeatureResponses):
         return results
 
 #Default styles
-options.Preference_SheetView = StyleOpts(cmap='jet')
-options.Selectivity_SheetView = StyleOpts(cmap='gray')
-options.Activity_SheetView = StyleOpts(cmap='gray')
-options.Response_SheetView = StyleOpts(cmap='gray')
+options.Preference_Matrix = StyleOpts(cmap='jet')
+options.Selectivity_Matrix = StyleOpts(cmap='gray')
+options.Activity_Matrix = StyleOpts(cmap='gray')
+options.Response_Matrix = StyleOpts(cmap='gray')
 
 # Default channel definitions
 channels.Preference_Selectivity = ChannelOpts('HCS', 'Preference * Selectivity', flipSC=True)
