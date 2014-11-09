@@ -204,8 +204,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">low_contrast</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">high_contrast</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">low_contrast</span> <span class="o">=</span> <span class="n">overlay</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">high_contrast</span> <span class="o">=</span> <span class="n">overlay</span><span class="o">.</span><span class="n">last</span>
 
         <span class="n">low_table</span> <span class="o">=</span> <span class="n">SizeTuningPeaks</span><span class="p">(</span><span class="n">low_contrast</span><span class="p">)</span>
         <span class="n">high_table</span> <span class="o">=</span> <span class="n">SizeTuningPeaks</span><span class="p">(</span><span class="n">high_contrast</span><span class="p">)</span>
@@ -215,8 +215,8 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">CSS</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">Low</span><span class="o">=</span><span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">],</span>
-                           <span class="n">High</span><span class="o">=</span><span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
-                      <span class="n">label</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">)]</span>
+                               <span class="n">High</span><span class="o">=</span><span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
+                          <span class="n">label</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">)]</span>
 
 </div>
 <div class="viewcode-block" id="DoGModelFit"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.DoGModelFit">[docs]</a><span class="k">class</span> <span class="nc">DoGModelFit</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
