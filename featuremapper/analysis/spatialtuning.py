@@ -137,8 +137,8 @@ class SizeTuningShift(ViewOperation):
     """
 
     def _process(self, overlay, key=None):
-        low_contrast = overlay[0]
-        high_contrast = overlay[1]
+        low_contrast = overlay.values()[0]
+        high_contrast = overlay.last
 
         low_table = SizeTuningPeaks(low_contrast)
         high_table = SizeTuningPeaks(high_contrast)
@@ -148,8 +148,8 @@ class SizeTuningShift(ViewOperation):
         except:
             shift = np.NaN
         return [ItemTable(dict(CSS=shift, Low=low_table['Peak Size'],
-                           High=high_table['Peak Size']),
-                      label='Contrast Dependent Size Tuning Shift')]
+                               High=high_table['Peak Size']),
+                          label='Contrast Dependent Size Tuning Shift')]
 
 
 class DoGModelFit(TuningCurveAnalysis):
