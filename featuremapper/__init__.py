@@ -797,7 +797,7 @@ class ReverseCorrelation(FeatureResponses):
             rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
             title = ' '.join([p.measurement_prefix, out_label, '{label}'])
-            view = Grid({}, output_metadata['shape'], title=title, label='RFs')
+            view = Grid({}, title=title, label='RFs')
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
