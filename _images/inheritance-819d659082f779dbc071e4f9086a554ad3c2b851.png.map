@@ -1,0 +1,5 @@
+<map id="inheritanced6f5d1b61f" name="inheritanced6f5d1b61f">
+<area shape="rect" id="node1" href="#featuremapper.features.Feature" title="params(compute_fn=Callable, offset=Number, preference_fn=ClassSelector, steps=Integer, values=List, cyclic=Boolean, format_string=String, range=NumericTuple, type=Parameter, unit=String, name=String)" alt="" coords="619,5,845,30"/>
+<area shape="rect" id="node2" title="params(cyclic=Boolean, format_string=String, range=NumericTuple, type=Parameter, unit=String, name=String)" alt="" coords="313,5,570,30"/>
+<area shape="rect" id="node3" title="params(name=String)" alt="" coords="5,5,264,30"/>
+</map>

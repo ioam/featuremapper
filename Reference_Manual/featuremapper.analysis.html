@@ -62,19 +62,21 @@
 <div class="section" id="analysis-package">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">analysis</span></tt> Package<a class="headerlink" href="#analysis-package" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="../_images/inheritance-0b68657e1cd440709d2daa41fc955c5388375ba7.png" alt="Inheritance diagram of featuremapper.analysis" usemap="#inheritanceed6e039036" class="inheritance"/>
+<img src="../_images/inheritance-14427963a0c312443722a086080c15dc4cdbe01c.png" alt="Inheritance diagram of featuremapper.analysis" usemap="#inheritanceed6e039036" class="inheritance"/>
 <map id="inheritanceed6e039036" name="inheritanceed6e039036">
-<area shape="rect" id="node1" href="#featuremapper.analysis.decode_feature" title="Estimate the value of a feature from the current activity pattern" alt="" coords="898,4,1147,27"/>
-<area shape="rect" id="node2" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="605,4,854,27"/>
-<area shape="rect" id="node3" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="281,4,562,27"/>
-<area shape="rect" id="node4" title="Base class for named objects that support Parameters and message" alt="" coords="5,4,238,27"/>
+<area shape="rect" id="node1" href="#featuremapper.analysis.decode_feature" title="params(reference_value=Number, weighted_average=Boolean, label=String, name=String)" alt="" coords="898,4,1147,27"/>
+<area shape="rect" id="node2" title="params(label=String, name=String)" alt="" coords="605,4,854,27"/>
+<area shape="rect" id="node3" title="params(name=String)" alt="" coords="281,4,562,27"/>
+<area shape="rect" id="node4" title="params(name=String)" alt="" coords="5,4,238,27"/>
 </map>
 </p>
 <span class="target" id="module-featuremapper.analysis"></span><dl class="class">
 <dt id="featuremapper.analysis.decode_feature">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.</tt><tt class="descname">decode_feature</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis.html#decode_feature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.decode_feature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://ioam.github.io/holoviews/Reference_Manual/holoviews.core.html#holoviews.core.operation.ViewOperation" title="(in holoviews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">holoviews.core.operation.ViewOperation</span></tt></a></p>
-<p>Estimate the value of a feature from the current activity pattern
+<p>params(reference_value=Number, weighted_average=Boolean, label=String, name=String)</p>
+<blockquote>
+<div><p>Estimate the value of a feature from the current activity pattern
 on a sheet and a preference map of the sheet. The activity and
 preference should be supplied as an Overlay or a ViewMap of Overlay
 objects.</p>
@@ -97,6 +99,22 @@ orientation preference as follows and overlay them:</p>
 <span class="n">decode_feature</span><span class="p">(</span><span class="n">ActivityPreferenceStack</span><span class="p">)</span>
 </pre></div>
 </div>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                    Value         Type   Bounds    Mode  [0m</p>
+<p>label              &#8216;ViewOperation&#8217;   String            V RW  
+reference_value          None        Number          V RW AN 
+weighted_average         True       Boolean  (0, 1)    V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mlabel:            The label to identify the output of the ViewOperation. By[0m
+[1;34m                  default this will match the name of the ViewOperation itself.[0m
+[1;31mreference_value:  Allows specifying a reference value, to compute the error of the[0m
+[1;31m                  decoded value.[0m
+[1;34mweighted_average: Decode as vector average if True or by maximal responding unit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">reference_value</span></tt> (<em>allow_None=True, bounds=None, constant=False, default=None, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Allows specifying a reference value, to compute the error of the
@@ -124,7 +142,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469368&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa72b8&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -138,7 +156,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469310&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa7208&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -152,12 +170,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469418&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa7310&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469470&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa7368&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -203,12 +221,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469520&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa7418&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749a469578&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfaa7470&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -251,12 +269,12 @@ containing the arguments.</p>
 <div class="section" id="hypercolumns-module">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">hypercolumns</span></tt> Module<a class="headerlink" href="#hypercolumns-module" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="../_images/inheritance-98aa076154ae406d579c866a29955770a95ae8ab.png" alt="Inheritance diagram of featuremapper.analysis.hypercolumns" usemap="#inheritance4ea281de0a" class="inheritance"/>
+<img src="../_images/inheritance-fed033329dcad80aeed7bf4fb19c0fcec9acc03f.png" alt="Inheritance diagram of featuremapper.analysis.hypercolumns" usemap="#inheritance4ea281de0a" class="inheritance"/>
 <map id="inheritance4ea281de0a" name="inheritance4ea281de0a">
-<area shape="rect" id="node1" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="Estimation of hypercolumn distance in a cyclic preference map from" alt="" coords="806,4,1147,24"/>
-<area shape="rect" id="node2" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="543,4,766,24"/>
-<area shape="rect" id="node3" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="252,4,504,24"/>
-<area shape="rect" id="node4" title="Base class for named objects that support Parameters and message" alt="" coords="4,4,213,24"/>
+<area shape="rect" id="node1" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="params(averaging_fn=Callable, fit_table=Boolean, gamma_k=Number, init_fit=Dict, label=String, name=String)" alt="" coords="806,4,1147,24"/>
+<area shape="rect" id="node2" title="params(label=String, name=String)" alt="" coords="543,4,766,24"/>
+<area shape="rect" id="node3" title="params(name=String)" alt="" coords="252,4,504,24"/>
+<area shape="rect" id="node4" title="params(name=String)" alt="" coords="4,4,213,24"/>
 </map>
 </p>
 <span class="target" id="module-featuremapper.analysis.hypercolumns"></span><p>This module is used to analyse the hypercolumn structure of preference
@@ -267,7 +285,9 @@ analysis (eg. wavelet analysis) may be introduced in future.</p>
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.hypercolumns.</tt><tt class="descname">PowerSpectrumAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/hypercolumns.html#PowerSpectrumAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://ioam.github.io/holoviews/Reference_Manual/holoviews.core.html#holoviews.core.operation.ViewOperation" title="(in holoviews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">holoviews.core.operation.ViewOperation</span></tt></a></p>
-<p>Estimation of hypercolumn distance in a cyclic preference map from
+<p>params(averaging_fn=Callable, fit_table=Boolean, gamma_k=Number, init_fit=Dict, label=String, name=String)</p>
+<blockquote>
+<div><p>Estimation of hypercolumn distance in a cyclic preference map from
 the size of the ring in the fourier power spectrum, following the
 methods described in the in the supplementary materials of
 <a href="#id1"><span class="problematic" id="id2">``</span></a>Universality in the Evolution of Orientation Columns in the
@@ -278,6 +298,43 @@ power) using the equation:</p>
 <p>rho = pinwheel count/(kmax**2)</p>
 <p>This is then used to generate a map quality estimate (with unit
 range) based on the pi-pinwheel density criterion.</p>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                         Value                  Type    Bounds    Mode  [0m</p>
+<p>averaging_fn   &lt;function mean at 0x2b4ccde3d6e0&gt;  Callable            V RW  
+fit_table                    False                Boolean   (0, 1)    V RW  
+gamma_k                       1.8                  Number             V RW  
+init_fit                      None                  Dict            V RW AN 
+label                   &#8216;ViewOperation&#8217;            String           C RW AN</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34maveraging_fn: The averaging function used to collapse the power spectrum at each[0m
+[1;34m              wavenumber down to a scalar value. By default, finds the mean[0m
+[1;34m              power for each wavenumber.[0m
+[1;31mfit_table:    Whether or not to add table listing the fit coefficients at the[0m
+[1;31m              end of the output layout.[0m
+[1;34mgamma_k:      The degree to which the gamma kernel is heavily tailed when[0m
+[1;34m              squashing the pinwheel density into a unit map metric.[0m
+[1;31minit_fit:     If set to None, an initial fit is automatically selected for[0m
+[1;31m              the curve fitting procedure. Otherwise, this is a dictionary of[0m
+[1;31m              the initial coefficients for equation (7) from the 2010 Science[0m
+[1;31m              paper mentioned above (supplementary materials). For instance,[0m
+[1;31m              the values used in the GCAL (Stevens et al. 2013):[0m
+[1;31m              [0m
+[1;31m              init_fit = dict(a0=0.35, a1=3.8, a2=1.3, a3=0.15, a4=-0.003, a5=0)[0m
+[1;31m              [0m
+[1;31m              These coefficients may be understood as follows:[0m
+[1;31m              [0m
+[1;31m               a0 =&gt; Gaussian height.[0m
+[1;31m               a1 =&gt; Peak x-axis position.[0m
+[1;31m               a2 =&gt; Gaussian spread (ie. variance).[0m
+[1;31m               a3 =&gt; Baseline value (without falloff).[0m
+[1;31m               a4 =&gt; Linear falloff.[0m
+[1;31m               a5 =&gt; Quadratic falloff.[0m
+[1;34mlabel:        Label suffixes are fixed as there are too many labels to specify.[0m</p>
 <dl class="docutils">
 <dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">fit_table</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=False, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Whether or not to add table listing the fit coefficients at the
@@ -414,7 +471,7 @@ material). Returns the analysed values as a dictionary.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a7158&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb72050&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -442,7 +499,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a7368&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb72260&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -456,12 +513,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a7470&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb72368&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a74c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb723c0&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -507,12 +564,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a7838&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb72730&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749b1a7890&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdfb72788&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -564,20 +621,22 @@ corresponding to the DC component (wavenumber zero).</p>
 <div class="section" id="pinwheels-module">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">pinwheels</span></tt> Module<a class="headerlink" href="#pinwheels-module" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="../_images/inheritance-12d0f3faf3fc7d373161e80863b5754f693e6e53.png" alt="Inheritance diagram of featuremapper.analysis.pinwheels" usemap="#inheritance1698fe547f" class="inheritance"/>
+<img src="../_images/inheritance-54e2e897155ab6664098ee25c22ac98f80f3a0b9.png" alt="Inheritance diagram of featuremapper.analysis.pinwheels" usemap="#inheritance1698fe547f" class="inheritance"/>
 <map id="inheritance1698fe547f" name="inheritance1698fe547f">
-<area shape="rect" id="node1" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Given a Matrix or ViewMap of a cyclic feature preference," alt="" coords="868,43,1148,64"/>
-<area shape="rect" id="node2" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="608,43,829,64"/>
+<area shape="rect" id="node1" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="params(include_contours=Boolean, silence_warnings=Boolean, label=String, name=String)" alt="" coords="868,43,1148,64"/>
+<area shape="rect" id="node2" title="params(label=String, name=String)" alt="" coords="608,43,829,64"/>
 <area shape="rect" id="node3" href="#featuremapper.analysis.pinwheels.WarningCounter" title="A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;" alt="" coords="5,4,279,24"/>
-<area shape="rect" id="node4" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="318,43,569,64"/>
-<area shape="rect" id="node5" title="Base class for named objects that support Parameters and message" alt="" coords="38,43,246,64"/>
+<area shape="rect" id="node4" title="params(name=String)" alt="" coords="318,43,569,64"/>
+<area shape="rect" id="node5" title="params(name=String)" alt="" coords="38,43,246,64"/>
 </map>
 </p>
 <span class="target" id="module-featuremapper.analysis.pinwheels"></span><dl class="class">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.pinwheels.</tt><tt class="descname">PinwheelAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/pinwheels.html#PinwheelAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://ioam.github.io/holoviews/Reference_Manual/holoviews.core.html#holoviews.core.operation.ViewOperation" title="(in holoviews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">holoviews.core.operation.ViewOperation</span></tt></a></p>
-<p>Given a Matrix or ViewMap of a cyclic feature preference,
+<p>params(include_contours=Boolean, silence_warnings=Boolean, label=String, name=String)</p>
+<blockquote>
+<div><p>Given a Matrix or ViewMap of a cyclic feature preference,
 compute the position of all pinwheel singularities in the
 map. Optionally includes the contours for the real and imaginary
 components of the preference map used to determine the pinwheel
@@ -586,6 +645,22 @@ locations.</p>
 object containing the computed pinwheel locations and (optionally)
 Contours overlays including the real and imaginary contour lines
 respectively.</p>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                    Value         Type   Bounds    Mode  [0m</p>
+<p>include_contours         True       Boolean  (0, 1)    V RW  
+label              &#8216;ViewOperation&#8217;   String          C RW AN 
+silence_warnings         True       Boolean  (0, 1)    V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34minclude_contours: Whether or not to include the computed contours for the real and[0m
+[1;34m                  imaginary components of the map.[0m
+[1;31mlabel:            Label suffixes are fixed as there are too many labels to specify.[0m
+[1;34msilence_warnings: Whether or not to show warnings about invalid intersection[0m
+[1;34m                  events when locating pinwheels.[0m</p>
 <dl class="docutils">
 <dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">silence_warnings</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Whether or not to show warnings about invalid intersection
@@ -626,7 +701,7 @@ output is erroneous.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -640,7 +715,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42db8&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -661,12 +736,12 @@ imaginary contours of of polar OR map.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42e10&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42e68&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -746,12 +821,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749ac42f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4cdf946e68&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -802,28 +877,54 @@ exceptions to allow a suitable warning message to be generated.</p>
 <div class="section" id="spatialtuning-module">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">spatialtuning</span></tt> Module<a class="headerlink" href="#spatialtuning-module" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="../_images/inheritance-d9cd3ba405ab4875a4b64699eeeb672126801a65.png" alt="Inheritance diagram of featuremapper.analysis.spatialtuning" usemap="#inheritance18d0462045" class="inheritance"/>
+<img src="../_images/inheritance-27aa2106e7d47bde904f1e2c4b367b588828cd0d.png" alt="Inheritance diagram of featuremapper.analysis.spatialtuning" usemap="#inheritance18d0462045" class="inheritance"/>
 <map id="inheritance18d0462045" name="inheritance18d0462045">
-<area shape="rect" id="node1" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="Baseclass to implement basic size tuning curve fitting procedures." alt="" coords="729,38,897,51"/>
-<area shape="rect" id="node4" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="Normalization model describing response of V1 neurons" alt="" coords="944,2,1149,15"/>
-<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="DoG model response function to sine grating disk stimulus" alt="" coords="961,26,1133,39"/>
-<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="iDoG model response function to sine grating disk stimulus" alt="" coords="957,51,1136,63"/>
-<area shape="rect" id="node11" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="Basic integrated difference of Gaussian response function" alt="" coords="948,75,1145,87"/>
-<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="Analyzes frequency&#45;tuning curve to find the preferred frequency, lower and" alt="" coords="710,62,915,75"/>
-<area shape="rect" id="node7" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="Analysis size&#45;tuning curve to find peak facilitation, peak suppression" alt="" coords="723,111,903,123"/>
-<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="Takes an overlay of two curves as input and computes the contrast&#45;dependent" alt="" coords="497,99,673,111"/>
-<area shape="rect" id="node9" title="A ViewOperation takes one or more views as inputs and processes" alt="" coords="330,87,465,100"/>
-<area shape="rect" id="node12" title="Acts like a Python function, but with arguments that are Parameters." alt="" coords="153,87,306,100"/>
-<area shape="rect" id="node13" title="Base class for named objects that support Parameters and message" alt="" coords="3,87,129,100"/>
+<area shape="rect" id="node1" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="params(K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="729,38,897,51"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="params(beta=Number, default_contrast=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="944,2,1149,15"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="961,26,1133,39"/>
+<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="957,51,1136,63"/>
+<area shape="rect" id="node11" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="948,75,1145,87"/>
+<area shape="rect" id="node2" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="489,75,681,87"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="710,62,915,75"/>
+<area shape="rect" id="node5" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="705,87,921,99"/>
+<area shape="rect" id="node7" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="params(feature=String, label=String, name=String)" alt="" coords="723,111,903,123"/>
+<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="params(label=String, name=String)" alt="" coords="497,99,673,111"/>
+<area shape="rect" id="node9" title="params(label=String, name=String)" alt="" coords="330,87,465,100"/>
+<area shape="rect" id="node12" title="params(name=String)" alt="" coords="153,87,306,100"/>
+<area shape="rect" id="node13" title="params(name=String)" alt="" coords="3,87,129,100"/>
 </map>
 </p>
 <span class="target" id="module-featuremapper.analysis.spatialtuning"></span><dl class="class">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">DoGModelFit</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#DoGModelFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></p>
-<p>Baseclass to implement basic size tuning curve fitting procedures.
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="featuremapper.analysis.spatialtuning.TuningCurveAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></a></p>
+<p>params(K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)</p>
+<blockquote>
+<div>Baseclass to implement basic size tuning curve fitting procedures.
 Subclasses have to implement the _function method with the function
-that is to be fit to the supplied curve.</p>
+that is to be fit to the supplied curve.</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                  Value        Type   Mode [0m</p>
+<p>K_c                     0         Number  V RW 
+K_s                     0         Number  V RW 
+a                       0         Number  V RW 
+b                       0         Number  V RW 
+feature               &#8216;Size&#8217;      String  V RW 
+label            &#8216;ViewOperation&#8217;  String  V RW 
+max_iterations        100000      Number  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mK_c:            Center excitatory kernel strength.[0m
+[1;31mK_s:            Surround inhibitory kernel strength.[0m
+[1;34ma:              Center excitatory space constant.[0m
+[1;31mb:              Surround inhibitory space constant.[0m
+[1;34mfeature:        &lt; No docstring available &gt;[0m
+[1;31mlabel:          The label to identify the output of the ViewOperation. By[0m
+[1;31m                default this will match the name of the ViewOperation itself.[0m
+[1;34mmax_iterations: Number of iterations to optimize the fit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">a</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Center excitatory space constant.</dd>
@@ -859,7 +960,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -873,7 +974,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add38e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -887,12 +988,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -938,12 +1039,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add36d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749add39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -985,9 +1086,23 @@ containing the arguments.</p>
 <dl class="class">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">FrequencyTuningAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#FrequencyTuningAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></p>
-<p>Analyzes frequency-tuning curve to find the preferred frequency, lower and
-upper cutoff frequencies as well as the Q-Factor and bandwidth.</p>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="featuremapper.analysis.spatialtuning.TuningCurveAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></a></p>
+<p>params(feature=String, label=String, name=String)</p>
+<blockquote>
+<div>Analyzes frequency-tuning curve to find the preferred frequency, lower and
+upper cutoff frequencies as well as the Q-Factor and bandwidth.</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName           Value        Type   Mode [0m</p>
+<p>feature     &#8216;Frequency&#8217;    String  V RW 
+label     &#8216;ViewOperation&#8217;  String  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mfeature: &lt; No docstring available &gt;[0m
+[1;31mlabel:   The label to identify the output of the ViewOperation. By[0m
+[1;31m         default this will match the name of the ViewOperation itself.[0m</p>
 <p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Frequency, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
@@ -1011,7 +1126,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3730&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1025,7 +1140,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1039,12 +1154,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add37e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e38e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1090,12 +1205,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3ba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1138,7 +1253,9 @@ containing the arguments.</p>
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">NormalizationDoGModel</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#NormalizationDoGModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="featuremapper.analysis.spatialtuning.DoGModelFit"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.DoGModelFit</span></tt></a></p>
-<p>Normalization model describing response of V1 neurons
+<p>params(beta=Number, default_contrast=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)</p>
+<blockquote>
+<div><p>Normalization model describing response of V1 neurons
 to sine grating disk stimuli of varying sizes.
 Ref: Sceniak et al. (200q1) - page 1875
 Fitting parameters: K_c -  Center strength</p>
@@ -1147,6 +1264,33 @@ Fitting parameters: K_c -  Center strength</p>
 K_s -  Surround Strength
 b   -  Surround spatial constant
 beta - Arbitrary exponent</div></blockquote>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                           Value               Type   Mode [0m</p>
+<p>K_c                              0                Number  V RW 
+K_s                              0                Number  V RW 
+a                                0                Number  V RW 
+b                                0                Number  V RW 
+beta                             0                Number  V RW 
+default_contrast                1.0               Number  V RW 
+feature                        &#8216;Size&#8217;             String  V RW 
+label              &#8216;Normalization DoG Model Fit&#8217;  String  V RW 
+max_iterations                 100000             Number  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mK_c:              Center excitatory kernel strength.[0m
+[1;31mK_s:              Surround inhibitory kernel strength.[0m
+[1;34ma:                Center excitatory space constant.[0m
+[1;31mb:                Surround inhibitory space constant.[0m
+[1;34mbeta:             Baseline response.[0m
+[1;31mdefault_contrast: Default contrast to use if supplied curve doesn&#8217;t provide contrast.[0m
+[1;34mfeature:          &lt; No docstring available &gt;[0m
+[1;31mlabel:            The label to identify the output of the ViewOperation. By[0m
+[1;31m                  default this will match the name of the ViewOperation itself.[0m
+[1;34mmax_iterations:   Number of iterations to optimize the fit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">a</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Center excitatory space constant.</dd>
@@ -1186,7 +1330,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1200,7 +1344,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1214,12 +1358,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1265,12 +1409,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3fc8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce03da100&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749aec60a8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce03da158&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1310,10 +1454,177 @@ containing the arguments.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">OrientationContrastAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#OrientationContrastAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="featuremapper.analysis.spatialtuning.TuningCurveAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></a></p>
+<p>params(feature=String, label=String, name=String)
+[1;32mParameters of &#8216;OrientationContrastAnalysis&#8217;
+===========================================
+[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName              Value           Type   Mode [0m</p>
+<p>feature   &#8216;OrientationSurround&#8217;  String  V RW 
+label        &#8216;ViewOperation&#8217;     String  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mfeature: &lt; No docstring available &gt;[0m
+[1;31mlabel:   The label to identify the output of the ViewOperation. By[0m
+[1;31m         default this will match the name of the ViewOperation itself.[0m</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=OrientationSurround, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The label to identify the output of the ViewOperation. By
+        default this will match the name of the ViewOperation itself.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.debug">
+<tt class="descname">debug</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a debugging statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return {parameter_name:parameter.default} for all non-constant
+Parameters.</p>
+<p>Note that a Parameter for which instantiate==True has its default
+instantiated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.force_new_dynamic_value">
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_param_values">
+<tt class="descname">get_param_values</tt><big>(</big><em>onlychanged=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of name,value pairs for all Parameters of this
+object.</p>
+<p>If onlychanged is True, will only return values that are not
+equal to the default value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_value_generator">
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_views">
+<tt class="descname">get_views</tt><big>(</big><em>view</em>, <em>pattern</em>, <em>view_type=&lt;class 'holoviews.core.layer.Layer'&gt;</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method that return a list of views with labels ending
+with the given pattern and which have the specified type. This
+may be useful to check is a single view satisfies some
+condition or to extract the appropriate views from an Overlay.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.inspect_value">
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.instance">
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.message">
+<tt class="descname">message</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a message.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.params">
+<em class="property">classmethod </em><tt class="descname">params</tt><big>(</big><em>parameter_name=None</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Parameters of this class as the
+dictionary {name: parameter_object}</p>
+<p>Includes Parameters from this class and its
+superclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.print_param_defaults">
+<em class="property">classmethod </em><tt class="descname">print_param_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.print_param_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the default values of all cls&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.print_param_values">
+<tt class="descname">print_param_values</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.print_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the values of all this object&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.script_repr">
+<tt class="descname">script_repr</tt><big>(</big><em>imports=</em>, <span class="optional">[</span><span class="optional">]</span><em>prefix='    '</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.script_repr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as Parameterized.script_repr, except that X.classname(Y
+is replaced with X.classname.instance(Y</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_default">
+<em class="property">classmethod </em><tt class="descname">set_default</tt><big>(</big><em>param_name</em>, <em>value</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default value of param_name.</p>
+<p>Equivalent to setting param_name on the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_dynamic_time_fn">
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_param">
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.state_pop">
+<tt class="descname">state_pop</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.state_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the most recently saved state.</p>
+<p>See state_push() for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.state_push">
+<tt class="descname">state_push</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.state_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this instance&#8217;s state.</p>
+<p>For Parameterized instances, this includes the state of
+dynamically generated values.</p>
+<p>Subclasses that maintain short-term state should additionally
+save and restore that state using state_push() and
+state_pop().</p>
+<p>Generally, this method is used by operations that need to test
+something without permanently altering the objects&#8217; state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.verbose">
+<tt class="descname">verbose</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a verbose message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.warning">
+<tt class="descname">warning</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a warning, unless module variable
+warnings_as_exceptions is True, then raise an Exception
+containing the arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">SF_DoGModel</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#SF_DoGModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="featuremapper.analysis.spatialtuning.DoGModelFit"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.DoGModelFit</span></tt></a></p>
-<p>DoG model response function to sine grating disk stimulus
+<p>params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)</p>
+<blockquote>
+<div><p>DoG model response function to sine grating disk stimulus
 with varying spatial frequency (f).
 Ref: Sceniak et al. (2006) - page 3476
 Fitting parameters: R_0 - Steady-state response</p>
@@ -1322,6 +1633,31 @@ Fitting parameters: R_0 - Steady-state response</p>
 a   - Center spatial constant
 K_s - Surround Strength
 b   - Surround spatial constant</div></blockquote>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                  Value        Type   Mode [0m</p>
+<p>K_c                     0         Number  V RW 
+K_s                     0         Number  V RW 
+R_0                     0         Number  V RW 
+a                       0         Number  V RW 
+b                       0         Number  V RW 
+feature               &#8216;Size&#8217;      String  V RW 
+label            &#8216;DoG Model Fit&#8217;  String  V RW 
+max_iterations        100000      Number  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mK_c:            Center excitatory kernel strength.[0m
+[1;31mK_s:            Surround inhibitory kernel strength.[0m
+[1;34mR_0:            Baseline response.[0m
+[1;31ma:              Center excitatory space constant.[0m
+[1;34mb:              Surround inhibitory space constant.[0m
+[1;31mfeature:        &lt; No docstring available &gt;[0m
+[1;34mlabel:          The label to identify the output of the ViewOperation. By[0m
+[1;34m                default this will match the name of the ViewOperation itself.[0m
+[1;31mmax_iterations: Number of iterations to optimize the fit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">a</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Center excitatory space constant.</dd>
@@ -1359,7 +1695,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3ba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e37e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1373,7 +1709,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1387,12 +1723,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1438,12 +1774,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1485,11 +1821,25 @@ containing the arguments.</p>
 <dl class="class">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">SizeTuningPeaks</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#SizeTuningPeaks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></p>
-<p>Analysis size-tuning curve to find peak facilitation, peak suppression
+<dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="featuremapper.analysis.spatialtuning.TuningCurveAnalysis"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.TuningCurveAnalysis</span></tt></a></p>
+<p>params(feature=String, label=String, name=String)</p>
+<blockquote>
+<div>Analysis size-tuning curve to find peak facilitation, peak suppression
 and peak counter-suppression values, which can be used to derive metrics
 like contrast dependent size tuning shifts and counter suppression
-indices.</p>
+indices.</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName           Value        Type   Mode [0m</p>
+<p>feature        &#8216;Size&#8217;      String  V RW 
+label     &#8216;ViewOperation&#8217;  String  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mfeature: &lt; No docstring available &gt;[0m
+[1;31mlabel:   The label to identify the output of the ViewOperation. By[0m
+[1;31m         default this will match the name of the ViewOperation itself.[0m</p>
 <p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
@@ -1513,7 +1863,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1527,7 +1877,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e37e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1541,12 +1891,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add36d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1592,12 +1942,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3ba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3f18&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1640,9 +1990,21 @@ containing the arguments.</p>
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">SizeTuningShift</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#SizeTuningShift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://ioam.github.io/holoviews/Reference_Manual/holoviews.core.html#holoviews.core.operation.ViewOperation" title="(in holoviews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">holoviews.core.operation.ViewOperation</span></tt></a></p>
-<p>Takes an overlay of two curves as input and computes the contrast-dependent
+<p>params(label=String, name=String)</p>
+<blockquote>
+<div>Takes an overlay of two curves as input and computes the contrast-dependent
 size tuning shift. Assumes the first curve is low contrast and the second
-high contrast.</p>
+high contrast.</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName         Value        Type   Mode [0m</p>
+<p>label   &#8216;ViewOperation&#8217;  String  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mlabel: The label to identify the output of the ViewOperation. By[0m
+[1;34m       default this will match the name of the ViewOperation itself.[0m</p>
 <dl class="docutils">
 <dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The label to identify the output of the ViewOperation. By
@@ -1665,7 +2027,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1679,7 +2041,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e37e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1693,12 +2055,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3838&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1744,12 +2106,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3c00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3e68&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1792,7 +2154,9 @@ containing the arguments.</p>
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">Size_iDoGModel</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#Size_iDoGModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="featuremapper.analysis.spatialtuning.DoGModelFit"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.DoGModelFit</span></tt></a></p>
-<p>iDoG model response function to sine grating disk stimulus
+<p>params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)</p>
+<blockquote>
+<div><p>iDoG model response function to sine grating disk stimulus
 with optimal spatial frequency and varying disk radius (r).
 Ref: Sceniak et al. (2006) - page 3476
 Fitting parameters: R_0 - Steady-state response</p>
@@ -1801,6 +2165,31 @@ Fitting parameters: R_0 - Steady-state response</p>
 a   - Center spatial constant
 K_s - Surround Strength
 b   - Surround spatial constant</div></blockquote>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                  Value         Type   Mode [0m</p>
+<p>K_c                     0          Number  V RW 
+K_s                     0          Number  V RW 
+R_0                     0          Number  V RW 
+a                       0          Number  V RW 
+b                       0          Number  V RW 
+feature               &#8216;Size&#8217;       String  V RW 
+label            &#8216;IDoG Model Fit&#8217;  String  V RW 
+max_iterations        100000       Number  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mK_c:            Center excitatory kernel strength.[0m
+[1;31mK_s:            Surround inhibitory kernel strength.[0m
+[1;34mR_0:            Baseline response.[0m
+[1;31ma:              Center excitatory space constant.[0m
+[1;34mb:              Surround inhibitory space constant.[0m
+[1;31mfeature:        &lt; No docstring available &gt;[0m
+[1;34mlabel:          The label to identify the output of the ViewOperation. By[0m
+[1;34m                default this will match the name of the ViewOperation itself.[0m
+[1;31mmax_iterations: Number of iterations to optimize the fit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">a</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Center excitatory space constant.</dd>
@@ -1838,7 +2227,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add36d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1852,7 +2241,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1866,12 +2255,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3ba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3f18&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749add3d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1917,12 +2306,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749accff70&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1961,6 +2350,171 @@ containing the arguments.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis">
+<em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">TuningCurveAnalysis</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#TuningCurveAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://ioam.github.io/holoviews/Reference_Manual/holoviews.core.html#holoviews.core.operation.ViewOperation" title="(in holoviews v2014.05.14)"><tt class="xref py py-class docutils literal"><span class="pre">holoviews.core.operation.ViewOperation</span></tt></a></p>
+<p>params(feature=String, label=String, name=String)
+[1;32mParameters of &#8216;TuningCurveAnalysis&#8217;
+===================================
+[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName           Value        Type   Mode [0m</p>
+<p>feature          &#8216;&#8217;        String  V RW 
+label     &#8216;ViewOperation&#8217;  String  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mfeature: &lt; No docstring available &gt;[0m
+[1;31mlabel:   The label to identify the output of the ViewOperation. By[0m
+[1;31m         default this will match the name of the ViewOperation itself.[0m</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<dl class="docutils">
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=ViewOperation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dd>The label to identify the output of the ViewOperation. By
+        default this will match the name of the ViewOperation itself.</dd>
+</dl>
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.debug">
+<tt class="descname">debug</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a debugging statement.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.defaults">
+<tt class="descname">defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return {parameter_name:parameter.default} for all non-constant
+Parameters.</p>
+<p>Note that a Parameter for which instantiate==True has its default
+instantiated.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.force_new_dynamic_value">
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_param_values">
+<tt class="descname">get_param_values</tt><big>(</big><em>onlychanged=False</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of name,value pairs for all Parameters of this
+object.</p>
+<p>If onlychanged is True, will only return values that are not
+equal to the default value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_value_generator">
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_views">
+<tt class="descname">get_views</tt><big>(</big><em>view</em>, <em>pattern</em>, <em>view_type=&lt;class 'holoviews.core.layer.Layer'&gt;</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper method that return a list of views with labels ending
+with the given pattern and which have the specified type. This
+may be useful to check is a single view satisfies some
+condition or to extract the appropriate views from an Overlay.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.inspect_value">
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e39f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.instance">
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3b50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.message">
+<tt class="descname">message</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a message.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.params">
+<em class="property">classmethod </em><tt class="descname">params</tt><big>(</big><em>parameter_name=None</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the Parameters of this class as the
+dictionary {name: parameter_object}</p>
+<p>Includes Parameters from this class and its
+superclasses.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.print_param_defaults">
+<em class="property">classmethod </em><tt class="descname">print_param_defaults</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.print_param_defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the default values of all cls&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.print_param_values">
+<tt class="descname">print_param_values</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.print_param_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the values of all this object&#8217;s Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.script_repr">
+<tt class="descname">script_repr</tt><big>(</big><em>imports=</em>, <span class="optional">[</span><span class="optional">]</span><em>prefix='    '</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.script_repr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as Parameterized.script_repr, except that X.classname(Y
+is replaced with X.classname.instance(Y</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_default">
+<em class="property">classmethod </em><tt class="descname">set_default</tt><big>(</big><em>param_name</em>, <em>value</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default value of param_name.</p>
+<p>Equivalent to setting param_name on the class.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_dynamic_time_fn">
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e37e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_param">
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3e10&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.state_pop">
+<tt class="descname">state_pop</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.state_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restore the most recently saved state.</p>
+<p>See state_push() for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.state_push">
+<tt class="descname">state_push</tt><big>(</big><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.state_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save this instance&#8217;s state.</p>
+<p>For Parameterized instances, this includes the state of
+dynamically generated values.</p>
+<p>Subclasses that maintain short-term state should additionally
+save and restore that state using state_push() and
+state_pop().</p>
+<p>Generally, this method is used by operations that need to test
+something without permanently altering the objects&#8217; state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.verbose">
+<tt class="descname">verbose</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a verbose message.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.warning">
+<tt class="descname">warning</tt><big>(</big><em>*args</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the arguments as a warning, unless module variable
+warnings_as_exceptions is True, then raise an Exception
+containing the arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="featuremapper.analysis.spatialtuning.fr2sp">
 <tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">fr2sp</tt><big>(</big><em>fr</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#fr2sp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.fr2sp" title="Permalink to this definition">¶</a></dt>
@@ -1971,7 +2525,9 @@ containing the arguments.</p>
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel">
 <em class="property">class </em><tt class="descclassname">featuremapper.analysis.spatialtuning.</tt><tt class="descname">iDoG_DeAngelisModel</tt><big>(</big><em>**params</em><big>)</big><a class="reference internal" href="../_modules/featuremapper/analysis/spatialtuning.html#iDoG_DeAngelisModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="featuremapper.analysis.spatialtuning.DoGModelFit"><tt class="xref py py-class docutils literal"><span class="pre">featuremapper.analysis.spatialtuning.DoGModelFit</span></tt></a></p>
-<p>Basic integrated difference of Gaussian response function
+<p>params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)</p>
+<blockquote>
+<div><p>Basic integrated difference of Gaussian response function
 for area summation curves.
 Ref: DeAngelis et al. 1994
 Fitting parameters: K_c - Center strength</p>
@@ -1980,6 +2536,31 @@ Fitting parameters: K_c - Center strength</p>
 K_s - Surround Strength
 b   - Surround spatial constant
 R_0 - Steady-state response</div></blockquote>
+</div></blockquote>
+<p>[0m
+[1;31mParameters changed from their default values are marked in red.[0m
+[1;36mSoft bound values are marked in cyan.[0m
+C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
+<p>[1;34mName                  Value         Type   Mode [0m</p>
+<p>K_c                     0          Number  V RW 
+K_s                     0          Number  V RW 
+R_0                     0          Number  V RW 
+a                       0          Number  V RW 
+b                       0          Number  V RW 
+feature               &#8216;Size&#8217;       String  V RW 
+label            &#8216;IDoG Model Fit&#8217;  String  V RW 
+max_iterations        100000       Number  V RW</p>
+<p>[1;32mParameter docstrings:
+=====================[0m</p>
+<p>[1;34mK_c:            Center excitatory kernel strength.[0m
+[1;31mK_s:            Surround inhibitory kernel strength.[0m
+[1;34mR_0:            Baseline response.[0m
+[1;31ma:              Center excitatory space constant.[0m
+[1;34mb:              Surround inhibitory space constant.[0m
+[1;31mfeature:        &lt; No docstring available &gt;[0m
+[1;34mlabel:          The label to identify the output of the ViewOperation. By[0m
+[1;34m                default this will match the name of the ViewOperation itself.[0m
+[1;31mmax_iterations: Number of iterations to optimize the fit.[0m</p>
 <dl class="docutils">
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">a</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Center excitatory space constant.</dd>
@@ -2017,7 +2598,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfd08&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2031,7 +2612,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2045,12 +2626,12 @@ condition or to extract the appropriate views from an Overlay.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfb50&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfcb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2096,12 +2677,12 @@ is replaced with X.classname.instance(Y</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfc00&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3cb0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b749accfaa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2b4ce02e3d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

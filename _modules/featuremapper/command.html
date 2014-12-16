@@ -390,7 +390,7 @@
 
 
 
-<span class="k">class</span> <span class="nc">measure_response</span><span class="p">(</span><span class="n">FeatureResponses</span><span class="p">):</span>
+<div class="viewcode-block" id="measure_response"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_response">[docs]</a><span class="k">class</span> <span class="nc">measure_response</span><span class="p">(</span><span class="n">FeatureResponses</span><span class="p">):</span>
 
     <span class="n">input_patterns</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{},</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
 <span class="s">        Assigns patterns to different inputs overriding the</span>
@@ -474,7 +474,7 @@
                              <span class="s">&#39;or the pattern_response_fn.&#39;</span> <span class="o">%</span> <span class="n">override</span><span class="p">)</span>
 
 
-
+</div>
 <div class="viewcode-block" id="measure_rfs"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.measure_rfs">[docs]</a><span class="k">class</span> <span class="nc">measure_rfs</span><span class="p">(</span><span class="n">SingleInputResponseCommand</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map receptive fields by reverse correlation.</span>
@@ -1267,7 +1267,7 @@
 
 
 </div>
-<span class="k">class</span> <span class="nc">test_measure</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
+<div class="viewcode-block" id="test_measure"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.html#featuremapper.command.test_measure">[docs]</a><span class="k">class</span> <span class="nc">test_measure</span><span class="p">(</span><span class="n">UnitCurveCommand</span><span class="p">):</span>
     <span class="n">static_parameters</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;size&quot;</span><span class="p">,</span> <span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="s">&quot;y&quot;</span><span class="p">])</span>
 
     <span class="n">x_axis</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;contrast&#39;</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1286,7 +1286,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">Orientation</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">22</span><span class="p">,</span> <span class="n">preference_fn</span><span class="o">=</span><span class="bp">None</span><span class="p">),</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">Contrast</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">])]</span>
 
-
+</div>
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">&quot;measure_corner_angle_pref&quot;</span><span class="p">,</span>
     <span class="s">&quot;measure_corner_or_pref&quot;</span><span class="p">,</span>

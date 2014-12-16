@@ -1,0 +1,15 @@
+<map id="inheritance18d0462045" name="inheritance18d0462045">
+<area shape="rect" id="node1" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="params(K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="729,38,897,51"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="params(beta=Number, default_contrast=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="944,2,1149,15"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="961,26,1133,39"/>
+<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="957,51,1136,63"/>
+<area shape="rect" id="node11" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="params(R_0=Number, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, label=String, name=String)" alt="" coords="948,75,1145,87"/>
+<area shape="rect" id="node2" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="489,75,681,87"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="710,62,915,75"/>
+<area shape="rect" id="node5" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis" title="params(feature=String, label=String, name=String)" alt="" coords="705,87,921,99"/>
+<area shape="rect" id="node7" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="params(feature=String, label=String, name=String)" alt="" coords="723,111,903,123"/>
+<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="params(label=String, name=String)" alt="" coords="497,99,673,111"/>
+<area shape="rect" id="node9" title="params(label=String, name=String)" alt="" coords="330,87,465,100"/>
+<area shape="rect" id="node12" title="params(name=String)" alt="" coords="153,87,306,100"/>
+<area shape="rect" id="node13" title="params(name=String)" alt="" coords="3,87,129,100"/>
+</map>

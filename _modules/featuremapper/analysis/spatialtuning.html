@@ -93,7 +93,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">fr</span><span class="p">))</span>
 
 </div>
-<span class="k">class</span> <span class="nc">TuningCurveAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+<div class="viewcode-block" id="TuningCurveAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.TuningCurveAnalysis">[docs]</a><span class="k">class</span> <span class="nc">TuningCurveAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
 
     <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">()</span>
 
@@ -104,8 +104,8 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Analysis requires </span><span class="si">%s</span><span class="s"> response curves.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span><span class="p">)</span>
 
 
-
-<span class="k">class</span> <span class="nc">OrientationContrastAnalysis</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="OrientationContrastAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis">[docs]</a><span class="k">class</span> <span class="nc">OrientationContrastAnalysis</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
 
     <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;OrientationSurround&#39;</span><span class="p">)</span>
 
@@ -126,7 +126,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">ItemTable</span><span class="p">({</span><span class="s">&#39;OCSI&#39;</span><span class="p">:</span> <span class="n">ocsi</span><span class="p">},</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">)]</span>
 
 
-
+</div>
 <div class="viewcode-block" id="FrequencyTuningAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis">[docs]</a><span class="k">class</span> <span class="nc">FrequencyTuningAnalysis</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analyzes frequency-tuning curve to find the preferred frequency, lower and</span>
