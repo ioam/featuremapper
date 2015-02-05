@@ -73,7 +73,7 @@
 
 <span class="kn">import</span> <span class="nn">param</span>
 
-<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ViewOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
 
 
 <span class="c">#====================================#</span>
@@ -93,7 +93,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">fr</span><span class="p">))</span>
 
 </div>
-<div class="viewcode-block" id="TuningCurveAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.TuningCurveAnalysis">[docs]</a><span class="k">class</span> <span class="nc">TuningCurveAnalysis</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+<div class="viewcode-block" id="TuningCurveAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.TuningCurveAnalysis">[docs]</a><span class="k">class</span> <span class="nc">TuningCurveAnalysis</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
 
     <span class="n">feature</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">()</span>
 
@@ -196,7 +196,7 @@
 
 
 </div>
-<div class="viewcode-block" id="SizeTuningShift"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.SizeTuningShift">[docs]</a><span class="k">class</span> <span class="nc">SizeTuningShift</span><span class="p">(</span><span class="n">ViewOperation</span><span class="p">):</span>
+<div class="viewcode-block" id="SizeTuningShift"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.SizeTuningShift">[docs]</a><span class="k">class</span> <span class="nc">SizeTuningShift</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes an overlay of two curves as input and computes the contrast-dependent</span>
 <span class="sd">    size tuning shift. Assumes the first curve is low contrast and the second</span>
