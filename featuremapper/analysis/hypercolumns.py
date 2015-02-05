@@ -15,9 +15,10 @@ from scipy.optimize import curve_fit
 import param
 from imagen.analysis import fft_power_spectrum
 
-from holoviews import Dimension, ViewOperation
-from holoviews.core.options import options, StyleOpts
-from holoviews import Curve, Histogram, ItemTable, Points, Annotation
+from holoviews import Dimension, ElementOperation
+from holoviews.core.options import Store, Options
+from holoviews import Curve, Histogram, ItemTable, Points
+from holoviews.element.annotation import Annotation
 
 try: # 2.7+
     gamma = math.gamma
@@ -27,7 +28,7 @@ except:
 
 
 
-class PowerSpectrumAnalysis(ViewOperation):
+class PowerSpectrumAnalysis(ElementOperation):
     """
     Estimation of hypercolumn distance in a cyclic preference map from
     the size of the ring in the fourier power spectrum, following the
@@ -106,7 +107,10 @@ class PowerSpectrumAnalysis(ViewOperation):
         kmax = info['kmax']
         if pinwheel_views != []:
             info['rho'] = pinwheel_count / (kmax ** 2)
-            info['rho_metric'] = self.gamma_metric(info['rho'])
+            try:
+                info['rho_metric'] = self.gamma_metric(info['rho'])
+            except:
+                info['rho_metric'] = 0
 
         info_table = ItemTable(info, label='Hypercolumn Analysis')
 
@@ -250,6 +254,6 @@ class PowerSpectrumAnalysis(ViewOperation):
 
 
 # Defining styles
-options.Power_Curve = StyleOpts(color='r', linewidth=3)
-options.KMax_Annotation =    StyleOpts(color='g', linewidth=3)
-options.Power_Histogram =     StyleOpts(fc='w', ec='k')
+Store.options.Curve.FFTPower = Options('style', color='r', linewidth=3)
+Store.options.VLine.KMax = Options('style', color='g', linewidth=3)
+Store.options.Histogram.FFTPower = Options(fc='w', ec='k')

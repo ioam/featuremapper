@@ -6,10 +6,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 import param
-from imagen.analysis import ViewOperation
+from imagen.analysis import ElementOperation
 
-from holoviews.core.options import options, StyleOpts
-from holoviews import Contours, Points
+from holoviews.core.options import Store, Options
+from holoviews import Points
+from holoviews.element.annotation import Contours
 
 __author__ = "Jean-Luc Stevens"
 
@@ -44,7 +45,7 @@ class WarningCounter(object):
 
 
 
-class PinwheelAnalysis(ViewOperation):
+class PinwheelAnalysis(ElementOperation):
     """
     Given a Matrix or ViewMap of a cyclic feature preference,
     compute the position of all pinwheel singularities in the
@@ -254,6 +255,6 @@ class PinwheelAnalysis(ViewOperation):
 
 
 
-options.Pinwheels_Points =    StyleOpts(color= '#f0f0f0', marker= 'o', edgecolor= 'k')
-options.Imaginary_Contours = StyleOpts(color= 'k', linewidth=1.5)
-options.Real_Contours =      StyleOpts(color= 'w', linewidth=1.5)
+Store.options.Points.Pinwheels = Options('style', color= '#f0f0f0', marker= 'o', edgecolor= 'k')
+Store.options.Contours.Imaginary = Options('style', color= 'k', linewidth=1.5)
+Store.options.Contours.Real = Options('style', color= 'w', linewidth=1.5)

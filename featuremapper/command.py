@@ -19,12 +19,14 @@ import Image
 import ImageDraw
 
 import numpy as np
+from holoviews.core.tree import AttrTree
 
 import param
 from param import ParameterizedFunction, ParamOverrides
 
-from holoviews.interface.collector import AttrDict, AttrTree, Collector
-from holoviews import Matrix, ViewMap
+from holoviews.interface.collector import AttrDict, Collector
+from holoviews import HoloMap
+from holoviews.element.raster import Matrix
 
 import imagen
 from imagen import random
@@ -388,7 +390,7 @@ class measure_response(FeatureResponses):
             label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
             if path not in results:
-                vmap = ViewMap(dimensions=dims)
+                vmap = HoloMap(key_dimensions=dims)
                 vmap.metadata = AttrDict(**metadata)
                 results.set_path(path, vmap)
 

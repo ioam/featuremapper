@@ -2,13 +2,13 @@ import numpy as np
 
 import param
 
-from holoviews import Matrix, ItemTable, ViewOperation
+from holoviews import Matrix, ItemTable, ElementOperation
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
 
 
-class decode_feature(ViewOperation):
+class decode_feature(ElementOperation):
     """
     Estimate the value of a feature from the current activity pattern
     on a sheet and a preference map of the sheet. The activity and

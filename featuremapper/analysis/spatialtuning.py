@@ -6,7 +6,7 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import Curve, ItemTable, ViewOperation
+from holoviews import Curve, ItemTable, ElementOperation
 
 
 #====================================#
@@ -26,7 +26,7 @@ def fr2sp(fr):
     return (math.sqrt(2)/(2*math.pi*fr))
 
 
-class TuningCurveAnalysis(ViewOperation):
+class TuningCurveAnalysis(ElementOperation):
 
     feature = param.String()
 
@@ -129,7 +129,7 @@ class SizeTuningPeaks(TuningCurveAnalysis):
 
 
 
-class SizeTuningShift(ViewOperation):
+class SizeTuningShift(ElementOperation):
     """
     Takes an overlay of two curves as input and computes the contrast-dependent
     size tuning shift. Assumes the first curve is low contrast and the second

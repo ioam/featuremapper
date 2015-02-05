@@ -4,6 +4,7 @@ FeatureResponses and associated functions and classes.
 These classes implement map and tuning curve measurement based
 on measuring responses while varying features of an input pattern.
 """
+from holoviews.core.tree import AttrTree
 
 import param
 from param.version import Version
@@ -17,9 +18,9 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews import NdMapping, Dimension, ViewMap, Grid, SheetCoordinateSystem, Matrix
-from holoviews.core.options import options, channels, StyleOpts, ChannelOpts
-from holoviews.interface.collector import AttrTree, AttrDict
+from holoviews import NdMapping, Dimension, HoloMap, AxisLayout, SheetCoordinateSystem, Matrix
+from holoviews.core.options import Store, Options
+from holoviews.interface.collector import AttrDict
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 from . import features
@@ -274,12 +275,12 @@ class FeatureResponses(PatternDrivenAnalysis):
         self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
                                                          p.durations, *self.outer_vals)]
 
-        ndmapping_fn = lambda: NdMapping(dimensions=dimensions)
+        ndmapping_fn = lambda: NdMapping(key_dimensions=dimensions)
         self._featureresponses = defaultdict(ndmapping_fn)
         self._activities = defaultdict(ndmapping_fn)
         if p.store_responses:
             response_dimensions = [features.Time]+dimensions+list(self.inner)
-            response_map_fn = lambda: ViewMap(dimensions=response_dimensions)
+            response_map_fn = lambda: HoloMap(key_dimensions=response_dimensions)
             self._responses = defaultdict(response_map_fn)
 
         for label in self.measurement_product:
@@ -491,11 +492,10 @@ class FeatureMaps(FeatureResponses):
 
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
-        type_str = 'Matrix'
-        style_str = options.normalize_key(fname + map_type.capitalize()) +'_' + type_str
-        if style_str not in options.keys():
+        style_path = ('Matrix', fname + map_type.capitalize())
+        if style_path not in Store.options.data:
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
-            options[style_str] = StyleOpts(**(dict(cmap='hsv') if cyclic else dict()))
+            Store.options[style_path] = Options('style', **(dict(cmap='hsv') if cyclic else dict()))
 
 
     def _collate_results(self, p):
@@ -543,12 +543,12 @@ class FeatureMaps(FeatureResponses):
 
                         # Create views and stacks
                         sv = Matrix(map_view, output_metadata['bounds'],
-                                    label=' '.join([name, map_label]),
-                                    value=value_dimension)
+                                    label=name, value=map_label,
+                                    value_dimensions=[value_dimension])
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            vmap = ViewMap((key, sv), dimensions=dimensions)
+                            vmap = HoloMap((key, sv), key_dimensions=dimensions)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
@@ -627,7 +627,7 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
-                vmap = ViewMap(dimensions=dimensions)
+                vmap = HoloMap(key_dimensions=dimensions)
                 vmap.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), vmap)
 
@@ -717,7 +717,7 @@ class ReverseCorrelation(FeatureResponses):
 
         if p.store_responses:
             response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
-            response_map_fn = lambda: ViewMap(dimensions=response_dimensions)
+            response_map_fn = lambda: HoloMap(key_dimensions=response_dimensions)
             self._responses = defaultdict(response_map_fn)
 
         # Set up the featureresponses measurement dict
@@ -796,8 +796,7 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
-            title = ' '.join([p.measurement_prefix, out_label, '{label}'])
-            view = Grid({}, title=title, label='RFs')
+            view = AxisLayout({}, value='RFs', label=out_label)
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
@@ -805,9 +804,10 @@ class ReverseCorrelation(FeatureResponses):
                 for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     sv = Matrix(rc_response[i, j], input_metadata['bounds'],
-                                title=title, label='Receptive Field')
+                                label=out_label, value='Receptive Field',
+                                value_dimensions=['Weight'])
                     sv.metadata = AttrDict(timestamp=timestamp)
-                    view[coord] = ViewMap((time_key, sv), dimensions=dimensions)
+                    view[coord] = HoloMap((time_key, sv), key_dimensions=dimensions)
                     view[coord].metadata = AttrDict(**input_metadata)
 
             label = '%s_Reverse_Correlation' % out_label
@@ -817,14 +817,19 @@ class ReverseCorrelation(FeatureResponses):
                 results.set_path(('%s_%s_%s' % info, out_label), self._responses[out_label])
         return results
 
+from holoviews.core.options import Channel
+from holoviews.operation.rgb import toHCS
 #Default styles
-options.Preference_Matrix = StyleOpts(cmap='jet')
-options.Selectivity_Matrix = StyleOpts(cmap='gray')
-options.Activity_Matrix = StyleOpts(cmap='gray')
-options.Response_Matrix = StyleOpts(cmap='gray')
+Store.options.Matrix.Preference = Options('style', cmap='jet')
+Store.options.Matrix.Selectivity = Options('style', cmap='gray')
+Store.options.Matrix.Activity = Options('style', cmap='gray')
+Store.options.Matrix.Response = Options('style', cmap='gray')
 
 # Default channel definitions
-channels.Preference_Selectivity = ChannelOpts('HCS', 'Preference * Selectivity', flipSC=True)
+Channel.definitions.append(Channel('Matrix.OrientationPreference * Matrix.OrientationSelectivity',
+                                   toHCS, 'OR PrefSel', flipSC=True))
+Channel.definitions.append(Channel('Matrix.DirectionPreference * Matrix.DirectionSelectivity',
+                                   toHCS, 'DR PrefSel', flipSC=True))
 
 
 __all__ = [

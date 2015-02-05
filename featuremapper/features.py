@@ -41,7 +41,7 @@ class Feature(Dimension):
         if len(self.values):
             self.values = self.values if self.offset == 0 \
                 else [v + self.offset for v in self.values]
-            if self.range == (0, 0):
+            if self.range in [(0, 0), (None, None)]:
                 self.range = (min(self.values), max(self.values))
         else:
             if self.range == (0, 0):
