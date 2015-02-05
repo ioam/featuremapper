@@ -6,11 +6,11 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 import param
-from imagen.analysis import ElementOperation
 
 from holoviews.core.options import Store, Options
 from holoviews import Points
 from holoviews.element.annotation import Contours
+from holoviews.operation import ElementOperation
 
 __author__ = "Jean-Luc Stevens"
 
@@ -92,7 +92,6 @@ class PinwheelAnalysis(ElementOperation):
         pinwheels = Points(np.array(pinwheels), label=pref.label + ' Pinwheels')
 
         sel = self.get_views(view, 'Selectivity')
-        base = pref * sel[0] if sel !=[]  else pref
         if self.p.include_contours:
             re_lines = Contours(re_contours, label='Real',
                                 title='{label} %s {type}' % pref.label)
@@ -255,6 +254,6 @@ class PinwheelAnalysis(ElementOperation):
 
 
 
-Store.options.Points.Pinwheels = Options('style', color= '#f0f0f0', marker= 'o', edgecolor= 'k')
+Store.options.Points.Pinwheels = Options('style', color= '#f0f0f0', marker= 'o', edgecolors= 'k')
 Store.options.Contours.Imaginary = Options('style', color= 'k', linewidth=1.5)
 Store.options.Contours.Real = Options('style', color= 'w', linewidth=1.5)

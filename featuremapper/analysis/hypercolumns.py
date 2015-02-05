@@ -13,12 +13,12 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 import param
-from imagen.analysis import fft_power_spectrum
 
 from holoviews import Dimension, ElementOperation
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Points
 from holoviews.element.annotation import Annotation
+from holoviews.operation import fft_power
 
 try: # 2.7+
     gamma = math.gamma
@@ -101,7 +101,7 @@ class PowerSpectrumAnalysis(ElementOperation):
 
         self._density = xdensity
 
-        power_spectrum = fft_power_spectrum(pref).data
+        power_spectrum = fft_power(pref).data
         (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum)
 
         kmax = info['kmax']
@@ -256,4 +256,4 @@ class PowerSpectrumAnalysis(ElementOperation):
 # Defining styles
 Store.options.Curve.FFTPower = Options('style', color='r', linewidth=3)
 Store.options.VLine.KMax = Options('style', color='g', linewidth=3)
-Store.options.Histogram.FFTPower = Options(fc='w', ec='k')
+Store.options.Histogram.FFTPower = Options('style', fc='w', ec='k')
