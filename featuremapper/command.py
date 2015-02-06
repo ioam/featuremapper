@@ -19,13 +19,12 @@ import Image
 import ImageDraw
 
 import numpy as np
-from holoviews.core.tree import AttrTree
 
 import param
 from param import ParameterizedFunction, ParamOverrides
 
+from holoviews import HoloMap, LayoutTree
 from holoviews.interface.collector import AttrDict, Collector
-from holoviews import HoloMap
 from holoviews.element.raster import Matrix
 
 import imagen
@@ -316,13 +315,13 @@ class UnitCurveCommand(FeatureCurveCommand):
     def _populate_grid(self, results):
         trees = []
         for coord, viewgroup in results.items():
-            for path, stack in viewgroup.path_items.items():
-                grid_container = AttrTree()
+            for path, stack in viewgroup.data.items():
+                grid_container = LayoutTree()
                 coord_map = stack.add_dimension(f.Y, 0, coord[1])
                 coord_map = coord_map.add_dimension(f.X, 0, coord[0])
                 grid_container.set_path(path, coord_map)
                 trees.append(grid_container)
-        return AttrTree.merge(trees)
+        return LayoutTree.merge(trees)
 
 
 
@@ -383,7 +382,7 @@ class measure_response(FeatureResponses):
         dims = [f.Time, f.Duration]
 
         response_label = label + ' Response'
-        results = AttrTree()
+        results = LayoutTree()
         for label, response in responses.items():
             name, duration = label
             path = (response_label.replace(' ', ''), name)
@@ -396,7 +395,7 @@ class measure_response(FeatureResponses):
 
             sv = Matrix(response, metadata['bounds'], label=label, value='Activity')
             sv.metadata=AttrDict(timestamp=time)
-            results.path_items[path][(time, duration)] = sv
+            results[path][(time, duration)] = sv
         return results
 
 
