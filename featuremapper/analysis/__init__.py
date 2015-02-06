@@ -3,9 +3,95 @@ import numpy as np
 import param
 
 from holoviews import Matrix, ItemTable, ElementOperation
+from holoviews.operation.normalization import raster_normalization
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
+
+
+class cyclic_difference(ElementOperation):
+    """
+    The cyclic difference between any two cyclic Matrix quantities
+    normalized such that maximum possible cyclic difference is 0.5.
+
+    Although this operation may be applied to any Matrix data defined
+    over some cyclic quantity, in practice it is rarely used outside
+    some fairly special uses; namely the computation of cyclic
+    similarity (e.g. the similarity of two orientation of direction
+    maps).
+
+    The cyclic similarity is the normalized inverse of the cyclic
+    difference:
+
+         cyclic_similarity = 1 - (2.0 * cyclic_difference)
+
+    This may be computed in conjunction with the transform operator
+    over the input overlay 'input':
+
+         transform(cyclic_difference(input), operator=lambda x: 1-2*x)
+
+    This quantity varies between 0.0 and 1.0 where 0.0 corresponds to
+    the maximum possible difference (i.e the difference between two
+    anti-correlated quanitities). A cyclic similarity of 0.5 indicates
+    two uncorrelated inputs and a value of 1.0 indicates perfectly
+    matching cyclic values.
+
+    Often a more useful measure is a rescaled cyclic similarity such
+    that -1.0 indicates anti-correlation, 0.0 indicates
+    zero-correlation and 1.0 indicates perfect correlation:
+
+         nominal_cyclic_similarity = (2 * (cyclic_similarity - 0.5))
+
+    Or alternatively:
+
+         nominal_cyclic_similarity = 1 - (4.0 * cyclic_difference)
+
+    This may be expressed as the following operation on the input:
+
+         transform(cyclic_difference(input), operator=lambda x: 1-4*x)
+    """
+
+    value = param.String(default='CyclicDifference', doc="""
+        The value assigned to the result after computing the cyclic
+        difference.""")
+
+    @classmethod
+    def difference(cls, arr1, arr2):
+        """
+        Computes the cyclic difference between two arrays assumed to
+        be normalized in the range 0.0-1.0.
+
+        The minimum possible cyclic difference between two such
+        quantities is 0.0 and the maximum possible difference in 0.5.
+        """
+        difference = abs(arr1 - arr2)  # Cyclic difference is symmetric
+        greaterHalf = (difference >= 0.5)
+        difference[greaterHalf] = 1.0 - difference[greaterHalf]
+        return difference
+
+
+    def _process(self, overlay, key=None):
+
+        if len(overlay) != 2:
+            raise Exception("The similarity index may only be computed"
+                            "using overlays of Matrix Views.")
+
+        mat1, mat2 = overlay[0], overlay[1]
+        val_dims = [mat1.value_dimensions, mat2.value_dimensions]
+
+        if tuple(len(el) for el in val_dims) != (1,1):
+            raise Exception("Both input Matrices must have single value dimension.")
+        if False in [val_dims[0][0].cyclic, val_dims[1][0].cyclic]:
+            raise Exception("Both input Matrices must be defined as cyclic.")
+
+        if self.p.input_ranges:
+            normfn = raster_normalization.instance()
+            overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
+
+        return Matrix(self.difference(overlay[0].data, overlay[1].data),
+                      bounds=self.get_overlay_extents(overlay),
+                      value=self.p.value)
+
 
 
 class decode_feature(ElementOperation):
