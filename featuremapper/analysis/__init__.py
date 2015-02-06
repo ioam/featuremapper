@@ -62,7 +62,7 @@ class cyclic_difference(ElementOperation):
         be normalized in the range 0.0-1.0.
 
         The minimum possible cyclic difference between two such
-        quantities is 0.0 and the maximum possible difference in 0.5.
+        quantities is 0.0 and the maximum possible difference is 0.5.
         """
         difference = abs(arr1 - arr2)  # Cyclic difference is symmetric
         greaterHalf = (difference >= 0.5)
