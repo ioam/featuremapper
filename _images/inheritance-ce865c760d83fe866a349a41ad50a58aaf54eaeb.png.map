@@ -1,0 +1,8 @@
+<map id="inheritance1698fe547f" name="inheritance1698fe547f">
+<area shape="rect" id="node1" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis" title="params(include_contours=Boolean, label=String, silence_warnings=Boolean, input_ranges=ClassSelector, value=String, name=String)" alt="" coords="920,35,1149,52"/>
+<area shape="rect" id="node2" title="params(input_ranges=ClassSelector, value=String, name=String)" alt="" coords="691,35,888,52"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.pinwheels.WarningCounter" title="A simple class to count &#39;divide by zero&#39; and &#39;invalid value&#39;" alt="" coords="4,3,229,20"/>
+<area shape="rect" id="node4" title="params(value=String, name=String)" alt="" coords="497,35,659,52"/>
+<area shape="rect" id="node5" title="params(name=String)" alt="" coords="260,35,465,52"/>
+<area shape="rect" id="node6" title="params(name=String)" alt="" coords="31,35,201,52"/>
+</map>

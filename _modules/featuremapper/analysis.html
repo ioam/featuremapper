@@ -69,11 +69,97 @@
 <span class="kn">import</span> <span class="nn">param</span>
 
 <span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews.operation.normalization</span> <span class="kn">import</span> <span class="n">raster_normalization</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span><span class="p">,</span> \
     <span class="n">DSF_MaxValue</span>
 
 
+<div class="viewcode-block" id="cyclic_difference"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.cyclic_difference">[docs]</a><span class="k">class</span> <span class="nc">cyclic_difference</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The cyclic difference between any two cyclic Matrix quantities</span>
+<span class="sd">    normalized such that maximum possible cyclic difference is 0.5.</span>
+
+<span class="sd">    Although this operation may be applied to any Matrix data defined</span>
+<span class="sd">    over some cyclic quantity, in practice it is rarely used outside</span>
+<span class="sd">    some fairly special uses; namely the computation of cyclic</span>
+<span class="sd">    similarity (e.g. the similarity of two orientation of direction</span>
+<span class="sd">    maps).</span>
+
+<span class="sd">    The cyclic similarity is the normalized inverse of the cyclic</span>
+<span class="sd">    difference:</span>
+
+<span class="sd">         cyclic_similarity = 1 - (2.0 * cyclic_difference)</span>
+
+<span class="sd">    This may be computed in conjunction with the transform operator</span>
+<span class="sd">    over the input overlay &#39;input&#39;:</span>
+
+<span class="sd">         transform(cyclic_difference(input), operator=lambda x: 1-2*x)</span>
+
+<span class="sd">    This quantity varies between 0.0 and 1.0 where 0.0 corresponds to</span>
+<span class="sd">    the maximum possible difference (i.e the difference between two</span>
+<span class="sd">    anti-correlated quanitities). A cyclic similarity of 0.5 indicates</span>
+<span class="sd">    two uncorrelated inputs and a value of 1.0 indicates perfectly</span>
+<span class="sd">    matching cyclic values.</span>
+
+<span class="sd">    Often a more useful measure is a rescaled cyclic similarity such</span>
+<span class="sd">    that -1.0 indicates anti-correlation, 0.0 indicates</span>
+<span class="sd">    zero-correlation and 1.0 indicates perfect correlation:</span>
+
+<span class="sd">         nominal_cyclic_similarity = (2 * (cyclic_similarity - 0.5))</span>
+
+<span class="sd">    Or alternatively:</span>
+
+<span class="sd">         nominal_cyclic_similarity = 1 - (4.0 * cyclic_difference)</span>
+
+<span class="sd">    This may be expressed as the following operation on the input:</span>
+
+<span class="sd">         transform(cyclic_difference(input), operator=lambda x: 1-4*x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;CyclicDifference&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        The value assigned to the result after computing the cyclic</span>
+<span class="s">        difference.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="cyclic_difference.difference"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.cyclic_difference.difference">[docs]</a>    <span class="k">def</span> <span class="nf">difference</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">arr1</span><span class="p">,</span> <span class="n">arr2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the cyclic difference between two arrays assumed to</span>
+<span class="sd">        be normalized in the range 0.0-1.0.</span>
+
+<span class="sd">        The minimum possible cyclic difference between two such</span>
+<span class="sd">        quantities is 0.0 and the maximum possible difference in 0.5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">arr1</span> <span class="o">-</span> <span class="n">arr2</span><span class="p">)</span>  <span class="c"># Cyclic difference is symmetric</span>
+        <span class="n">greaterHalf</span> <span class="o">=</span> <span class="p">(</span><span class="n">difference</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">difference</span><span class="p">[</span><span class="n">greaterHalf</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">difference</span><span class="p">[</span><span class="n">greaterHalf</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">difference</span>
+
+</div>
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The similarity index may only be computed&quot;</span>
+                            <span class="s">&quot;using overlays of Matrix Views.&quot;</span><span class="p">)</span>
+
+        <span class="n">mat1</span><span class="p">,</span> <span class="n">mat2</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">val_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">mat1</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">,</span> <span class="n">mat2</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">val_dims</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Both input Matrices must have single value dimension.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">False</span> <span class="ow">in</span> <span class="p">[</span><span class="n">val_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cyclic</span><span class="p">,</span> <span class="n">val_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cyclic</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Both input Matrices must be defined as cyclic.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">input_ranges</span><span class="p">:</span>
+            <span class="n">normfn</span> <span class="o">=</span> <span class="n">raster_normalization</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">normfn</span><span class="o">.</span><span class="n">process_element</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">input_ranges</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
+                      <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_overlay_extents</span><span class="p">(</span><span class="n">overlay</span><span class="p">),</span>
+                      <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+</div>
 <div class="viewcode-block" id="decode_feature"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.decode_feature">[docs]</a><span class="k">class</span> <span class="nc">decode_feature</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Estimate the value of a feature from the current activity pattern</span>
