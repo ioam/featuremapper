@@ -820,7 +820,7 @@ class ReverseCorrelation(FeatureResponses):
 from holoviews.core.options import Channel
 from holoviews.operation.rgb import toHCS
 #Default styles
-Store.options.Matrix.Preference = Options('style', cmap='jet')
+Store.options.Matrix.Preference = Options('style', cmap='hsv')
 Store.options.Matrix.Selectivity = Options('style', cmap='gray')
 Store.options.Matrix.Activity = Options('style', cmap='gray')
 Store.options.Matrix.Response = Options('style', cmap='gray')
