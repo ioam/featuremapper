@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import param
 
 from holoviews.core.options import Store, Options
-from holoviews import Points
+from holoviews import Points, Overlay
 from holoviews.element.annotation import Contours
 from holoviews.operation import ElementOperation
 
@@ -47,17 +47,18 @@ class WarningCounter(object):
 
 class PinwheelAnalysis(ElementOperation):
     """
-    Given a Matrix or ViewMap of a cyclic feature preference,
-    compute the position of all pinwheel singularities in the
-    map. Optionally includes the contours for the real and imaginary
-    components of the preference map used to determine the pinwheel
-    locations.
+    Given a Matrix or HoloMap of a cyclic feature preference, compute
+    the position of all pinwheel singularities in the map. Optionally
+    includes the contours for the real and imaginary components of the
+    preference map used to determine the pinwheel locations.
 
-    Returns the original Matrix input overlayed with a Points
-    object containing the computed pinwheel locations and (optionally)
+    Returns the original Matrix input overlayed with a Points object
+    containing the computed pinwheel locations and (optionally)
     Contours overlays including the real and imaginary contour lines
     respectively.
     """
+
+    output_type = Overlay
 
     # TODO: Optional computation of pinwheel polarities.
 
@@ -73,9 +74,24 @@ class PinwheelAnalysis(ElementOperation):
      doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
     def _process(self, view, key=None):
-        [pref] = self.get_views(view, 'Preference')
-        bounds = pref.bounds
-        polar_map = self.polar_preference(pref.N.data)
+
+        cyclic_matrix = None
+        inputs = view.values() if isinstance(view, Overlay) else [view]
+        for input_element in inputs:
+            if input_element.value_dimensions[0].cyclic:
+                cyclic_matrix = input_element
+                bounds = cyclic_matrix.bounds
+                cyclic_range = input_element.value_dimensions[0].range
+                break
+        else:
+            raise Exception("Pinwheel analysis requires a Matrix over a cyclic quantity")
+
+        if None in cyclic_range:
+            raise Exception("Pinwheel analysis requires a Matrix with defined cyclic range")
+
+
+        cyclic_data = cyclic_matrix.data / (cyclic_range[1] - cyclic_range[0])
+        polar_map = self.polar_preference(cyclic_data)
         try:
             contour_info = self.polarmap_contours(polar_map, bounds)
         except Exception as e:
@@ -89,17 +105,17 @@ class PinwheelAnalysis(ElementOperation):
         else:
             pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
-        pinwheels = Points(np.array(pinwheels), label=pref.label + ' Pinwheels')
+        label = cyclic_matrix.label
+        pinwheels = Points(np.array(pinwheels), label=label, value='Pinwheels')
 
-        sel = self.get_views(view, 'Selectivity')
         if self.p.include_contours:
-            re_lines = Contours(re_contours, label='Real',
-                                title='{label} %s {type}' % pref.label)
-            im_lines = Contours(im_contours, label='Imaginary',
-                                title='{label} %s {type}' % pref.label)
-            return [pref * re_lines * im_lines * pinwheels]
+            re_lines = Contours(re_contours, label=label, value='Real')
+            im_lines = Contours(im_contours, label=label, value='Imaginary')
+            return cyclic_matrix * re_lines * im_lines * pinwheels
         else:
-            return [pref * pinwheels]
+            return cyclic_matrix * pinwheels
+
+
 
     def polar_preference(self, pref):
         """
