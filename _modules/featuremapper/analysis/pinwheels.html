@@ -75,7 +75,7 @@
 <span class="kn">import</span> <span class="nn">param</span>
 
 <span class="kn">from</span> <span class="nn">holoviews.core.options</span> <span class="kn">import</span> <span class="n">Store</span><span class="p">,</span> <span class="n">Options</span>
-<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Points</span>
+<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Points</span><span class="p">,</span> <span class="n">Overlay</span>
 <span class="kn">from</span> <span class="nn">holoviews.element.annotation</span> <span class="kn">import</span> <span class="n">Contours</span>
 <span class="kn">from</span> <span class="nn">holoviews.operation</span> <span class="kn">import</span> <span class="n">ElementOperation</span>
 
@@ -114,17 +114,18 @@
 </div>
 <div class="viewcode-block" id="PinwheelAnalysis"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis">[docs]</a><span class="k">class</span> <span class="nc">PinwheelAnalysis</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Given a Matrix or ViewMap of a cyclic feature preference,</span>
-<span class="sd">    compute the position of all pinwheel singularities in the</span>
-<span class="sd">    map. Optionally includes the contours for the real and imaginary</span>
-<span class="sd">    components of the preference map used to determine the pinwheel</span>
-<span class="sd">    locations.</span>
+<span class="sd">    Given a Matrix or HoloMap of a cyclic feature preference, compute</span>
+<span class="sd">    the position of all pinwheel singularities in the map. Optionally</span>
+<span class="sd">    includes the contours for the real and imaginary components of the</span>
+<span class="sd">    preference map used to determine the pinwheel locations.</span>
 
-<span class="sd">    Returns the original Matrix input overlayed with a Points</span>
-<span class="sd">    object containing the computed pinwheel locations and (optionally)</span>
+<span class="sd">    Returns the original Matrix input overlayed with a Points object</span>
+<span class="sd">    containing the computed pinwheel locations and (optionally)</span>
 <span class="sd">    Contours overlays including the real and imaginary contour lines</span>
 <span class="sd">    respectively.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">output_type</span> <span class="o">=</span> <span class="n">Overlay</span>
 
     <span class="c"># TODO: Optional computation of pinwheel polarities.</span>
 
@@ -140,9 +141,24 @@
      <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;Label suffixes are fixed as there are too many labels to specify.&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="p">[</span><span class="n">pref</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Preference&#39;</span><span class="p">)</span>
-        <span class="n">bounds</span> <span class="o">=</span> <span class="n">pref</span><span class="o">.</span><span class="n">bounds</span>
-        <span class="n">polar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polar_preference</span><span class="p">(</span><span class="n">pref</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">cyclic_matrix</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">Overlay</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">view</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">input_element</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">input_element</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cyclic</span><span class="p">:</span>
+                <span class="n">cyclic_matrix</span> <span class="o">=</span> <span class="n">input_element</span>
+                <span class="n">bounds</span> <span class="o">=</span> <span class="n">cyclic_matrix</span><span class="o">.</span><span class="n">bounds</span>
+                <span class="n">cyclic_range</span> <span class="o">=</span> <span class="n">input_element</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">range</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Pinwheel analysis requires a Matrix over a cyclic quantity&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">None</span> <span class="ow">in</span> <span class="n">cyclic_range</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Pinwheel analysis requires a Matrix with defined cyclic range&quot;</span><span class="p">)</span>
+
+
+        <span class="n">cyclic_data</span> <span class="o">=</span> <span class="n">cyclic_matrix</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="p">(</span><span class="n">cyclic_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">cyclic_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">polar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polar_preference</span><span class="p">(</span><span class="n">cyclic_data</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">contour_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarmap_contours</span><span class="p">(</span><span class="n">polar_map</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -156,17 +172,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pinwheels</span><span class="p">,</span> <span class="n">re_contours</span><span class="p">,</span> <span class="n">im_contours</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[],[]])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[]</span>
 
-        <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">pref</span><span class="o">.</span><span class="n">label</span> <span class="o">+</span> <span class="s">&#39; Pinwheels&#39;</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">cyclic_matrix</span><span class="o">.</span><span class="n">label</span>
+        <span class="n">pinwheels</span> <span class="o">=</span> <span class="n">Points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pinwheels</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Pinwheels&#39;</span><span class="p">)</span>
 
-        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_views</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="s">&#39;Selectivity&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">include_contours</span><span class="p">:</span>
-            <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Real&#39;</span><span class="p">,</span>
-                                <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-            <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Imaginary&#39;</span><span class="p">,</span>
-                                <span class="n">title</span><span class="o">=</span><span class="s">&#39;{label} </span><span class="si">%s</span><span class="s"> {type}&#39;</span> <span class="o">%</span> <span class="n">pref</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+            <span class="n">re_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">re_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Real&#39;</span><span class="p">)</span>
+            <span class="n">im_lines</span> <span class="o">=</span> <span class="n">Contours</span><span class="p">(</span><span class="n">im_contours</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;Imaginary&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cyclic_matrix</span> <span class="o">*</span> <span class="n">re_lines</span> <span class="o">*</span> <span class="n">im_lines</span> <span class="o">*</span> <span class="n">pinwheels</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">pref</span> <span class="o">*</span> <span class="n">pinwheels</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">cyclic_matrix</span> <span class="o">*</span> <span class="n">pinwheels</span>
+
+
 
 <div class="viewcode-block" id="PinwheelAnalysis.polar_preference"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.pinwheels.PinwheelAnalysis.polar_preference">[docs]</a>    <span class="k">def</span> <span class="nf">polar_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pref</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
