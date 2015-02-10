@@ -14,11 +14,13 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import Dimension, ElementOperation
+from holoviews import Dimension, TreeOperation
 from holoviews.core.options import Store, Options
-from holoviews import Curve, Histogram, ItemTable, Points
-from holoviews.element.annotation import Annotation
+from holoviews import Curve, Histogram, ItemTable, Points, Overlay, Matrix
+from holoviews.element.annotation import VLine
 from holoviews.operation import fft_power
+
+from .pinwheels import PinwheelAnalysis
 
 try: # 2.7+
     gamma = math.gamma
@@ -28,7 +30,7 @@ except:
 
 
 
-class PowerSpectrumAnalysis(ElementOperation):
+class PowerSpectrumAnalysis(TreeOperation):
     """
     Estimation of hypercolumn distance in a cyclic preference map from
     the size of the ring in the fourier power spectrum, following the
@@ -83,56 +85,65 @@ class PowerSpectrumAnalysis(ElementOperation):
      doc="""Label suffixes are fixed as there are too many labels to specify.""")
 
 
-    def _process(self, view, key=None):
+    def _process(self, tree, key=None):
 
-        [pref] = self.get_views(view, 'Preference')
-        pinwheel_views = self.get_views(view, 'Pinwheels', Points)
+        elements = tree.values()
+        for element in tree.values():
+            layers = element.values() if isinstance(element, Overlay) else [element]
+            for el in layers:
+                if el.value_dimensions[0].cyclic and isinstance(el, Matrix):
+                    preference = el
+                    break
+            else:
+                raise Exception("At least one cyclic matrix required for hypercolumn analysis.")
 
-        pinwheel_count = sum([pw_view.data.shape[0] for pw_view in pinwheel_views], 0)
+        pinwheels = self.search(tree, 'Points.Pinwheels')
+        if not pinwheels:
+            pinwheel_analysis = PinwheelAnalysis(preference)
+            elements.pop(elements.index(preference))
+            elements.append(pinwheel_analysis) # Don't want to show preference twice
+            pinwheels = self.search(pinwheel_analysis, 'Points.Pinwheels')
 
-        xlabel, ylabel = Dimension('Wavenumber', unit='k'), 'FFT Power'
-        (l, b, r, t) = pref.bounds.lbrt()
-        (dim1, dim2) = pref.data.shape
+        pinwheel_count = pinwheels[0].data.shape[0]
+        wavenumber_dim = Dimension('Wavenumber', unit='k')
+
+        (l, b, r, t) = preference.bounds.lbrt()
+        (dim1, dim2) = preference.data.shape
         xdensity = dim1 / abs(r-l)
         ydensity = dim2 / abs(t-b)
 
         if xdensity != ydensity:
             raise Exception("Matrix must have matching x- and y-density")
-
         self._density = xdensity
 
-        power_spectrum = fft_power(pref).data
-        (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum)
+        power_spectrum = fft_power(preference)
+        (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum.data)
 
         kmax = info['kmax']
-        if pinwheel_views != []:
-            info['rho'] = pinwheel_count / (kmax ** 2)
-            try:
-                info['rho_metric'] = self.gamma_metric(info['rho'])
-            except:
-                info['rho_metric'] = 0
-
-        info_table = ItemTable(info, label='Hypercolumn Analysis')
+        info['rho'] = pinwheel_count / (kmax ** 2)
+        info['rho_metric'] = self.gamma_metric(info['rho'])
+        info['rho_metric'] = 0
 
         if fit is not None:
             samples = self.fit_samples(dim1/2, 100, fit)
         else:
             samples = zip([0, dim1/2], [0.0, 0.0])
 
-        curve = Curve(samples, dimensions=[xlabel], label=ylabel, value=ylabel,
-                      title='{label} Histogram Fit')
-        hist = Histogram(amplitudes, edges, dimensions=[xlabel],
-                         label=ylabel, value=ylabel, title='FFT Histogram')
-        annotation = Annotation(vlines=[kmax], label='KMax', title='{label} Line')
+        info_table = ItemTable(info, label='Hypercolumn Analysis')
+        curve = Curve(samples, key_dimensions=[wavenumber_dim], label=preference.label, value='FFTPowerFit')
+        hist = Histogram(amplitudes, edges, key_dimensions=[wavenumber_dim],
+                         label=preference.label, value='FFTPowerHistogram')
 
-        views = [hist * curve * annotation, info_table]
+
+        vline = VLine(kmax, value='KMax', label=preference.label)
+        analysis = [power_spectrum, hist * curve * vline, info_table]
         if self.p.fit_table and fit is None:
             fit = dict(('a%i' % i, '-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = ItemTable(fit, label='Hypercolumn Analysis Fit')
-            views.append(fit_table)
-        return views
+            fit_table = ItemTable(fit, label='CurveFit')
+            analysis.append(fit_table)
+        return elements + analysis
 
 
     def gamma_dist(self, x, k, theta):
@@ -254,6 +265,6 @@ class PowerSpectrumAnalysis(ElementOperation):
 
 
 # Defining styles
-Store.options.Curve.FFTPower = Options('style', color='r', linewidth=3)
+Store.options.Curve.FFTPowerFit = Options('style', color='r', linewidth=3)
 Store.options.VLine.KMax = Options('style', color='g', linewidth=3)
-Store.options.Histogram.FFTPower = Options('style', fc='w', ec='k')
+Store.options.Histogram.FFTPowerHistogram = Options('style', fc='w', ec='k')
