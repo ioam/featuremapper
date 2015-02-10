@@ -4,7 +4,6 @@ FeatureResponses and associated functions and classes.
 These classes implement map and tuning curve measurement based
 on measuring responses while varying features of an input pattern.
 """
-from holoviews.core.tree import AttrTree
 
 import param
 from param.version import Version
@@ -18,7 +17,8 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews import NdMapping, Dimension, HoloMap, AxisLayout, SheetCoordinateSystem, Matrix
+from holoviews import NdMapping, Dimension, HoloMap, AxisLayout, LayoutTree, Matrix
+from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
 from holoviews.interface.collector import AttrDict
 
@@ -499,7 +499,7 @@ class FeatureMaps(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = AttrTree()
+        results = LayoutTree()
 
         timestamp = self.metadata.timestamp
 
@@ -601,7 +601,7 @@ class FeatureCurves(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = AttrTree()
+        results = LayoutTree()
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
@@ -783,7 +783,7 @@ class ReverseCorrelation(FeatureResponses):
         Collate responses into the results dictionary containing a
         ProjectionGrid for each measurement source.
         """
-        results = AttrTree()
+        results = LayoutTree()
 
         timestamp = self.metadata.timestamp
         dimensions = [features.Time, features.Duration]
