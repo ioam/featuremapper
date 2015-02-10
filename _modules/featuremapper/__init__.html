@@ -883,7 +883,7 @@
                 <span class="n">results</span><span class="o">.</span><span class="n">set_path</span><span class="p">((</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">info</span><span class="p">,</span> <span class="n">out_label</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_responses</span><span class="p">[</span><span class="n">out_label</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">results</span>
 </div>
-<span class="kn">from</span> <span class="nn">holoviews.core.options</span> <span class="kn">import</span> <span class="n">Channel</span>
+<span class="kn">from</span> <span class="nn">holoviews.core.options</span> <span class="kn">import</span> <span class="n">Compositor</span>
 <span class="kn">from</span> <span class="nn">holoviews.operation.rgb</span> <span class="kn">import</span> <span class="n">toHCS</span>
 <span class="c">#Default styles</span>
 <span class="n">Store</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">Preference</span> <span class="o">=</span> <span class="n">Options</span><span class="p">(</span><span class="s">&#39;style&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;hsv&#39;</span><span class="p">)</span>
@@ -892,10 +892,12 @@
 <span class="n">Store</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">Matrix</span><span class="o">.</span><span class="n">Response</span> <span class="o">=</span> <span class="n">Options</span><span class="p">(</span><span class="s">&#39;style&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
 
 <span class="c"># Default channel definitions</span>
-<span class="n">Channel</span><span class="o">.</span><span class="n">definitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="s">&#39;Matrix.OrientationPreference * Matrix.OrientationSelectivity&#39;</span><span class="p">,</span>
-                                   <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;OR PrefSel&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
-<span class="n">Channel</span><span class="o">.</span><span class="n">definitions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="s">&#39;Matrix.DirectionPreference * Matrix.DirectionSelectivity&#39;</span><span class="p">,</span>
-                                   <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;DR PrefSel&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">Compositor</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Matrix.OrientationPreference * Matrix.OrientationSelectivity&#39;</span><span class="p">,</span>
+               <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;OR PrefSel&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;display&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">Compositor</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Matrix.DirectionPreference * Matrix.DirectionSelectivity&#39;</span><span class="p">,</span>
+               <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;DR PrefSel&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;display&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
