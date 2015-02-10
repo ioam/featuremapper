@@ -817,7 +817,7 @@ class ReverseCorrelation(FeatureResponses):
                 results.set_path(('%s_%s_%s' % info, out_label), self._responses[out_label])
         return results
 
-from holoviews.core.options import Channel
+from holoviews.core.options import Compositor
 from holoviews.operation.rgb import toHCS
 #Default styles
 Store.options.Matrix.Preference = Options('style', cmap='hsv')
@@ -826,10 +826,12 @@ Store.options.Matrix.Activity = Options('style', cmap='gray')
 Store.options.Matrix.Response = Options('style', cmap='gray')
 
 # Default channel definitions
-Channel.definitions.append(Channel('Matrix.OrientationPreference * Matrix.OrientationSelectivity',
-                                   toHCS, 'OR PrefSel', flipSC=True))
-Channel.definitions.append(Channel('Matrix.DirectionPreference * Matrix.DirectionSelectivity',
-                                   toHCS, 'DR PrefSel', flipSC=True))
+Compositor.register(
+    Compositor('Matrix.OrientationPreference * Matrix.OrientationSelectivity',
+               toHCS, 'OR PrefSel', mode='display', flipSC=True))
+Compositor.register(
+    Compositor('Matrix.DirectionPreference * Matrix.DirectionSelectivity',
+               toHCS, 'DR PrefSel', mode='display', flipSC=True))
 
 
 __all__ = [
