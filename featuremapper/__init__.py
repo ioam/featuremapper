@@ -548,7 +548,8 @@ class FeatureMaps(FeatureResponses):
                         sv.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            vmap = HoloMap((key, sv), key_dimensions=dimensions)
+                            vmap = HoloMap((key, sv), key_dimensions=dimensions,
+                                           label=name, value=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
@@ -627,7 +628,8 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
-                vmap = HoloMap(key_dimensions=dimensions)
+                vmap = HoloMap(key_dimensions=dimensions,
+                               value=curve_label, label=name)
                 vmap.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), vmap)
 
@@ -807,7 +809,8 @@ class ReverseCorrelation(FeatureResponses):
                                 label=out_label, value='Receptive Field',
                                 value_dimensions=['Weight'])
                     sv.metadata = AttrDict(timestamp=timestamp)
-                    view[coord] = HoloMap((time_key, sv), key_dimensions=dimensions)
+                    view[coord] = HoloMap((time_key, sv), key_dimensions=dimensions,
+                                          label=out_label, value='Receptive Field')
                     view[coord].metadata = AttrDict(**input_metadata)
 
             label = '%s_Reverse_Correlation' % out_label
