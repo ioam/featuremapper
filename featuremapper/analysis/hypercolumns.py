@@ -129,19 +129,20 @@ class PowerSpectrumAnalysis(TreeOperation):
         else:
             samples = zip([0, dim1/2], [0.0, 0.0])
 
-        info_table = ItemTable(info, label='Hypercolumn Analysis')
+        info_table = ItemTable(info, value='PowerSpectrum Analysis', label=preference.label)
         curve = Curve(samples, key_dimensions=[wavenumber_dim], label=preference.label, value='FFTPowerFit')
         hist = Histogram(amplitudes, edges, key_dimensions=[wavenumber_dim],
                          label=preference.label, value='FFTPowerHistogram')
 
 
         vline = VLine(kmax, value='KMax', label=preference.label)
-        analysis = [power_spectrum, hist * curve * vline, info_table]
+        powerfit = (hist * curve * vline).relabel(value='PowerFit', label=preference.label)
+        analysis = [power_spectrum, powerfit, info_table]
         if self.p.fit_table and fit is None:
             fit = dict(('a%i' % i, '-') for i in range(6))
 
         if self.p.fit_table:
-            fit_table = ItemTable(fit, label='CurveFit')
+            fit_table = ItemTable(fit, value='CurveFit', label=preference.label)
             analysis.append(fit_table)
         return elements + analysis
 
