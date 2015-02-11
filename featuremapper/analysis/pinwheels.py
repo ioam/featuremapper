@@ -111,9 +111,11 @@ class PinwheelAnalysis(ElementOperation):
         if self.p.include_contours:
             re_lines = Contours(re_contours, label=label, value='Real')
             im_lines = Contours(im_contours, label=label, value='Imaginary')
-            return cyclic_matrix * re_lines * im_lines * pinwheels
+            overlay =  cyclic_matrix * re_lines * im_lines * pinwheels
         else:
-            return cyclic_matrix * pinwheels
+            overlay = (cyclic_matrix * pinwheels)
+
+        return overlay.relabel(value='PinwheelAnalysis', label=label)
 
 
 
