@@ -1,0 +1,7 @@
+<map id="inheritance4ea281de0a" name="inheritance4ea281de0a">
+<area shape="rect" id="node1" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis" title="params(averaging_fn=Callable, fit_table=Boolean, gamma_k=Number, init_fit=Dict, label=String, value=String, name=String)" alt="" coords="865,3,1148,20"/>
+<area shape="rect" id="node2" title="params(value=String, name=String)" alt="" coords="649,3,832,20"/>
+<area shape="rect" id="node3" title="params(value=String, name=String)" alt="" coords="451,3,616,20"/>
+<area shape="rect" id="node4" title="params(name=String)" alt="" coords="209,3,418,20"/>
+<area shape="rect" id="node5" title="params(name=String)" alt="" coords="4,3,177,20"/>
+</map>
