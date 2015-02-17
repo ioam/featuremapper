@@ -17,7 +17,7 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews import NdMapping, Dimension, HoloMap, AxisLayout, LayoutTree, Matrix
+from holoviews import NdMapping, Dimension, HoloMap, GridSpace, Layout, Matrix
 from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
 from holoviews.interface.collector import AttrDict
@@ -499,7 +499,7 @@ class FeatureMaps(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = LayoutTree()
+        results = Layout()
 
         timestamp = self.metadata.timestamp
 
@@ -602,7 +602,7 @@ class FeatureCurves(FeatureResponses):
 
 
     def _collate_results(self, p):
-        results = LayoutTree()
+        results = Layout()
 
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
@@ -785,7 +785,7 @@ class ReverseCorrelation(FeatureResponses):
         Collate responses into the results dictionary containing a
         ProjectionGrid for each measurement source.
         """
-        results = LayoutTree()
+        results = Layout()
 
         timestamp = self.metadata.timestamp
         dimensions = [features.Time, features.Duration]
@@ -798,7 +798,7 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
-            view = AxisLayout({}, value='RFs', label=out_label)
+            view = GridSpace({}, value='RFs', label=out_label)
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 

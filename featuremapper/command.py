@@ -23,7 +23,7 @@ import numpy as np
 import param
 from param import ParameterizedFunction, ParamOverrides
 
-from holoviews import HoloMap, LayoutTree
+from holoviews import HoloMap, Layout
 from holoviews.interface.collector import AttrDict, Collector
 from holoviews.element.raster import Matrix
 
@@ -316,12 +316,12 @@ class UnitCurveCommand(FeatureCurveCommand):
         trees = []
         for coord, viewgroup in results.items():
             for path, stack in viewgroup.data.items():
-                grid_container = LayoutTree()
+                grid_container = Layout()
                 coord_map = stack.add_dimension(f.Y, 0, coord[1])
                 coord_map = coord_map.add_dimension(f.X, 0, coord[0])
                 grid_container.set_path(path, coord_map)
                 trees.append(grid_container)
-        return LayoutTree.merge(trees)
+        return Layout.merge(trees)
 
 
 
@@ -382,7 +382,7 @@ class measure_response(FeatureResponses):
         dims = [f.Time, f.Duration]
 
         response_label = label + ' Response'
-        results = LayoutTree()
+        results = Layout()
         for label, response in responses.items():
             name, duration = label
             path = (response_label.replace(' ', ''), name)
