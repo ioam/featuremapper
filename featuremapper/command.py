@@ -25,7 +25,7 @@ from param import ParameterizedFunction, ParamOverrides
 
 from holoviews import HoloMap, Layout
 from holoviews.interface.collector import AttrDict, Collector
-from holoviews.element.raster import Matrix
+from holoviews.element.raster import Image
 
 import imagen
 from imagen import random
@@ -393,9 +393,9 @@ class measure_response(FeatureResponses):
                 vmap.metadata = AttrDict(**metadata)
                 results.set_path(path, vmap)
 
-            sv = Matrix(response, metadata['bounds'], label=label, value='Activity')
-            sv.metadata=AttrDict(timestamp=time)
-            results[path][(time, duration)] = sv
+            im = Image(response, metadata['bounds'], label=label, value='Activity')
+            im.metadata=AttrDict(timestamp=time)
+            results[path][(time, duration)] = im
         return results
 
 
@@ -1251,7 +1251,7 @@ __all__ = [
 
 
 def array_hook(obj, *args, **kwargs):
-    return None if obj is None else Matrix(obj.copy(), **kwargs)
+    return None if obj is None else Image(obj.copy(), **kwargs)
 
 def measurement_hook(obj, *args, **kwargs):
     return obj(*args, **kwargs)

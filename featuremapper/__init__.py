@@ -17,7 +17,7 @@ from itertools import product
 import numpy as np
 
 from param.parameterized import ParamOverrides, bothmethod
-from holoviews import NdMapping, Dimension, HoloMap, GridSpace, Layout, Matrix
+from holoviews import NdMapping, Dimension, HoloMap, GridSpace, Layout, Image
 from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
 from holoviews.interface.collector import AttrDict
@@ -417,7 +417,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             if p.store_responses:
                 cn, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = Matrix(act.copy(), bounds,
+                self._responses[name][key] = Image(act.copy(), bounds,
                                                     label='Response')
 
 
@@ -492,7 +492,7 @@ class FeatureMaps(FeatureResponses):
 
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
-        style_path = ('Matrix', fname + map_type.capitalize())
+        style_path = ('Image', fname + map_type.capitalize())
         if style_path not in Store.options.data:
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
             Store.options[style_path] = Options('style', **(dict(cmap='hsv') if cyclic else dict()))
@@ -542,18 +542,18 @@ class FeatureMaps(FeatureResponses):
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
-                        sv = Matrix(map_view, output_metadata['bounds'],
-                                    label=name, value=map_label,
-                                    value_dimensions=[value_dimension])
-                        sv.metadata=AttrDict(timestamp=timestamp)
+                        im = Image(map_view, output_metadata['bounds'],
+                                   label=name, value=map_label,
+                                   value_dimensions=[value_dimension])
+                        im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            vmap = HoloMap((key, sv), key_dimensions=dimensions,
+                            vmap = HoloMap((key, im), key_dimensions=dimensions,
                                            label=name, value=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
-                            results.path_items[(map_index, name)][key] = sv
+                            results.path_items[(map_index, name)][key] = im
                 if p.store_responses:
                     info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                     results.set_path(('%s_%s_%s' % info, name), self._responses[name])
@@ -642,11 +642,11 @@ class FeatureCurves(FeatureResponses):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                sv = Matrix(y_axis_values, output_metadata['bounds'],
-                            label=' '.join([name, curve_label]),
-                            value=Dimension('Response'))
-                sv.metadata = metadata.copy()
-                results.path_items[(curve_label, name)][key] = sv
+                im = Image(y_axis_values, output_metadata['bounds'],
+                           label=' '.join([name, curve_label]),
+                           value=Dimension('Response'))
+                im.metadata = metadata.copy()
+                results.path_items[(curve_label, name)][key] = im
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                 results.set_path(('%s_%s_%s' % info, name), self._responses[name])
@@ -776,7 +776,7 @@ class ReverseCorrelation(FeatureResponses):
                     if p.store_responses:
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
-                        self._responses[out_label][key] = Matrix(out_response.copy(), bounds,
+                        self._responses[out_label][key] = Image(out_response.copy(), bounds,
                                                                  label='Response')
 
 
@@ -805,11 +805,11 @@ class ReverseCorrelation(FeatureResponses):
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
-                    sv = Matrix(rc_response[i, j], input_metadata['bounds'],
+                    im = Image(rc_response[i, j], input_metadata['bounds'],
                                 label=out_label, value='Receptive Field',
                                 value_dimensions=['Weight'])
-                    sv.metadata = AttrDict(timestamp=timestamp)
-                    view[coord] = HoloMap((time_key, sv), key_dimensions=dimensions,
+                    im.metadata = AttrDict(timestamp=timestamp)
+                    view[coord] = HoloMap((time_key, im), key_dimensions=dimensions,
                                           label=out_label, value='Receptive Field')
                     view[coord].metadata = AttrDict(**input_metadata)
 
@@ -823,17 +823,17 @@ class ReverseCorrelation(FeatureResponses):
 from holoviews.core.options import Compositor
 from holoviews.operation.rgb import toHCS
 #Default styles
-Store.options.Matrix.Preference = Options('style', cmap='hsv')
-Store.options.Matrix.Selectivity = Options('style', cmap='gray')
-Store.options.Matrix.Activity = Options('style', cmap='gray')
-Store.options.Matrix.Response = Options('style', cmap='gray')
+Store.options.Image.Preference = Options('style', cmap='hsv')
+Store.options.Image.Selectivity = Options('style', cmap='gray')
+Store.options.Image.Activity = Options('style', cmap='gray')
+Store.options.Image.Response = Options('style', cmap='gray')
 
 # Default channel definitions
 Compositor.register(
-    Compositor('Matrix.OrientationPreference * Matrix.OrientationSelectivity',
+    Compositor('Image.OrientationPreference * Image.OrientationSelectivity',
                toHCS, 'OR PrefSel', mode='display', flipSC=True))
 Compositor.register(
-    Compositor('Matrix.DirectionPreference * Matrix.DirectionSelectivity',
+    Compositor('Image.DirectionPreference * Image.DirectionSelectivity',
                toHCS, 'DR PrefSel', mode='display', flipSC=True))
 
 
