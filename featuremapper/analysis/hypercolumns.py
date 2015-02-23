@@ -16,7 +16,7 @@ import param
 
 from holoviews import Dimension, TreeOperation
 from holoviews.core.options import Store, Options
-from holoviews import Curve, Histogram, ItemTable, Points, Overlay, Matrix
+from holoviews import Curve, Histogram, ItemTable, Points, Overlay, Image
 from holoviews.element.annotation import VLine
 from holoviews.operation import fft_power
 
@@ -91,7 +91,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         for element in tree.values():
             layers = element.values() if isinstance(element, Overlay) else [element]
             for el in layers:
-                if el.value_dimensions[0].cyclic and isinstance(el, Matrix):
+                if el.value_dimensions[0].cyclic and isinstance(el, Image):
                     preference = el
                     break
             else:
@@ -113,7 +113,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         ydensity = dim2 / abs(t-b)
 
         if xdensity != ydensity:
-            raise Exception("Matrix must have matching x- and y-density")
+            raise Exception("Image must have matching x- and y-density")
         self._density = xdensity
 
         power_spectrum = fft_power(preference)

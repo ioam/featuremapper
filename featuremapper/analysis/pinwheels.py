@@ -9,7 +9,7 @@ import param
 
 from holoviews.core.options import Store, Options
 from holoviews import Points, Overlay
-from holoviews.element.annotation import Contours
+from holoviews.element import Contours
 from holoviews.operation import ElementOperation
 
 __author__ = "Jean-Luc Stevens"
