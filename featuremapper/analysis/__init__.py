@@ -2,7 +2,7 @@ import numpy as np
 
 import param
 
-from holoviews import Matrix, ItemTable, ElementOperation
+from holoviews import Image, ItemTable, ElementOperation
 from holoviews.operation.normalization import raster_normalization
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
@@ -88,9 +88,9 @@ class cyclic_difference(ElementOperation):
             normfn = raster_normalization.instance()
             overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
 
-        return Matrix(self.difference(overlay[0].data, overlay[1].data),
+        return Image(self.difference(overlay[0].data, overlay[1].data),
                       bounds=self.get_overlay_extents(overlay),
-                      value=self.p.value)
+                      group=self.p.value)
 
 
 

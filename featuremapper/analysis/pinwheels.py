@@ -106,16 +106,16 @@ class PinwheelAnalysis(ElementOperation):
             pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
 
         label = cyclic_matrix.label
-        pinwheels = Points(np.array(pinwheels), label=label, value='Pinwheels')
+        pinwheels = Points(np.array(pinwheels), label=label, group='Pinwheels')
 
         if self.p.include_contours:
-            re_lines = Contours(re_contours, label=label, value='Real')
-            im_lines = Contours(im_contours, label=label, value='Imaginary')
+            re_lines = Contours(re_contours, label=label, group='Real')
+            im_lines = Contours(im_contours, label=label, group='Imaginary')
             overlay =  cyclic_matrix * re_lines * im_lines * pinwheels
         else:
             overlay = (cyclic_matrix * pinwheels)
 
-        return overlay.relabel(value='PinwheelAnalysis', label=label)
+        return overlay.relabel(group='PinwheelAnalysis', label=label)
 
 
 

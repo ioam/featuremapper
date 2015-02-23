@@ -393,7 +393,7 @@ class measure_response(FeatureResponses):
                 vmap.metadata = AttrDict(**metadata)
                 results.set_path(path, vmap)
 
-            im = Image(response, metadata['bounds'], label=label, value='Activity')
+            im = Image(response, metadata['bounds'], label=label, group='Activity')
             im.metadata=AttrDict(timestamp=time)
             results[path][(time, duration)] = im
         return results

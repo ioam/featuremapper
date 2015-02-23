@@ -199,7 +199,7 @@ class DoGModelFit(TuningCurveAnalysis):
             fit_data['SI'] = (K_s*b)/(K_c*a)
             fitted_ydata = [self._function(x, *fit) for x in xdata]
             if max(fitted_ydata) == 10000: raise Exception()
-            fitted_curve = Curve(zip(xdata, fitted_ydata), value='Response',
+            fitted_curve = Curve(zip(xdata, fitted_ydata), group='Response',
                                  label='Size Tuning Fit', dimensions=curve.dimensions)
         except:
             fitted_curve = Curve(zip(xdata, np.zeros(len(xdata))),

@@ -543,13 +543,13 @@ class FeatureMaps(FeatureResponses):
 
                         # Create views and stacks
                         im = Image(map_view, output_metadata['bounds'],
-                                   label=name, value=map_label,
+                                   label=name, group=map_label,
                                    value_dimensions=[value_dimension])
                         im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
                             vmap = HoloMap((key, im), key_dimensions=dimensions,
-                                           label=name, value=map_label)
+                                           label=name, group=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
@@ -629,7 +629,7 @@ class FeatureCurves(FeatureResponses):
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
                 vmap = HoloMap(key_dimensions=dimensions,
-                               value=curve_label, label=name)
+                               group=curve_label, label=name)
                 vmap.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), vmap)
 
@@ -644,7 +644,7 @@ class FeatureCurves(FeatureResponses):
                 key = (timestamp,)+f_vals+(x,)
                 im = Image(y_axis_values, output_metadata['bounds'],
                            label=' '.join([name, curve_label]),
-                           value=Dimension('Response'))
+                           group=Dimension('Response'))
                 im.metadata = metadata.copy()
                 results.path_items[(curve_label, name)][key] = im
             if p.store_responses:
@@ -798,7 +798,7 @@ class ReverseCorrelation(FeatureResponses):
             output_metadata = self.metadata.outputs[out_label]
             rows, cols = self._compute_roi(p, out_label)
             time_key = (timestamp, duration)
-            view = GridSpace({}, value='RFs', label=out_label)
+            view = GridSpace({}, group='RFs', label=out_label)
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
@@ -806,11 +806,11 @@ class ReverseCorrelation(FeatureResponses):
                 for j, jj in enumerate(cols):
                     coord = view.matrixidx2sheet(ii, jj)
                     im = Image(rc_response[i, j], input_metadata['bounds'],
-                                label=out_label, value='Receptive Field',
+                                label=out_label, group='Receptive Field',
                                 value_dimensions=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
                     view[coord] = HoloMap((time_key, im), key_dimensions=dimensions,
-                                          label=out_label, value='Receptive Field')
+                                          label=out_label, group='Receptive Field')
                     view[coord].metadata = AttrDict(**input_metadata)
 
             label = '%s_Reverse_Correlation' % out_label
