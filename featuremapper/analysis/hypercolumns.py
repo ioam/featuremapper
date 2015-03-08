@@ -14,7 +14,7 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import Dimension, TreeOperation
+from holoviews import OrderedDict, Dimension, TreeOperation
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Points, Overlay, Image
 from holoviews.element.annotation import VLine
@@ -91,7 +91,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         for element in tree.values():
             layers = element.values() if isinstance(element, Overlay) else [element]
             for el in layers:
-                if el.value_dimensions[0].cyclic and isinstance(el, Image):
+                if isinstance(el, Image) and el.value_dimensions[0].cyclic:
                     preference = el
                     break
             else:
@@ -129,7 +129,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         else:
             samples = zip([0, dim1/2], [0.0, 0.0])
 
-        info_table = ItemTable(info, group='PowerSpectrum Analysis', label=preference.label)
+        info_table = ItemTable(OrderedDict(info), group='PowerSpectrum Analysis', label=preference.label)
         curve = Curve(samples, key_dimensions=[wavenumber_dim], label=preference.label, group='FFTPowerFit')
         hist = Histogram(amplitudes, edges, key_dimensions=[wavenumber_dim],
                          label=preference.label, group='FFTPowerHistogram')
