@@ -29,10 +29,6 @@ class Feature(Dimension):
     offset = param.Number(default=0.0, doc="""
         Offset to add to the values for this feature""")
 
-    values = param.List(default=[], doc="""
-        Explicit list of values for this feature, used in alternative to the
-        range and step parameters""")
-
     _init = False # Allows creation of default Features in the file
 
     definitions = {}
