@@ -538,7 +538,8 @@ class FeatureMaps(FeatureResponses):
                         map_index = base_name + k + map_name.capitalize()
                         map_label = ' '.join([base_name, map_name.capitalize()])
                         cyclic = (map_name != 'selectivity' and fp.cyclic)
-                        value_dimension = Dimension(map_label, cyclic=cyclic, range=fp.range)
+                        fprange = fp.range if cyclic else (None, None)
+                        value_dimension = Dimension(map_label, cyclic=cyclic, range=fprange)
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
