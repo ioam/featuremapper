@@ -831,10 +831,10 @@ Store.options.Image.Response = Options('style', cmap='gray')
 
 # Default channel definitions
 Compositor.register(
-    Compositor('Image.OrientationPreference * Image.OrientationSelectivity',
+    Compositor('Image.Orientation_Preference * Image.Orientation_Selectivity',
                toHCS, 'OR PrefSel', mode='display', flipSC=True))
 Compositor.register(
-    Compositor('Image.DirectionPreference * Image.DirectionSelectivity',
+    Compositor('Image.Direction_Preference * Image.Direction_Selectivity',
                toHCS, 'DR PrefSel', mode='display', flipSC=True))
 
 
