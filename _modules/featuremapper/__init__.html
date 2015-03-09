@@ -604,7 +604,8 @@
                         <span class="n">map_index</span> <span class="o">=</span> <span class="n">base_name</span> <span class="o">+</span> <span class="n">k</span> <span class="o">+</span> <span class="n">map_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
                         <span class="n">map_label</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">base_name</span><span class="p">,</span> <span class="n">map_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()])</span>
                         <span class="n">cyclic</span> <span class="o">=</span> <span class="p">(</span><span class="n">map_name</span> <span class="o">!=</span> <span class="s">&#39;selectivity&#39;</span> <span class="ow">and</span> <span class="n">fp</span><span class="o">.</span><span class="n">cyclic</span><span class="p">)</span>
-                        <span class="n">value_dimension</span> <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="n">map_label</span><span class="p">,</span> <span class="n">cyclic</span><span class="o">=</span><span class="n">cyclic</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">fp</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+                        <span class="n">fprange</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">range</span> <span class="k">if</span> <span class="n">cyclic</span> <span class="k">else</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+                        <span class="n">value_dimension</span> <span class="o">=</span> <span class="n">Dimension</span><span class="p">(</span><span class="n">map_label</span><span class="p">,</span> <span class="n">cyclic</span><span class="o">=</span><span class="n">cyclic</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">fprange</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_set_style</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">map_name</span><span class="p">)</span>
 
                         <span class="c"># Create views and stacks</span>
@@ -896,10 +897,10 @@
 
 <span class="c"># Default channel definitions</span>
 <span class="n">Compositor</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Image.OrientationPreference * Image.OrientationSelectivity&#39;</span><span class="p">,</span>
+    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Image.Orientation_Preference * Image.Orientation_Selectivity&#39;</span><span class="p">,</span>
                <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;OR PrefSel&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;display&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 <span class="n">Compositor</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
-    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Image.DirectionPreference * Image.DirectionSelectivity&#39;</span><span class="p">,</span>
+    <span class="n">Compositor</span><span class="p">(</span><span class="s">&#39;Image.Direction_Preference * Image.Direction_Selectivity&#39;</span><span class="p">,</span>
                <span class="n">toHCS</span><span class="p">,</span> <span class="s">&#39;DR PrefSel&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;display&#39;</span><span class="p">,</span> <span class="n">flipSC</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
 
