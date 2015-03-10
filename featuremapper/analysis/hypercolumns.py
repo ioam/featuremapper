@@ -16,7 +16,7 @@ import param
 
 from holoviews import OrderedDict, Dimension, TreeOperation
 from holoviews.core.options import Store, Options
-from holoviews import Curve, Histogram, ItemTable, Points, Overlay, Image
+from holoviews import Curve, Histogram, ItemTable, Overlay, Image
 from holoviews.element.annotation import VLine
 from holoviews.operation import fft_power
 
@@ -129,7 +129,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         else:
             samples = zip([0, dim1/2], [0.0, 0.0])
 
-        info_table = ItemTable(OrderedDict(info), group='PowerSpectrum Analysis', label=preference.label)
+        info_table = ItemTable(sorted(info.items()), group='PowerSpectrum Analysis', label=preference.label)
         curve = Curve(samples, key_dimensions=[wavenumber_dim], label=preference.label, group='FFTPowerFit')
         hist = Histogram(amplitudes, edges, key_dimensions=[wavenumber_dim],
                          label=preference.label, group='FFTPowerHistogram')
