@@ -1,13 +1,16 @@
 import numpy as np
 
 import param
+import colorsys
 
+from holoviews import RGB
 from holoviews import Image, ItemTable, ElementOperation
 from holoviews.operation.normalization import raster_normalization
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
     DSF_MaxValue
 
+hsv_to_rgb = np.vectorize(colorsys.hsv_to_rgb)
 
 class cyclic_difference(ElementOperation):
     """
@@ -91,6 +94,67 @@ class cyclic_difference(ElementOperation):
         return Image(self.difference(overlay[0].data, overlay[1].data),
                       bounds=self.get_overlay_extents(overlay),
                       group=self.p.value)
+
+
+
+class toHCS(ElementOperation):
+    """
+    Hue-Confidence-Strength plot.
+
+    Accepts an overlay containing either 2 or 3 layers. The first two
+    layers are hue and confidence and the third layer (if available)
+    is the strength channel.
+    """
+
+    output_type = RGB
+
+    S_multiplier = param.Number(default=1.0, bounds=(0.0,None), doc="""
+        Post-normalization multiplier for the strength value.
+
+        Note that if the result is outside the bounds 0.0-1.0, it will
+        be clipped. """)
+
+    C_multiplier = param.Number(default=1.0, bounds=(0.0,None), doc="""
+        Post-normalization multiplier for the confidence value.
+
+        Note that if the result is outside the bounds 0.0-1.0, it will
+        be clipped.""")
+
+    flipSC = param.Boolean(default=False, doc="""
+        Whether to flip the strength and confidence channels""")
+
+    group = param.String(default='HCS', doc="""
+        The group string for the output (an RGB element).""")
+
+    def _process(self, overlay, key=None):
+
+        normfn = raster_normalization.instance()
+        if self.p.input_ranges:
+            overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
+        else:
+            overlay = normfn.process_element(overlay, key)
+
+        hue, confidence = overlay[0], overlay[1]
+        strength_data = overlay[2].data if (len(overlay) == 3) else np.ones(hue.shape)
+
+        hue_data = hue.data
+        hue_range = hue.value_dimensions[0].range
+        if (not hue.value_dimensions[0].cyclic) or (None in hue_range):
+             raise Exception("The input hue channel must be declared cyclic with a defined range.")
+        if hue.shape != confidence.shape:
+            raise Exception("Cannot combine input Matrices with different shapes.")
+
+        (h,s,v)= (hue_data,
+                  (confidence.data * self.p.C_multiplier).clip(0.0, 1.0),
+                  (strength_data * self.p.S_multiplier).clip(0.0, 1.0))
+
+        if self.p.flipSC:
+            (h,s,v) = (h,v,s.clip(0,1.0))
+
+        return RGB(np.dstack(hsv_to_rgb(h,s,v)),
+                   bounds = self.get_overlay_extents(overlay),
+                   label =  self.get_overlay_label(overlay),
+                   group =  self.p.group)
 
 
 

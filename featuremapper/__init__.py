@@ -822,7 +822,8 @@ class ReverseCorrelation(FeatureResponses):
         return results
 
 from holoviews.core.options import Compositor
-from holoviews.operation.rgb import toHCS
+from .analysis import toHCS
+
 #Default styles
 Store.options.Image.Preference = Options('style', cmap='hsv')
 Store.options.Image.Selectivity = Options('style', cmap='gray')
@@ -833,9 +834,14 @@ Store.options.Image.Response = Options('style', cmap='gray')
 Compositor.register(
     Compositor('Image.Orientation_Preference * Image.Orientation_Selectivity',
                toHCS, 'OR PrefSel', mode='display', flipSC=True))
+
 Compositor.register(
     Compositor('Image.Direction_Preference * Image.Direction_Selectivity',
                toHCS, 'DR PrefSel', mode='display', flipSC=True))
+
+Compositor.register(
+    Compositor('Image.Orientation_Preference * Image.Activity',
+               toHCS, 'ORColoredResponse', mode='display', flipSC=True))
 
 
 __all__ = [
