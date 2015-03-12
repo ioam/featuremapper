@@ -67,13 +67,16 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">param</span>
+<span class="kn">import</span> <span class="nn">colorsys</span>
 
+<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">RGB</span>
 <span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
 <span class="kn">from</span> <span class="nn">holoviews.operation.normalization</span> <span class="kn">import</span> <span class="n">raster_normalization</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span><span class="p">,</span> \
     <span class="n">DSF_MaxValue</span>
 
+<span class="n">hsv_to_rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">colorsys</span><span class="o">.</span><span class="n">hsv_to_rgb</span><span class="p">)</span>
 
 <div class="viewcode-block" id="cyclic_difference"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.cyclic_difference">[docs]</a><span class="k">class</span> <span class="nc">cyclic_difference</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -157,6 +160,67 @@
         <span class="k">return</span> <span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">),</span>
                       <span class="n">bounds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_overlay_extents</span><span class="p">(</span><span class="n">overlay</span><span class="p">),</span>
                       <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+</div>
+<div class="viewcode-block" id="toHCS"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.toHCS">[docs]</a><span class="k">class</span> <span class="nc">toHCS</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hue-Confidence-Strength plot.</span>
+
+<span class="sd">    Accepts an overlay containing either 2 or 3 layers. The first two</span>
+<span class="sd">    layers are hue and confidence and the third layer (if available)</span>
+<span class="sd">    is the strength channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">output_type</span> <span class="o">=</span> <span class="n">RGB</span>
+
+    <span class="n">S_multiplier</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Post-normalization multiplier for the strength value.</span>
+
+<span class="s">        Note that if the result is outside the bounds 0.0-1.0, it will</span>
+<span class="s">        be clipped. &quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">C_multiplier</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Number</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="bp">None</span><span class="p">),</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Post-normalization multiplier for the confidence value.</span>
+
+<span class="s">        Note that if the result is outside the bounds 0.0-1.0, it will</span>
+<span class="s">        be clipped.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">flipSC</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">Boolean</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Whether to flip the strength and confidence channels&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">group</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;HCS&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        The group string for the output (an RGB element).&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="n">normfn</span> <span class="o">=</span> <span class="n">raster_normalization</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">input_ranges</span><span class="p">:</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">normfn</span><span class="o">.</span><span class="n">process_element</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">input_ranges</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">overlay</span> <span class="o">=</span> <span class="n">normfn</span><span class="o">.</span><span class="n">process_element</span><span class="p">(</span><span class="n">overlay</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+        <span class="n">hue</span><span class="p">,</span> <span class="n">confidence</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">strength_data</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">hue</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">hue_data</span> <span class="o">=</span> <span class="n">hue</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">hue_range</span> <span class="o">=</span> <span class="n">hue</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">range</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">hue</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cyclic</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">None</span> <span class="ow">in</span> <span class="n">hue_range</span><span class="p">):</span>
+             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The input hue channel must be declared cyclic with a defined range.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">hue</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">confidence</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Cannot combine input Matrices with different shapes.&quot;</span><span class="p">)</span>
+
+        <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">)</span><span class="o">=</span> <span class="p">(</span><span class="n">hue_data</span><span class="p">,</span>
+                  <span class="p">(</span><span class="n">confidence</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">C_multiplier</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">strength_data</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">S_multiplier</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">flipSC</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">s</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">RGB</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">hsv_to_rgb</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">v</span><span class="p">)),</span>
+                   <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_overlay_extents</span><span class="p">(</span><span class="n">overlay</span><span class="p">),</span>
+                   <span class="n">label</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">get_overlay_label</span><span class="p">(</span><span class="n">overlay</span><span class="p">),</span>
+                   <span class="n">group</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
 
 
 </div>

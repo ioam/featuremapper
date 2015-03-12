@@ -1,0 +1,9 @@
+<map id="inheritanceed6e039036" name="inheritanceed6e039036">
+<area shape="rect" id="node1" href="#featuremapper.analysis.cyclic_difference" title="params(value=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="947,3,1148,22"/>
+<area shape="rect" id="node2" title="params(input_ranges=ClassSelector, group=String, name=String)" alt="" coords="696,39,912,57"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.decode_feature" title="params(reference_value=Number, weighted_average=Boolean, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="948,39,1147,57"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.toHCS" title="params(C_multiplier=Number, S_multiplier=Number, flipSC=Boolean, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="969,74,1126,92"/>
+<area shape="rect" id="node5" title="params(group=String, name=String)" alt="" coords="484,39,661,57"/>
+<area shape="rect" id="node6" title="params(name=String)" alt="" coords="224,39,449,57"/>
+<area shape="rect" id="node7" title="params(name=String)" alt="" coords="4,39,190,57"/>
+</map>
