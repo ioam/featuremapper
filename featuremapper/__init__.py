@@ -829,6 +829,7 @@ Store.options.Image.Preference = Options('style', cmap='hsv')
 Store.options.Image.Selectivity = Options('style', cmap='gray')
 Store.options.Image.Activity = Options('style', cmap='gray')
 Store.options.Image.Response = Options('style', cmap='gray')
+Store.options.Image.FFT_Power = Options('style', cmap='gray')
 
 # Default channel definitions
 Compositor.register(
