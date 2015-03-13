@@ -201,7 +201,7 @@ class FeatureResponses(PatternDrivenAnalysis):
     durations = param.List(default=[1.0], doc="""Times after presentation,
         when a measurement is taken.""")
 
-    inputs = param.String(default=[], doc="""Names of the input supplied to
+    inputs = param.List(default=[], doc="""Names of the input supplied to
         the metadata_fns to filter out desired inputs.""")
 
     metadata_fns = param.HookList(default=[], instantiate=False, doc="""
@@ -220,7 +220,7 @@ class FeatureResponses(PatternDrivenAnalysis):
     measurement_storage_hook = param.Callable(default=None, instantiate=True, doc="""
         Interface to store measurements after they have been completed.""")
 
-    outputs = param.String(default=[], doc="""
+    outputs = param.List(default=[], doc="""
         Names of the output source supplied to metadata_fns to filter out
         desired outputs.""")
 
