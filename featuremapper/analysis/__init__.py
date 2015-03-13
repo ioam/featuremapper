@@ -3,8 +3,7 @@ import numpy as np
 import param
 import colorsys
 
-from holoviews import RGB, Image
-from holoviews import Image, ItemTable, ElementOperation
+from holoviews import RGB, Image, ItemTable, ElementOperation
 from holoviews.operation.normalization import raster_normalization
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
