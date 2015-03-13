@@ -647,7 +647,7 @@ class FeatureCurves(FeatureResponses):
                            label=' '.join([name, curve_label]),
                            group='Response', value_dimensions=['Response'])
                 im.metadata = metadata.copy()
-                results.path_items[(curve_label, name)][key] = im
+                results[(curve_label, name)][key] = im
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                 results.set_path(('%s_%s_%s' % info, name), self._responses[name])
