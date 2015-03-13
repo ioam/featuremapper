@@ -3,7 +3,7 @@ import numpy as np
 import param
 import colorsys
 
-from holoviews import RGB
+from holoviews import RGB, Image
 from holoviews import Image, ItemTable, ElementOperation
 from holoviews.operation.normalization import raster_normalization
 
@@ -14,10 +14,10 @@ hsv_to_rgb = np.vectorize(colorsys.hsv_to_rgb)
 
 class cyclic_difference(ElementOperation):
     """
-    The cyclic difference between any two cyclic Matrix quantities
+    The cyclic difference between any two cyclic Image quantities
     normalized such that maximum possible cyclic difference is 0.5.
 
-    Although this operation may be applied to any Matrix data defined
+    Although this operation may be applied to any Image data defined
     over some cyclic quantity, in practice it is rarely used outside
     some fairly special uses; namely the computation of cyclic
     similarity (e.g. the similarity of two orientation of direction
@@ -77,7 +77,7 @@ class cyclic_difference(ElementOperation):
 
         if len(overlay) != 2:
             raise Exception("The similarity index may only be computed"
-                            "using overlays of Matrix Views.")
+                            "using overlays of Image Views.")
 
         mat1, mat2 = overlay[0], overlay[1]
         val_dims = [mat1.value_dimensions, mat2.value_dimensions]
@@ -210,7 +210,7 @@ class decode_feature(ElementOperation):
             raise ValueError("DecodeFeature requires overlay with response/"
                              "activity and preference as input.")
         if selectivity is None:
-            selectivity = Matrix(np.ones(preference.data.shape),
+            selectivity = Image(np.ones(preference.data.shape),
                                  preference.bounds)
 
         cr = preference.cyclic_range
