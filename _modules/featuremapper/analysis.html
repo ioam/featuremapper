@@ -69,8 +69,7 @@
 <span class="kn">import</span> <span class="nn">param</span>
 <span class="kn">import</span> <span class="nn">colorsys</span>
 
-<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">RGB</span>
-<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
+<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">RGB</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
 <span class="kn">from</span> <span class="nn">holoviews.operation.normalization</span> <span class="kn">import</span> <span class="n">raster_normalization</span>
 
 <span class="kn">from</span> <span class="nn">featuremapper.distribution</span> <span class="kn">import</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">DSF_WeightedAverage</span><span class="p">,</span> \
@@ -80,10 +79,10 @@
 
 <div class="viewcode-block" id="cyclic_difference"><a class="viewcode-back" href="../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.cyclic_difference">[docs]</a><span class="k">class</span> <span class="nc">cyclic_difference</span><span class="p">(</span><span class="n">ElementOperation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The cyclic difference between any two cyclic Matrix quantities</span>
+<span class="sd">    The cyclic difference between any two cyclic Image quantities</span>
 <span class="sd">    normalized such that maximum possible cyclic difference is 0.5.</span>
 
-<span class="sd">    Although this operation may be applied to any Matrix data defined</span>
+<span class="sd">    Although this operation may be applied to any Image data defined</span>
 <span class="sd">    over some cyclic quantity, in practice it is rarely used outside</span>
 <span class="sd">    some fairly special uses; namely the computation of cyclic</span>
 <span class="sd">    similarity (e.g. the similarity of two orientation of direction</span>
@@ -143,7 +142,7 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;The similarity index may only be computed&quot;</span>
-                            <span class="s">&quot;using overlays of Matrix Views.&quot;</span><span class="p">)</span>
+                            <span class="s">&quot;using overlays of Image Views.&quot;</span><span class="p">)</span>
 
         <span class="n">mat1</span><span class="p">,</span> <span class="n">mat2</span> <span class="o">=</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">overlay</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">val_dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">mat1</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">,</span> <span class="n">mat2</span><span class="o">.</span><span class="n">value_dimensions</span><span class="p">]</span>
@@ -276,7 +275,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;DecodeFeature requires overlay with response/&quot;</span>
                              <span class="s">&quot;activity and preference as input.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">selectivity</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">selectivity</span> <span class="o">=</span> <span class="n">Matrix</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="n">selectivity</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preference</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
                                  <span class="n">preference</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
 
         <span class="n">cr</span> <span class="o">=</span> <span class="n">preference</span><span class="o">.</span><span class="n">cyclic_range</span>
