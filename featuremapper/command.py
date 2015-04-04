@@ -15,8 +15,8 @@ superclasses for the rest of the parameters and code.
 """
 
 import copy
-import Image
 import ImageDraw
+import Image as PILImage
 
 import numpy as np
 
@@ -30,7 +30,8 @@ from holoviews.element.raster import Image
 import imagen
 from imagen import random
 from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
-    GaussiansCorner, OrientationContrast
+    OrientationContrast
+from imagen.deprecated import GaussiansCorner
 
 from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
     ReverseCorrelation
@@ -843,7 +844,7 @@ class measure_corner_angle_pref(PositionMeasurementCommand):
         y_pos = [int(np.round(y_0 + y * y_step)) for y in range(n_a)]
         deltas = [(int(np.round(l * np.cos(a))),
                    int(np.round(l * np.sin(a)))) for a in angles]
-        lb_img = Image.new("RGB", (width, height), "white")
+        lb_img = PILImage.new("RGB", (width, height), "white")
         dr_img = ImageDraw.Draw(lb_img)
 
         for h, y, d in zip(hues, y_pos, deltas):
