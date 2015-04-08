@@ -141,10 +141,10 @@ value          &#8216;CyclicDifference&#8217;      String     V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">value</span></tt> (<em>allow_None=False, constant=False, default=CyclicDifference, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">value</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=CyclicDifference, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The value assigned to the result after computing the cyclic
         difference.</dd>
 </dl>
@@ -175,7 +175,7 @@ quantities is 0.0 and the maximum possible difference is 0.5.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1788&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4838&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -203,17 +203,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1520&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda45d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1838&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda48e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1890&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4940&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -283,12 +283,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb17e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4890&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.cyclic_difference.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1998&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.cyclic_difference.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -396,7 +396,7 @@ weighted_average       True        Boolean     (0, 1)    V RW</p>
         decoded value.</dd>
 <dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">weighted_average</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Decode as vector average if True or by maximal responding unit.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
@@ -418,7 +418,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb14c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4578&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -446,17 +446,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1788&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4838&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1628&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda46d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1680&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4730&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -526,12 +526,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1940&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda49f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.decode_feature.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb19f0&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4aa0&gt;</em><a class="headerlink" href="#featuremapper.analysis.decode_feature.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -613,7 +613,7 @@ input_ranges     {}   ClassSelector               V RW</p>
 [1;34m              first component is a Normalization.ranges list and the second[0m
 [1;34m              component is Normalization.keys. [0m</p>
 <dl class="docutils">
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=HCS, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=HCS, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string for the output (an RGB element).</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">C_multiplier</span></tt> (<em>allow_None=False, bounds=(0.0, None), constant=False, default=1.0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Post-normalization multiplier for the confidence value.
@@ -654,7 +654,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1628&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda46d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -682,17 +682,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1890&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4940&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb17e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4890&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1730&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda47e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -768,12 +768,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1998&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.toHCS.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abf9ebb1a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69cda4af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.toHCS.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -854,7 +854,7 @@ range) based on the pi-pinwheel density criterion.</p>
 [1;36mSoft bound values are marked in cyan.[0m
 C/V= Constant/Variable, RO/RW = ReadOnly/ReadWrite, AN=Allow None</p>
 <p>[1;34mName                         Value                  Type    Bounds    Mode  [0m</p>
-<p>averaging_fn   &lt;function mean at 0x2abf8b510050&gt;  Callable            V RW  
+<p>averaging_fn   &lt;function mean at 0x2ac68964e0c8&gt;  Callable            V RW  
 fit_table                    False                Boolean   (0, 1)    V RW  
 gamma_k                       1.8                  Number             V RW  
 group                     &#8216;Operation&#8217;              String             V RW  
@@ -889,13 +889,13 @@ label                         None                 String           C RW AN</p>
 [1;34m               a5 =&gt; Quadratic falloff.[0m
 [1;31mlabel:        Label suffixes are fixed as there are too many labels to specify.[0m</p>
 <dl class="docutils">
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">gamma_k</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=1.8, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>The degree to which the gamma kernel is heavily tailed when
       squashing the pinwheel density into a unit map metric.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, constant=True, default=None, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=True, default=None, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
 <dd>Label suffixes are fixed as there are too many labels to specify.</dd>
 <dt><em>param Dict</em> <tt class="docutils literal"><span class="pre">init_fit</span></tt> (<em>allow_None=True, constant=False, default=None, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>If set to None, an initial fit is automatically selected for
@@ -1028,7 +1028,7 @@ material). Returns the analysed values as a dictionary.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa04b7ba8&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e5e8c58&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1070,17 +1070,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa04b7e10&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e5e8ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa04b7ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e5e8f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa04b7f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e65a050&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1150,12 +1150,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa052b418&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e65a4c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa052b470&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e65a520&gt;</em><a class="headerlink" href="#featuremapper.analysis.hypercolumns.PowerSpectrumAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1264,13 +1264,13 @@ silence_warnings       True        Boolean     (0, 1)    V RW</p>
 <dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">silence_warnings</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Whether or not to show warnings about invalid intersection
       events when locating pinwheels.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Boolean</em> <tt class="docutils literal"><span class="pre">include_contours</span></tt> (<em>allow_None=False, bounds=(0, 1), constant=False, default=True, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Whether or not to include the computed contours for the real and
       imaginary components of the map.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, constant=True, default=None, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=True, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=True, default=None, instantiate=True, pickle_default_value=True, precedence=-1, readonly=False</em>)</dt>
 <dd>Label suffixes are fixed as there are too many labels to specify.</dd>
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -1312,7 +1312,7 @@ output is erroneous.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa0636578&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e766628&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -1340,7 +1340,7 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa0636680&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e766730&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1352,12 +1352,12 @@ imaginary contours of of polar OR map.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa06366d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e766788&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa0636730&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e7667e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1467,12 +1467,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa06365d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e766680&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa0636838&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69e7668e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.pinwheels.PinwheelAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1587,13 +1587,13 @@ max_iterations      100000        Number     V RW</p>
 <dd>Center excitatory space constant.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">b</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory space constant.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">K_s</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory kernel strength.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -1626,7 +1626,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -1654,17 +1654,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11142b8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245368&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2456d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2455d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1734,12 +1734,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11144c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.DoGModelFit.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11145d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.DoGModelFit.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1817,11 +1817,11 @@ input_ranges        {}      ClassSelector  V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Frequency, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Frequency, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="method">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.debug">
 <tt class="descname">debug</tt><big>(</big><em>msg</em>, <em>*args</em>, <em>**kw</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.debug" title="Permalink to this definition">¶</a></dt>
@@ -1840,7 +1840,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114310&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2453c0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -1868,17 +1868,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114368&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245418&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11143c0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1948,12 +1948,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114260&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245310&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114730&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2457e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2051,14 +2051,14 @@ max_iterations                 100000                 Number     V RW</p>
 <dd>Center excitatory space constant.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">b</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory space constant.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">K_s</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory kernel strength.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=Normalization DoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Normalization DoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -2095,7 +2095,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11145d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -2123,17 +2123,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2455d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2203,12 +2203,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114d08&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245db8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114d60&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245e10&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2285,11 +2285,11 @@ input_ranges             {}           ClassSelector  V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=OrientationSurround, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=OrientationSurround, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="method">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.debug">
 <tt class="descname">debug</tt><big>(</big><em>msg</em>, <em>*args</em>, <em>**kw</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.debug" title="Permalink to this definition">¶</a></dt>
@@ -2308,7 +2308,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114418&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2454c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -2336,17 +2336,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245838&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2416,12 +2416,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245730&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11148e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2517,7 +2517,7 @@ max_iterations        100000          Number     V RW</p>
 <dd>Center excitatory space constant.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">b</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory space constant.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">R_0</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
@@ -2525,8 +2525,8 @@ max_iterations        100000          Number     V RW</p>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">K_s</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory kernel strength.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=DoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=DoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -2559,7 +2559,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -2587,17 +2587,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2456d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11144c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114418&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2454c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2667,12 +2667,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11146d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SF_DoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SF_DoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2752,11 +2752,11 @@ input_ranges        {}      ClassSelector  V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="method">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.debug">
 <tt class="descname">debug</tt><big>(</big><em>msg</em>, <em>*args</em>, <em>**kw</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.debug" title="Permalink to this definition">¶</a></dt>
@@ -2775,7 +2775,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245838&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -2803,17 +2803,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2455d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245730&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2883,12 +2883,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2965,7 +2965,7 @@ input_ranges        {}      ClassSelector  V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
@@ -2987,7 +2987,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11145d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -3015,17 +3015,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11146d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3095,12 +3095,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114418&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2454c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.SizeTuningShift.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114838&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2458e8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.SizeTuningShift.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3196,7 +3196,7 @@ max_iterations        100000           Number     V RW</p>
 <dd>Center excitatory space constant.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">b</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory space constant.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">R_0</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
@@ -3204,8 +3204,8 @@ max_iterations        100000           Number     V RW</p>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">K_s</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory kernel strength.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=IDoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=IDoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -3238,7 +3238,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -3266,17 +3266,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245940&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114628&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2456d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3346,12 +3346,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11145d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3428,11 +3428,11 @@ input_ranges        {}      ClassSelector  V RW</p>
        normalization is required, a 2-tuple may be supplied where the
        first component is a Normalization.ranges list and the second
        component is Normalization.keys.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="method">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.debug">
 <tt class="descname">debug</tt><big>(</big><em>msg</em>, <em>*args</em>, <em>**kw</em><big>)</big><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.debug" title="Permalink to this definition">¶</a></dt>
@@ -3451,7 +3451,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -3479,17 +3479,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11146d8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245788&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11144c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245578&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114418&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2454c8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3559,12 +3559,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114470&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114520&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f2455d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3666,7 +3666,7 @@ max_iterations        100000           Number     V RW</p>
 <dd>Center excitatory space constant.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">b</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory space constant.</dd>
-<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
+<dt><em>param String</em> <tt class="docutils literal"><span class="pre">group</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Operation, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>The group string used to identify the output of the
        Operation. By default this should match the operation name.</dd>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">R_0</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
@@ -3674,8 +3674,8 @@ max_iterations        100000           Number     V RW</p>
 <dt><em>param Number</em> <tt class="docutils literal"><span class="pre">K_s</span></tt> (<em>allow_None=False, bounds=None, constant=False, default=0, inclusive_bounds=(True, True), instantiate=False, pickle_default_value=True, precedence=None, readonly=False, time_dependent=False, time_fn=&lt;Time Time00001&gt;</em>)</dt>
 <dd>Surround inhibitory kernel strength.</dd>
 </dl>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
-<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, constant=False, default=IDoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">feature</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=Size, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
+<p><em>param String</em> <tt class="docutils literal"><span class="pre">label</span></tt> (<em>allow_None=False, basestring=&lt;type &#8216;basestring&#8217;&gt;, constant=False, default=IDoG Model Fit, instantiate=False, pickle_default_value=True, precedence=None, readonly=False</em>)</p>
 <dl class="docutils">
 <dt><em>param ClassSelector</em> <tt class="docutils literal"><span class="pre">input_ranges</span></tt> (<em>allow_None=False, constant=False, default={}, instantiate=True, is_instance=True, pickle_default_value=True, precedence=None, readonly=False</em>)</dt>
 <dd>Ranges to be used for input normalization (if applicable) in a
@@ -3708,7 +3708,7 @@ instantiated.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value">
-<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11147e0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">force_new_dynamic_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245890&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.force_new_dynamic_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
@@ -3736,17 +3736,17 @@ equal to the default value.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator">
-<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2abfa11145d0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_value_generator</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.get_value_generator" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value">
-<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114998&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inspect_value</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.inspect_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance">
-<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114ec0&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">instance</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245f70&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.instance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3816,12 +3816,12 @@ Element.</p>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn">
-<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114680&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_dynamic_time_fn</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245730&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_dynamic_time_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param">
-<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2abfa1114a48&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_param</tt><em class="property"> = &lt;functools.partial object at 0x2ac69f245af8&gt;</em><a class="headerlink" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel.set_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
