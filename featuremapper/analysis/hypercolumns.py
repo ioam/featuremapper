@@ -18,7 +18,7 @@ from holoviews import OrderedDict, Dimension, TreeOperation
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Overlay, Image
 from holoviews.element.annotation import VLine
-from holoviews.operation import fft_power
+from .raster import fft_power
 
 from .pinwheels import PinwheelAnalysis
 
