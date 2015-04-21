@@ -1,0 +1,8 @@
+<map id="inheritancef79a34b375" name="inheritancef79a34b375">
+<area shape="rect" id="node1" href="#featuremapper.analysis.raster.fft_power" title="params(max_power=Number, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="948,3,1145,22"/>
+<area shape="rect" id="node2" title="params(input_ranges=ClassSelector, group=String, name=String)" alt="" coords="695,22,910,40"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.raster.vectorfield" title="params(cols=Integer, rows=Integer, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="945,39,1148,57"/>
+<area shape="rect" id="node4" title="params(group=String, name=String)" alt="" coords="483,22,660,40"/>
+<area shape="rect" id="node5" title="params(name=String)" alt="" coords="224,22,448,40"/>
+<area shape="rect" id="node6" title="params(name=String)" alt="" coords="4,22,189,40"/>
+</map>
