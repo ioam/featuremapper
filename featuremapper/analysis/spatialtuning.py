@@ -6,6 +6,7 @@ from scipy.optimize import curve_fit
 
 import param
 
+from holoviews import OrderedDict
 from holoviews import Curve, ItemTable, ElementOperation
 
 
@@ -33,7 +34,7 @@ class TuningCurveAnalysis(ElementOperation):
     def _validate_curve(self, curve):
         if not isinstance(curve, Curve):
             raise Exception('Supplied views need to be curves.')
-        elif not self.feature in curve.xlabel:
+        elif not self.feature in curve.key_dimensions[0].name:
             raise Exception('Analysis requires %s response curves.' % self.feature)
 
 
@@ -117,8 +118,8 @@ class SizeTuningPeaks(TuningCurveAnalysis):
         counter_size = xdata[counter_idx]
         r_cs = ydata[counter_idx]
 
-        table_data = {'Peak Size': peak_size, 'Suppression Size': suppression_size,
-                      'CS Size': counter_size, 'Max Response': max_response}
+        table_data = OrderedDict({'Peak Size': peak_size, 'Suppression Size': suppression_size,
+                                  'CS Size': counter_size, 'Max Response': max_response})
         if not r_max == 0:
             table_data['SI'] = (r_max-r_min)/r_max
             table_data['CSI'] = (r_cs-r_min)/r_max
