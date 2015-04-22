@@ -91,7 +91,7 @@ class cyclic_difference(ElementOperation):
             overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
 
         return Image(self.difference(overlay[0].data, overlay[1].data),
-                      bounds=self.get_overlay_extents(overlay),
+                      bounds=self.get_overlay_bounds(overlay),
                       group=self.p.value)
 
 
@@ -151,7 +151,7 @@ class toHCS(ElementOperation):
             (h,s,v) = (h,v,s.clip(0,1.0))
 
         return RGB(np.dstack(hsv_to_rgb(h,s,v)),
-                   bounds = self.get_overlay_extents(overlay),
+                   bounds = self.get_overlay_bounds(overlay),
                    label =  self.get_overlay_label(overlay),
                    group =  self.p.group)
 
