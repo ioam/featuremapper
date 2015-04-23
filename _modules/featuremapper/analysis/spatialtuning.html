@@ -73,6 +73,7 @@
 
 <span class="kn">import</span> <span class="nn">param</span>
 
+<span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">holoviews</span> <span class="kn">import</span> <span class="n">Curve</span><span class="p">,</span> <span class="n">ItemTable</span><span class="p">,</span> <span class="n">ElementOperation</span>
 
 
@@ -100,7 +101,7 @@
     <span class="k">def</span> <span class="nf">_validate_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">Curve</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Supplied views need to be curves.&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xlabel</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">key_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Analysis requires </span><span class="si">%s</span><span class="s"> response curves.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature</span><span class="p">)</span>
 
 
@@ -184,8 +185,8 @@
         <span class="n">counter_size</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">counter_idx</span><span class="p">]</span>
         <span class="n">r_cs</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="n">counter_idx</span><span class="p">]</span>
 
-        <span class="n">table_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Peak Size&#39;</span><span class="p">:</span> <span class="n">peak_size</span><span class="p">,</span> <span class="s">&#39;Suppression Size&#39;</span><span class="p">:</span> <span class="n">suppression_size</span><span class="p">,</span>
-                      <span class="s">&#39;CS Size&#39;</span><span class="p">:</span> <span class="n">counter_size</span><span class="p">,</span> <span class="s">&#39;Max Response&#39;</span><span class="p">:</span> <span class="n">max_response</span><span class="p">}</span>
+        <span class="n">table_data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">({</span><span class="s">&#39;Peak Size&#39;</span><span class="p">:</span> <span class="n">peak_size</span><span class="p">,</span> <span class="s">&#39;Suppression Size&#39;</span><span class="p">:</span> <span class="n">suppression_size</span><span class="p">,</span>
+                                  <span class="s">&#39;CS Size&#39;</span><span class="p">:</span> <span class="n">counter_size</span><span class="p">,</span> <span class="s">&#39;Max Response&#39;</span><span class="p">:</span> <span class="n">max_response</span><span class="p">})</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">r_max</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">table_data</span><span class="p">[</span><span class="s">&#39;SI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_max</span><span class="o">-</span><span class="n">r_min</span><span class="p">)</span><span class="o">/</span><span class="n">r_max</span>
             <span class="n">table_data</span><span class="p">[</span><span class="s">&#39;CSI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_cs</span><span class="o">-</span><span class="n">r_min</span><span class="p">)</span><span class="o">/</span><span class="n">r_max</span>
