@@ -14,7 +14,7 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import OrderedDict, Dimension, TreeOperation
+from holoviews import Dimension, TreeOperation
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Overlay, Image
 from holoviews.element.annotation import VLine

@@ -78,7 +78,7 @@ class cyclic_difference(ElementOperation):
             raise Exception("The similarity index may only be computed"
                             "using overlays of Image Views.")
 
-        mat1, mat2 = overlay[0], overlay[1]
+        mat1, mat2 = overlay.get(0), overlay.get(1)
         val_dims = [mat1.value_dimensions, mat2.value_dimensions]
 
         if tuple(len(el) for el in val_dims) != (1,1):
@@ -90,9 +90,9 @@ class cyclic_difference(ElementOperation):
             normfn = raster_normalization.instance()
             overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
 
-        return Image(self.difference(overlay[0].data, overlay[1].data),
-                      bounds=self.get_overlay_bounds(overlay),
-                      group=self.p.value)
+        return Image(self.difference(overlay.get(0).data, overlay.get(1).data),
+                     bounds=self.get_overlay_bounds(overlay),
+                     group=self.p.value)
 
 
 
@@ -133,8 +133,8 @@ class toHCS(ElementOperation):
         else:
             overlay = normfn.process_element(overlay, key)
 
-        hue, confidence = overlay[0], overlay[1]
-        strength_data = overlay[2].data if (len(overlay) == 3) else np.ones(hue.shape)
+        hue, confidence = overlay.get(0), overlay.get(1)
+        strength_data = overlay.get(2).data if (len(overlay) == 3) else np.ones(hue.shape)
 
         hue_data = hue.data
         hue_range = hue.value_dimensions[0].range
