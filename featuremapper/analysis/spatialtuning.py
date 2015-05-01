@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 import param
 
 from holoviews import OrderedDict
-from holoviews import Curve, ItemTable, ElementOperation
+from holoviews import Curve, ItemTable, ElementOperation, TreeOperation
 
 
 #====================================#
@@ -57,7 +57,7 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
             ocsi = (r0 - rorth) / r0
         except:
             ocsi = np.NaN
-        return [ItemTable({'OCSI': ocsi}, label='Orientation Contrast Suppression')]
+        return ItemTable({'OCSI': ocsi}, label='Orientation Contrast Suppression')
 
 
 
@@ -88,7 +88,7 @@ class FrequencyTuningAnalysis(TuningCurveAnalysis):
         table_data = {'Peak': peak_freq, 'Lower': lower_cutoff,
                       'Upper': upper_cutoff, 'QFactor': qfactor,
                       'Bandwidth': upper_cutoff - lower_cutoff}
-        return [ItemTable(table_data, label='Frequency Tuning Analysis')]
+        return ItemTable(table_data, label='Frequency Tuning Analysis')
 
 
 class SizeTuningPeaks(TuningCurveAnalysis):
@@ -126,7 +126,7 @@ class SizeTuningPeaks(TuningCurveAnalysis):
         else:
             table_data['SI'] = 0
             table_data['CSI'] = 0
-        return [ItemTable(table_data, label='Size Tuning Analysis')]
+        return ItemTable(table_data, label='Size Tuning Analysis')
 
 
 
@@ -148,9 +148,9 @@ class SizeTuningShift(ElementOperation):
             shift = low_table['Peak Size'] / high_table['Peak Size']
         except:
             shift = np.NaN
-        return [ItemTable(dict(CSS=shift, Low=low_table['Peak Size'],
-                               High=high_table['Peak Size']),
-                          label='Contrast Dependent Size Tuning Shift')]
+        return ItemTable(dict(CSS=shift, Low=low_table['Peak Size'],
+                              High=high_table['Peak Size']),
+                         label='Contrast Dependent Size Tuning Shift')
 
 
 class DoGModelFit(TuningCurveAnalysis):
