@@ -57,7 +57,9 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
             ocsi = (r0 - rorth) / r0
         except:
             ocsi = np.NaN
-        return ItemTable({'OCSI': ocsi}, label='Orientation Contrast Suppression')
+        data = OrderedDict([('OCSI', ocsi)])
+        return ItemTable(data, group='Orientation Contrast Suppression',
+                         label=curve.label)
 
 
 
@@ -88,7 +90,7 @@ class FrequencyTuningAnalysis(TuningCurveAnalysis):
         table_data = {'Peak': peak_freq, 'Lower': lower_cutoff,
                       'Upper': upper_cutoff, 'QFactor': qfactor,
                       'Bandwidth': upper_cutoff - lower_cutoff}
-        return ItemTable(table_data, label='Frequency Tuning Analysis')
+        return ItemTable(OrderedDict(table_data), label='Frequency Tuning Analysis')
 
 
 class SizeTuningPeaks(TuningCurveAnalysis):
@@ -148,9 +150,10 @@ class SizeTuningShift(ElementOperation):
             shift = low_table['Peak Size'] / high_table['Peak Size']
         except:
             shift = np.NaN
-        return ItemTable(dict(CSS=shift, Low=low_table['Peak Size'],
-                              High=high_table['Peak Size']),
-                         label='Contrast Dependent Size Tuning Shift')
+        data = OrderedDict([('CSS', shift), ('Low', low_table['Peak Size']),
+                            ('High', high_table['Peak Size'])])
+        return ItemTable(data, group='Contrast Dependent Size Tuning Shift',
+                         label=low_contrast.label)
 
 
 class DoGModelFit(TuningCurveAnalysis):
