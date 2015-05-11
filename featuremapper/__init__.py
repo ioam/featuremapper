@@ -644,8 +644,8 @@ class FeatureCurves(FeatureResponses):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
                 im = Image(y_axis_values, output_metadata['bounds'],
-                           label=' '.join([name, curve_label]),
-                           group='Response', value_dimensions=['Response'])
+                           label=name, group=' '.join([curve_label, 'Response']),
+                           value_dimensions=['Response'])
                 im.metadata = metadata.copy()
                 results[(curve_label, name)][key] = im
             if p.store_responses:
