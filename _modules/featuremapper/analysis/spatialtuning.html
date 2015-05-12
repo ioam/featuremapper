@@ -124,7 +124,9 @@
             <span class="n">ocsi</span> <span class="o">=</span> <span class="p">(</span><span class="n">r0</span> <span class="o">-</span> <span class="n">rorth</span><span class="p">)</span> <span class="o">/</span> <span class="n">r0</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">ocsi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">({</span><span class="s">&#39;OCSI&#39;</span><span class="p">:</span> <span class="n">ocsi</span><span class="p">},</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s">&#39;OCSI&#39;</span><span class="p">,</span> <span class="n">ocsi</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s">&#39;Orientation Contrast Suppression&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="n">curve</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
 
 
 </div>
@@ -155,7 +157,7 @@
         <span class="n">table_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Peak&#39;</span><span class="p">:</span> <span class="n">peak_freq</span><span class="p">,</span> <span class="s">&#39;Lower&#39;</span><span class="p">:</span> <span class="n">lower_cutoff</span><span class="p">,</span>
                       <span class="s">&#39;Upper&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span><span class="p">,</span> <span class="s">&#39;QFactor&#39;</span><span class="p">:</span> <span class="n">qfactor</span><span class="p">,</span>
                       <span class="s">&#39;Bandwidth&#39;</span><span class="p">:</span> <span class="n">upper_cutoff</span> <span class="o">-</span> <span class="n">lower_cutoff</span><span class="p">}</span>
-        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">table_data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Frequency Tuning Analysis&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">table_data</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;Frequency Tuning Analysis&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="SizeTuningPeaks"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.SizeTuningPeaks">[docs]</a><span class="k">class</span> <span class="nc">SizeTuningPeaks</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
@@ -215,9 +217,10 @@
             <span class="n">shift</span> <span class="o">=</span> <span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">CSS</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">Low</span><span class="o">=</span><span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">],</span>
-                              <span class="n">High</span><span class="o">=</span><span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
-                         <span class="n">label</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s">&#39;CSS&#39;</span><span class="p">,</span> <span class="n">shift</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;Low&#39;</span><span class="p">,</span> <span class="n">low_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">]),</span>
+                            <span class="p">(</span><span class="s">&#39;High&#39;</span><span class="p">,</span> <span class="n">high_table</span><span class="p">[</span><span class="s">&#39;Peak Size&#39;</span><span class="p">])])</span>
+        <span class="k">return</span> <span class="n">ItemTable</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="s">&#39;Contrast Dependent Size Tuning Shift&#39;</span><span class="p">,</span>
+                         <span class="n">label</span><span class="o">=</span><span class="n">low_contrast</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="DoGModelFit"><a class="viewcode-back" href="../../../Reference_Manual/featuremapper.analysis.html#featuremapper.analysis.spatialtuning.DoGModelFit">[docs]</a><span class="k">class</span> <span class="nc">DoGModelFit</span><span class="p">(</span><span class="n">TuningCurveAnalysis</span><span class="p">):</span>
