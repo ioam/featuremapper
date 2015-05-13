@@ -683,21 +683,21 @@ class ReverseCorrelation(FeatureResponses):
         return results
 
 
-    def _compute_roi(self, p, out_label):
-        rows, cols = self.metadata.outputs[out_label]['shape']
+    def _compute_roi(self, p, out_metadata):
+        rows, cols = out_metadata['shape']
+        out_bounds = out_metadata['bounds']
+        l, b, r, t = out_bounds.lbrt()
+        xdensity = cols / (r - l)
+        ydensity = rows / (t - b)
+        scs = SheetCoordinateSystem(out_bounds, xdensity, ydensity)
         if p.roi != (0, 0, 0, 0):
-            out_bounds = self.metadata.outputs[out_label]['bounds']
-            l, b, r, t = out_bounds.lbrt()
-            xdensity = cols / (r - l)
-            ydensity = rows / (t - b)
-            scs = SheetCoordinateSystem(out_bounds, xdensity, ydensity)
             l, b, r, t = p.roi
             r0, c0 = scs.sheet2matrixidx(l, b)
             r1, c1 = scs.sheet2matrixidx(r, t)
             rows, cols = range(r1, r0), range(c0, c1)
         else:
             rows, cols = range(rows), range(cols)
-        return rows, cols
+        return rows, cols, scs
 
 
     def _initialize_featureresponses(self, p):
@@ -729,7 +729,7 @@ class ReverseCorrelation(FeatureResponses):
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
 
-            rows, cols = self._compute_roi(p, out_label)
+            rows, cols, _ = self._compute_roi(p, self.metadata.outputs[out_label])
 
             rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype)
                                   for r in rows] for c in cols])
@@ -766,7 +766,7 @@ class ReverseCorrelation(FeatureResponses):
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
                 for d in p.durations:
-                    rows, cols = self._compute_roi(p, out_label)
+                    rows, cols, _ = self._compute_roi(p, output_metadata)
                     in_response = responses[(in_label, d)]
                     out_response = responses[(out_label, d)]
                     feature_responses = self._featureresponses[in_label][out_label][d]
@@ -797,25 +797,25 @@ class ReverseCorrelation(FeatureResponses):
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
             output_metadata = self.metadata.outputs[out_label]
-            rows, cols = self._compute_roi(p, out_label)
+
+            rows, cols, scs = self._compute_roi(p, output_metadata)
             time_key = (timestamp, duration)
-            view = GridSpace({}, group='RFs', label=out_label)
+            view = GridSpace(group='RFs', label=out_label)
 
             rc_response = self._featureresponses[in_label][out_label][duration]
 
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
-                    coord = view.matrixidx2sheet(ii, jj)
+                    coord = scs.matrixidx2sheet(ii, jj)
                     im = Image(rc_response[i, j], input_metadata['bounds'],
-                                label=out_label, group='Receptive Field',
-                                value_dimensions=['Weight'])
+                               label=out_label, group='Receptive Field',
+                               value_dimensions=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
                     view[coord] = HoloMap((time_key, im), key_dimensions=dimensions,
                                           label=out_label, group='Receptive Field')
                     view[coord].metadata = AttrDict(**input_metadata)
 
-            label = '%s_Reverse_Correlation' % out_label
-            results.set_path((label, in_label), view)
+            results.set_path(('%s_Reverse_Correlation' % in_label, out_label), view)
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                 results.set_path(('%s_%s_%s' % info, out_label), self._responses[out_label])
