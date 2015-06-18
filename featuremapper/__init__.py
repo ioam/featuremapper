@@ -493,9 +493,10 @@ class FeatureMaps(FeatureResponses):
     def _set_style(self, feature, map_type):
         fname = feature.name.capitalize()
         style_path = ('Image', fname + map_type.capitalize())
-        if style_path not in Store.options.data:
+        options = Store.options(backend='matplotlib')
+        if style_path not in options.data:
             cyclic = True if feature.cyclic and not map_type == 'selectivity' else False
-            Store.options[style_path] = Options('style', **(dict(cmap='hsv') if cyclic else dict()))
+            options[style_path] = Options('style', **(dict(cmap='hsv') if cyclic else dict()))
 
 
     def _collate_results(self, p):
@@ -825,11 +826,12 @@ from holoviews.core.options import Compositor
 from .analysis import toHCS
 
 #Default styles
-Store.options.Image.Preference = Options('style', cmap='hsv')
-Store.options.Image.Selectivity = Options('style', cmap='gray')
-Store.options.Image.Activity = Options('style', cmap='gray')
-Store.options.Image.Response = Options('style', cmap='gray')
-Store.options.Image.FFT_Power = Options('style', cmap='gray')
+options = Store.options(backend='matplotlib')
+options.Image.Preference = Options('style', cmap='hsv')
+options.Image.Selectivity = Options('style', cmap='gray')
+options.Image.Activity = Options('style', cmap='gray')
+options.Image.Response = Options('style', cmap='gray')
+options.Image.FFT_Power = Options('style', cmap='gray')
 
 # Default channel definitions
 Compositor.register(

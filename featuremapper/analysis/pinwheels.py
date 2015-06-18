@@ -271,7 +271,7 @@ class PinwheelAnalysis(ElementOperation):
         return pinwheels
 
 
-
-Store.options.Points.Pinwheels = Options('style', color= '#f0f0f0', marker= 'o', edgecolors= 'k')
-Store.options.Contours.Imaginary = Options('style', color= 'k', linewidth=1.5)
-Store.options.Contours.Real = Options('style', color= 'w', linewidth=1.5)
+options = Store.options(backend='matplotlib')
+options.Points.Pinwheels = Options('style', color= '#f0f0f0', marker= 'o', edgecolors= 'k')
+options.Contours.Imaginary = Options('style', color= 'k', linewidth=1.5)
+options.Contours.Real = Options('style', color= 'w', linewidth=1.5)

@@ -266,6 +266,7 @@ class PowerSpectrumAnalysis(TreeOperation):
 
 
 # Defining styles
-Store.options.Curve.FFTPowerFit = Options('style', color='r', linewidth=3)
-Store.options.VLine.KMax = Options('style', color='g', linewidth=3)
-Store.options.Histogram.FFTPowerHistogram = Options('style', fc='w', ec='k')
+options = Store.options(backend='matplotlib')
+options.Curve.FFTPowerFit = Options('style', color='r', linewidth=3)
+options.VLine.KMax = Options('style', color='g', linewidth=3)
+options.Histogram.FFTPowerHistogram = Options('style', fc='w', ec='k')
