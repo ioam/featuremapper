@@ -86,9 +86,8 @@ class cyclic_difference(ElementOperation):
         if False in [val_dims[0][0].cyclic, val_dims[1][0].cyclic]:
             raise Exception("Both input Matrices must be defined as cyclic.")
 
-        if self.p.input_ranges:
-            normfn = raster_normalization.instance()
-            overlay = normfn.process_element(overlay, key, *self.p.input_ranges)
+        normfn = raster_normalization.instance()
+        overlay = normfn.process_element(overlay, key)
 
         return Image(self.difference(overlay.get(0).data, overlay.get(1).data),
                      bounds=self.get_overlay_bounds(overlay),
