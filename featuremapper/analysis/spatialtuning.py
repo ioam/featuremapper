@@ -34,7 +34,7 @@ class TuningCurveAnalysis(ElementOperation):
     def _validate_curve(self, curve):
         if not isinstance(curve, Curve):
             raise Exception('Supplied views need to be curves.')
-        elif not self.feature in curve.key_dimensions[0].name:
+        elif not self.p.feature in curve.key_dimensions[0].name:
             raise Exception('Analysis requires %s response curves.' % self.feature)
 
 
@@ -185,12 +185,15 @@ class DoGModelFit(TuningCurveAnalysis):
         xdata = curve.data[:, 0]
         ydata = curve.data[:, 1]
         init_fit = [self.p.get(l, self.defaults()[l]) for l in self.fit_labels]
-        table = SizeTuningPeaks(curve)
+        try:
+            table = SizeTuningPeaks(curve)
 
-        if self.a == self.p.a:
-            init_fit[self.fit_labels.index('a')] = table['Peak Size']/2.
-        if self.b == self.p.b:
-            init_fit[self.fit_labels.index('b')] = table['Suppression Size']/2.
+            if self.a == self.p.a:
+                init_fit[self.fit_labels.index('a')] = table['Peak Size']/2.
+            if self.b == self.p.b:
+                init_fit[self.fit_labels.index('b')] = table['Suppression Size']/2.
+        except:
+            pass
 
         try:
             fit, pcov = curve_fit(self._function, xdata, ydata,
@@ -200,14 +203,29 @@ class DoGModelFit(TuningCurveAnalysis):
             b = fit[self.fit_labels.index('b')]
             K_c = fit[self.fit_labels.index('K_c')]
             a = fit[self.fit_labels.index('a')]
-            fit_data['SI'] = (K_s*b)/(K_c*a)
-            fitted_ydata = [self._function(x, *fit) for x in xdata]
-            if max(fitted_ydata) == 10000: raise Exception()
+            fitted_ydata = self._function(xdata, *fit)
+
+            peak_idx = np.argmax(fitted_ydata)
+            min_idx = np.argmin(fitted_ydata[peak_idx:]) + peak_idx
+            counter_idx = np.argmax(fitted_ydata[min_idx:]) + min_idx
+
+            max_response = np.max(ydata)
+            peak_size = xdata[peak_idx]
+            r_max = fitted_ydata[peak_idx]
+            suppression_size = xdata[min_idx]
+            r_min = fitted_ydata[min_idx]
+            counter_size = xdata[counter_idx]
+            r_cs = fitted_ydata[counter_idx]
+
+            fit_data['SI'] = (r_max-r_min)/r_max
+            fit_data['Peak'] = peak_size
+
             fitted_curve = Curve(zip(xdata, fitted_ydata), group='Response',
-                                 label='Size Tuning Fit', dimensions=curve.dimensions)
+                                 label='Size Tuning Fit', kdims=curve.kdims,
+                                 vdims=curve.vdims)(style=dict(color='k', linestyle='-.'))
         except:
             fitted_curve = Curve(zip(xdata, np.zeros(len(xdata))),
-                                 dimensions=curve.dimensions)
+                                 kdims=curve.kdims, vdims=curve.vdims)
             fit_data = dict(zip(self.fit_labels, [0]*len(self.fit_labels)))
             fit_data['SI'] = 0
         return [fitted_curve, fit_data]
@@ -236,22 +254,48 @@ class Size_iDoGModel(DoGModelFit):
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         fitted_curve, fit_data = self._fit_curve(curve)
-        return [curve*fitted_curve, ItemTable(fit_data, label=self.p.label)]
+        return curve*fitted_curve + ItemTable(OrderedDict(fit_data), label=self.p.label)
 
-    def _function(self, d, R_0, K_c, K_s, a, b):
-        # Fitting penalties
-        if (K_c <= 0) or (K_s <= 0) or (a <= 0) or (b <= 0):
-            return 10000
-        if (idog_conv(a) > 2) or (idog_conv(b) > 2):
-            return 10000
-        if (K_c > 500) or (K_s > 100):
-            return 10000
-
-        r = d / 2.0
-        R_e = K_c * (a / 2 - ((a / 2) * np.exp(-(r ** 2 / a))))
-        R_i = K_s * (b / 2 - ((b / 2) * np.exp(-(r ** 2 / b))))
+    @classmethod
+    def _function(cls, d, R_0, K_c, K_s, a, b):
+        R_e = K_c * (1-np.exp(-(2*d/a)**2))
+        R_i = K_s * (1-np.exp(-(2*d/b)**2))
 
         return R_0 + R_e - R_i
+
+
+class Size_DivDoGModel(DoGModelFit):
+    """
+    iDoG model response function to sine grating disk stimulus
+    with optimal spatial frequency and varying disk radius (r).
+    Ref: Sceniak et al. (2006) - page 3476
+    Fitting parameters: R_0 - Steady-state response
+                        K_c - Center strength
+                        a   - Center spatial constant
+                        K_s - Surround Strength
+                        b   - Surround spatial constant
+    """
+
+    R_0 = param.Number(default=0, doc="Baseline response.")
+
+    label = param.String(default='IDoG Model Fit')
+
+    fit_labels = ['R_0', 'K_c', 'K_s', 'a', 'b']
+
+    feature = param.String(default='Size')
+
+    def _process(self, curve, key=None):
+        self._validate_curve(curve)
+        fitted_curve, fit_data = self._fit_curve(curve)
+        return curve*fitted_curve + ItemTable(OrderedDict(fit_data), label=self.p.label)
+
+    @classmethod
+    def _function(cls, d, R_0, K_c, K_s, a, b):
+        if a < 0:
+            return 10**8
+        R_e = K_c * (1-np.exp(-(2*d/a)**2))
+        R_i = K_s * (1-np.exp(-(2*d/b)**2))
+        return R_0 + R_e / (1+R_i)
 
 
 class SF_DoGModel(DoGModelFit):
@@ -272,7 +316,7 @@ class SF_DoGModel(DoGModelFit):
 
     fit_labels = ['R_0', 'K_c', 'K_s', 'a', 'b']
 
-    feature = param.String(default='Size')
+    feature = param.String(default='Frequency')
 
     def _process(self, curve, key=None):
         if 'Contrast' in key:
