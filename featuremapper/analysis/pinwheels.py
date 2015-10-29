@@ -82,6 +82,7 @@ class PinwheelAnalysis(ElementOperation):
                 cyclic_matrix = input_element
                 bounds = cyclic_matrix.bounds
                 cyclic_range = input_element.value_dimensions[0].range
+                label = cyclic_matrix.label
                 break
         else:
             raise Exception("Pinwheel analysis requires a Matrix over a cyclic quantity")
@@ -98,14 +99,17 @@ class PinwheelAnalysis(ElementOperation):
             self.warning("Contour identification failed:\n%s" % str(e))
             contour_info = None
 
+        pinwheels = None
         if contour_info is not None:
             (re_contours, im_contours, intersections) = contour_info
             pinwheels = self.identify_pinwheels(*(re_contours, im_contours, intersections),
                                                 silence_warnings=self.p.silence_warnings)
         else:
-            pinwheels, re_contours, im_contours = np.array([[],[]]).T, [], []
+            re_contours, im_contours = [], []
 
-        label = cyclic_matrix.label
+        if not pinwheels:
+            pinwheels = np.zeros((0, 2))
+
         pinwheels = Points(np.array(pinwheels), label=label, group='Pinwheels')
 
         if self.p.include_contours:
