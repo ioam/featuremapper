@@ -1,0 +1,17 @@
+<map id="inheritance18d0462045" name="inheritance18d0462045">
+<area shape="rect" id="node1" href="#featuremapper.analysis.spatialtuning.DoGModelFit" title="params(K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="779,45,927,56"/>
+<area shape="rect" id="node4" href="#featuremapper.analysis.spatialtuning.NormalizationDoGModel" title="params(beta=Number, default_contrast=Number, label=String, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="969,2,1149,13"/>
+<area shape="rect" id="node6" href="#featuremapper.analysis.spatialtuning.SF_DoGModel" title="params(R_0=Number, label=String, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="984,23,1135,34"/>
+<area shape="rect" id="node10" href="#featuremapper.analysis.spatialtuning.Size_DivDoGModel" title="params(R_0=Number, label=String, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="977,45,1142,56"/>
+<area shape="rect" id="node11" href="#featuremapper.analysis.spatialtuning.Size_iDoGModel" title="params(R_0=Number, label=String, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="981,66,1138,77"/>
+<area shape="rect" id="node12" href="#featuremapper.analysis.spatialtuning.iDoG_DeAngelisModel" title="params(R_0=Number, label=String, K_c=Number, K_s=Number, a=Number, b=Number, max_iterations=Number, feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="972,87,1146,98"/>
+<area shape="rect" id="node2" href="#featuremapper.analysis.spatialtuning.TuningCurveAnalysis" title="params(feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="569,77,737,88"/>
+<area shape="rect" id="node3" href="#featuremapper.analysis.spatialtuning.FrequencyTuningAnalysis" title="params(feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="763,66,944,77"/>
+<area shape="rect" id="node5" href="#featuremapper.analysis.spatialtuning.OrientationContrastAnalysis" title="params(feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="758,87,948,98"/>
+<area shape="rect" id="node7" href="#featuremapper.analysis.spatialtuning.SizeTuningPeaks" title="params(feature=String, input_ranges=ClassSelector, group=String, name=String)" alt="" coords="774,108,932,119"/>
+<area shape="rect" id="node8" href="#featuremapper.analysis.spatialtuning.SizeTuningShift" title="params(input_ranges=ClassSelector, group=String, name=String)" alt="" coords="576,98,731,109"/>
+<area shape="rect" id="node9" title="params(input_ranges=ClassSelector, group=String, name=String)" alt="" coords="418,88,548,99"/>
+<area shape="rect" id="node13" title="params(group=String, name=String)" alt="" coords="290,88,397,99"/>
+<area shape="rect" id="node14" title="params(name=String)" alt="" coords="135,88,269,99"/>
+<area shape="rect" id="node15" title="params(name=String)" alt="" coords="2,88,114,99"/>
+</map>
