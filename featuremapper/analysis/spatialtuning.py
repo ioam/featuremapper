@@ -182,8 +182,8 @@ class DoGModelFit(TuningCurveAnalysis):
         raise NotImplementedError
 
     def _fit_curve(self, curve):
-        xdata = curve.data[:, 0]
-        ydata = curve.data[:, 1]
+        xdata = curve.dimension_values(0)
+        ydata = curve.dimension_values(1)
         init_fit = [self.p.get(l, self.defaults()[l]) for l in self.fit_labels]
         try:
             table = SizeTuningPeaks(curve)
