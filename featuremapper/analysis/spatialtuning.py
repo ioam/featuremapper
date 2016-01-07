@@ -45,7 +45,7 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
 
     def _process(self, curve, key=None):
         self._validate_curve(curve)
-        ydata = curve.data[:, 1]
+        ydata = curve.dimension_values(1)
         n_ors = len(ydata)
         if n_ors % 2:
             raise Exception("Curve does not have even number of samples.")
@@ -73,8 +73,8 @@ class FrequencyTuningAnalysis(TuningCurveAnalysis):
 
     def _process(self, curve, key=None):
         self._validate_curve(curve)
-        xdata = curve.data[:, 0]
-        ydata = curve.data[:, 1]
+        xdata = curve.dimension_values(0)
+        ydata = curve.dimension_values(1)
 
         peak_strength = np.max(ydata)
         peak_idx = np.argmax(ydata)
@@ -105,8 +105,8 @@ class SizeTuningPeaks(TuningCurveAnalysis):
 
     def _process(self, curve, key=None):
         self._validate_curve(curve)
-        xdata = curve.data[:, 0]
-        ydata = curve.data[:, 1]
+        xdata = curve.dimension_values(0)
+        ydata = curve.dimension_values(1)
 
         peak_idx = np.argmax(ydata)
         min_idx = np.argmin(ydata[peak_idx:]) + peak_idx
