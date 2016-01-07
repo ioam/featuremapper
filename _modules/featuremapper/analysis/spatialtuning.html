@@ -249,8 +249,8 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="nf">_fit_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">):</span>
-        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">init_fit</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">()[</span><span class="n">l</span><span class="p">])</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_labels</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">table</span> <span class="o">=</span> <span class="n">SizeTuningPeaks</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
