@@ -112,7 +112,7 @@
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">n_ors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n_ors</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Curve does not have even number of samples.&quot;</span><span class="p">)</span>
@@ -140,8 +140,8 @@
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">peak_strength</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
         <span class="n">peak_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
@@ -172,8 +172,8 @@
 
     <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
-        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">xdata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">curve</span><span class="o">.</span><span class="n">dimension_values</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">peak_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
         <span class="n">min_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">ydata</span><span class="p">[</span><span class="n">peak_idx</span><span class="p">:])</span> <span class="o">+</span> <span class="n">peak_idx</span>
