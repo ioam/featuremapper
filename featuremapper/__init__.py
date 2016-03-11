@@ -275,12 +275,12 @@ class FeatureResponses(PatternDrivenAnalysis):
         self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
                                                          p.durations, *self.outer_vals)]
 
-        ndmapping_fn = lambda: NdMapping(key_dimensions=dimensions)
+        ndmapping_fn = lambda: NdMapping(kdims=dimensions)
         self._featureresponses = defaultdict(ndmapping_fn)
         self._activities = defaultdict(ndmapping_fn)
         if p.store_responses:
             response_dimensions = [features.Time]+dimensions+list(self.inner)
-            response_map_fn = lambda: HoloMap(key_dimensions=response_dimensions)
+            response_map_fn = lambda: HoloMap(kdims=response_dimensions)
             self._responses = defaultdict(response_map_fn)
 
         for label in self.measurement_product:
@@ -550,7 +550,7 @@ class FeatureMaps(FeatureResponses):
                         im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
-                            vmap = HoloMap((key, im), key_dimensions=dimensions,
+                            vmap = HoloMap((key, im), kdims=dimensions,
                                            label=name, group=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
@@ -630,7 +630,7 @@ class FeatureCurves(FeatureResponses):
             # Create top level NdMapping indexing over time, duration, the outer
             # feature dimensions and the x_axis dimension
             if (curve_label, name) not in results:
-                vmap = HoloMap(key_dimensions=dimensions,
+                vmap = HoloMap(kdims=dimensions,
                                group=curve_label, label=name)
                 vmap.metadata = AttrDict(**output_metadata)
                 results.set_path((curve_label, name), vmap)
@@ -721,7 +721,7 @@ class ReverseCorrelation(FeatureResponses):
 
         if p.store_responses:
             response_dimensions = [features.Time, features.Duration]+self.outer+self.inner
-            response_map_fn = lambda: HoloMap(key_dimensions=response_dimensions)
+            response_map_fn = lambda: HoloMap(kdims=response_dimensions)
             self._responses = defaultdict(response_map_fn)
 
         # Set up the featureresponses measurement dict
@@ -812,7 +812,7 @@ class ReverseCorrelation(FeatureResponses):
                                label=out_label, group='Receptive Field',
                                value_dimensions=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
-                    view[coord] = HoloMap((time_key, im), key_dimensions=dimensions,
+                    view[coord] = HoloMap((time_key, im), kdims=dimensions,
                                           label=out_label, group='Receptive Field')
                     view[coord].metadata = AttrDict(**input_metadata)
 
