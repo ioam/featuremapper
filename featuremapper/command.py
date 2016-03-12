@@ -434,7 +434,8 @@ class measure_rfs(SingleInputResponseCommand):
 
     static_parameters = param.List(default=["scale", "offset"])
 
-    pattern_generator = param.Callable(default=random.UniformRandom(name='UniformNoise'),
+    pattern_generator = param.Callable(default=random.UniformRandom(name='UniformNoise',
+                                                                    time_dependent=False),
        doc="""Presented pattern for reverse correlation, usually white noise.""")
 
     presentations = param.Number(default=100, doc="""
@@ -443,6 +444,9 @@ class measure_rfs(SingleInputResponseCommand):
     roi = param.NumericTuple(default=(0, 0, 0, 0), doc="""
        If non-zero ROI bounds is specified only the RFs in that
        subregion are recorded.""")
+
+    store_responses = param.Boolean(default=False, doc="""
+       Whether to record the responses to individual patterns""")
 
     __abstract = True
 
@@ -456,7 +460,8 @@ class measure_rfs(SingleInputResponseCommand):
                                      outputs=p.outputs, roi=p.roi,
                                      static_features=static_params,
                                      pattern_response_fn=p.pattern_response_fn,
-                                     pattern_generator=p.pattern_generator)
+                                     pattern_generator=p.pattern_generator,
+                                     store_responses=p.store_responses)
         self._restore_presenter_defaults()
 
         return results

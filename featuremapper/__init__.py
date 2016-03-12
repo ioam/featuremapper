@@ -678,9 +678,6 @@ class ReverseCorrelation(FeatureResponses):
 
         results = self._collate_results(p)
 
-        if p.measurement_storage_hook:
-            p.measurement_storage_hook(results)
-
         return results
 
 
@@ -766,6 +763,7 @@ class ReverseCorrelation(FeatureResponses):
         timestamp = self.metadata['timestamp']
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
+                grid_key = (in_label, out_label)
                 for d in p.durations:
                     rows, cols, _ = self._compute_roi(p, output_metadata)
                     in_response = responses[(in_label, d)]
@@ -779,7 +777,11 @@ class ReverseCorrelation(FeatureResponses):
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
                         self._responses[out_label][key] = Image(out_response.copy(), bounds,
-                                                                 label='Response')
+                                                                group='Response',
+                                                                label=out_label)
+                        self._responses[in_label][key] = Image(in_response.copy(), bounds,
+                                                               group='Response',
+                                                               label=in_label)
 
 
     def _collate_results(self, p):
@@ -794,17 +796,22 @@ class ReverseCorrelation(FeatureResponses):
         pattern_dimensions = self.outer + self.inner
         pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
 
+        grids, responses = {}, {}
         for labels in self.measurement_product:
             in_label, out_label, duration = labels
             input_metadata = self.metadata.inputs[in_label]
             output_metadata = self.metadata.outputs[out_label]
-
             rows, cols, scs = self._compute_roi(p, output_metadata)
             time_key = (timestamp, duration)
-            view = GridSpace(group='RFs', label=out_label)
 
+            grid_key = (in_label, out_label)
+            if grid_key not in grids:
+                if p.store_responses:
+                    responses[in_label] = self._responses[in_label]
+                    responses[out_label] = self._responses[out_label]
+                grids[grid_key] = GridSpace(group='RFs', label=out_label)
+            view = grids[grid_key]
             rc_response = self._featureresponses[in_label][out_label][duration]
-
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
                     coord = scs.matrixidx2sheet(ii, jj)
@@ -812,14 +819,22 @@ class ReverseCorrelation(FeatureResponses):
                                label=out_label, group='Receptive Field',
                                value_dimensions=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
-                    view[coord] = HoloMap((time_key, im), kdims=dimensions,
-                                          label=out_label, group='Receptive Field')
-                    view[coord].metadata = AttrDict(**input_metadata)
 
+                    if coord in view:
+                        view[coord][time_key] = im
+                    else:
+                        view[coord] = HoloMap((time_key, im), kdims=dimensions,
+                                              label=out_label, group='Receptive Field')
+                    view[coord].metadata = AttrDict(**input_metadata)
+        for (in_label, out_label), view in grids.items():
             results.set_path(('%s_Reverse_Correlation' % in_label, out_label), view)
             if p.store_responses:
-                info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
-                results.set_path(('%s_%s_%s' % info, out_label), self._responses[out_label])
+                info = (p.pattern_generator.__class__.__name__,
+                        pattern_dim_label, 'Response')
+                results.set_path(('%s_%s_%s' % info, in_label),
+                                 responses[in_label])
+                results.set_path(('%s_%s_%s' % info, out_label),
+                                 responses[out_label])
         return results
 
 from holoviews.core.options import Compositor
