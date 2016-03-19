@@ -4,7 +4,7 @@ import param
 
 from holoviews import Dimension
 
-from distribution import DistributionStatisticFn, DSF_WeightedAverage
+from .distribution import DistributionStatisticFn, DSF_WeightedAverage
 
 
 
