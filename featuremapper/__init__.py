@@ -609,8 +609,9 @@ class FeatureCurves(FeatureResponses):
         timestamp = self.metadata.timestamp
         axis_name = p.x_axis.capitalize()
         axis_feature = [f for f in self.features if f.name.lower() == p.x_axis][0]
+        if axis_feature.cyclic:
+            axis_feature.values.append(axis_feature.range[1])
         curve_label = ''.join([p.measurement_prefix, axis_name, 'Tuning'])
-
         dimensions = [features.Time, features.Duration] + [f for f in self.outer] + [axis_feature]
         pattern_dimensions = self.outer + self.inner
         pattern_dim_label = '_'.join(f.name.capitalize() for f in pattern_dimensions)
@@ -649,6 +650,9 @@ class FeatureCurves(FeatureResponses):
                            value_dimensions=['Response'])
                 im.metadata = metadata.copy()
                 results[(curve_label, name)][key] = im
+                if axis_feature.cyclic and x == axis_feature.range[0]:
+                    symmetric_key = (timestamp,)+f_vals+(axis_feature.range[1],)
+                    results[(curve_label, name)][symmetric_key] = im
             if p.store_responses:
                 info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                 results.set_path(('%s_%s_%s' % info, name), self._responses[name])

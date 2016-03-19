@@ -91,7 +91,9 @@ Direction           = FullCycle("Direction")
 Phase               = FullCycle("Phase")
 PhaseDisparity      = FullCycle("PhaseDisparity")
 
-HalfCycle           = Cyclic("half cycle", range=(0, np.pi))
+HalfCycle           = Cyclic("half cycle", range=(0, np.pi),
+                             value_format=degree_formatter,
+                             unit="$^{\circ}$")
 Orientation         = HalfCycle("Orientation")
 OrientationSurround = HalfCycle("OrientationSurround",
                                 range=(-np.pi/2., np.pi/2.))

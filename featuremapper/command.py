@@ -1196,10 +1196,8 @@ class measure_orientation_contrast(UnitCurveCommand):
 
     def _feature_list(self, p):
         return [f.Frequency(values=p.frequencies),
-                f.Phase(steps=p.num_phase,
-                        preference_fn=DSF_MaxValue()),
-                f.OrientationSurround(values=self.or_surrounds,
-                                      preference_fn=DSF_MaxValue()),
+                f.Phase(steps=p.num_phase),
+                f.OrientationSurround(values=self.or_surrounds),
                 f.ContrastSurround(values=p.contrastsurround,
                                    preference_fn=None)]
 
