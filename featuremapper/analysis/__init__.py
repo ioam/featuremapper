@@ -137,7 +137,7 @@ class center_cyclic(ElementOperation):
         dim = dim(range=new_range)
         data = {dim.name: np.linspace(dim.range[0], dim.range[1], length)}
         for d in element.dimensions()[1:]:
-            rolled = np.roll(element.dimension_values(d)[:-1], shift) % cyclic_range
+            rolled = np.roll(element.dimension_values(d)[:-1], shift)
             data[d.name] = np.concatenate([rolled, [rolled[0]]])
         return element.clone(data, kdims=[dim])
 
