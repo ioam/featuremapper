@@ -94,6 +94,54 @@ class cyclic_difference(ElementOperation):
                      group=self.p.value)
 
 
+class center_cyclic(ElementOperation):
+    """
+    Centers the values in a 1D Element on the index returned
+    by the supplied function (by default the argmax). Element
+    must have only one key dimension, which must be cyclic
+    and declare the range. If set to be relative absolute
+    cyclic values are discarded and object will be indexed
+    by the cyclic range symmetric around the center.
+    """
+
+    function = param.Callable(default=np.argmax, doc="""
+        Function to compute the index of the center value.""")
+
+    dimension = param.ClassSelector(class_=(int, str, hv.Dimension),
+                                    default=1, doc="""
+        The dimension to apply the function on to compute the center index.""")
+
+    relative = param.Boolean(default=True, doc="""
+        Whether the x-values should be relative or absolute.""")
+
+    def _process(self, element, key=None):
+        dim = element.get_dimension(0)
+        if len(element.kdims) != 1:
+            raise Exception("Can only center elements with one key dimension.")
+        if not dim.cyclic:
+            raise Exception("Cannot center non cyclic Element.")
+        elif dim.range[0] is None or dim.range[1] is None:
+            raise Exception("Must define cyclic range to center Element.")
+
+        # Compute required shift and x-values
+        length = len(element)
+        center = element.dimension_values(self.dimension).argmax()
+        shift = int(length/2) - center
+        cyclic_range = dim.range[1] - dim.range[0]
+        half_range = cyclic_range/2.
+        xvals = element.dimension_values(0)
+        offset = 0 if self.p.relative else xvals[center]
+        new_range = (offset-half_range, offset+half_range)
+
+        # Roll the remaining dimensions
+        dim = dim(range=new_range)
+        data = {dim.name: np.linspace(dim.range[0], dim.range[1], length)}
+        for d in element.dimensions()[1:]:
+            rolled = np.roll(element.dimension_values(d)[:-1], shift) % cyclic_range
+            data[d.name] = np.concatenate([rolled, [rolled[0]]])
+        return element.clone(data, kdims=[dim])
+
+
 
 class toHCS(ElementOperation):
     """
