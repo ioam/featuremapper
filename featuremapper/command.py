@@ -1176,22 +1176,17 @@ class measure_orientation_contrast(UnitCurveCommand):
 
         results = {}
         for coord in p.coords:
-            self.or_surrounds = []
             orientation = p.preference_lookup_fn('orientation', p.outputs[0],
-                                                 coord,
-                                                 default=p.orientation_center)
+                                                 coord, default=p.orientation_center)
             p.orientationcenter = orientation
-
-            orientation_step = np.pi / (p.num_orientation - 1)
-            for i in xrange(0, p.num_orientation - 1):
-                self.or_surrounds.append(
-                    orientation - np.pi / 2 + i * orientation_step)
-
+            p.phase = p.preference_lookup_fn('phase', p.outputs[0],
+                                             coord, default=p.orientation_center)
             p.x = p.preference_lookup_fn('x', p.outputs[0], coord,
                                          default=coord[0])
             p.y = p.preference_lookup_fn('y', p.outputs[0], coord,
                                          default=coord[1])
 
+            self.or_surrounds = list(np.linspace(-np.pi/2, np.pi/2, p.num_orientation))
             results[coord] = self._compute_curves(p)
         results = self._populate_grid(results)
 
@@ -1200,9 +1195,11 @@ class measure_orientation_contrast(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Phase(steps=p.num_phase),
-                f.Frequency(values=p.frequencies),
-                f.OrientationSurround(values=self.or_surrounds),
+        return [f.Frequency(values=p.frequencies),
+                f.Phase(steps=p.num_phase,
+                        preference_fn=DSF_MaxValue()),
+                f.OrientationSurround(values=self.or_surrounds,
+                                      preference_fn=DSF_MaxValue()),
                 f.ContrastSurround(values=p.contrastsurround,
                                    preference_fn=None)]
 
