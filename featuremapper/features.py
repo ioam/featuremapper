@@ -69,6 +69,10 @@ class Feature(Dimension):
         Feature.definitions[self.name] = self
 
 
+def degree_formatter(x, pos=None):
+    return str(int(np.rad2deg(x)))
+
+
 # Basic features
 Float   = Feature("float", type=float)
 Integer = Feature("float", type=int)
@@ -78,7 +82,10 @@ Integer = Feature("float", type=int)
 Cyclic              = Float("cyclic", cyclic=True, unit="rad")
 Hue                 = Cyclic("hue", range=(0.0, 1.0))
 
-FullCycle           = Cyclic("full cycle", range=(0, 2*np.pi))
+FullCycle           = Cyclic("full cycle",
+                             value_format=degree_formatter,
+                             range=(0, 2*np.pi),
+                             unit="$^{\circ}$")
 Angle               = FullCycle("Angle")
 Direction           = FullCycle("Direction")
 Phase               = FullCycle("Phase")
@@ -86,7 +93,8 @@ PhaseDisparity      = FullCycle("PhaseDisparity")
 
 HalfCycle           = Cyclic("half cycle", range=(0, np.pi))
 Orientation         = HalfCycle("Orientation")
-OrientationSurround = HalfCycle("OrientationSurround")
+OrientationSurround = HalfCycle("OrientationSurround",
+                                range=(-np.pi/2., np.pi/2.))
 
 # Non-cyclic features
 Frequency    = Float("Frequency", unit="cycles per unit distance")
