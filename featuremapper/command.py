@@ -1169,10 +1169,6 @@ class measure_orientation_contrast(UnitCurveCommand):
     def __call__(self, **params):
         p = ParamOverrides(self, params, allow_extra_keywords=True)
         self._set_presenter_overrides(p)
-        if not p.num_orientation % 2:
-            raise Exception("Use odd number of surround orientation to ensure"
-                            "the orthogonal to the preferred orientation is"
-                            "covered.")
 
         results = {}
         for coord in p.coords:

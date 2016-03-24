@@ -46,11 +46,8 @@ class OrientationContrastAnalysis(TuningCurveAnalysis):
     def _process(self, curve, key=None):
         self._validate_curve(curve)
         ydata = curve.dimension_values(1)
-        n_ors = len(ydata)
-        if n_ors % 2:
-            raise Exception("Curve does not have even number of samples.")
+        n_ors = len(curve)
         r0_index = int(n_ors/2)
-
         r0 = ydata[r0_index]
         rorth = ydata[0]
         try:
