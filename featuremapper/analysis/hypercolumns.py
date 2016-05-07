@@ -87,15 +87,16 @@ class PowerSpectrumAnalysis(TreeOperation):
 
     def _process(self, tree, key=None):
 
+        preference = None
         elements = tree.values()
         for element in tree.values():
             layers = element.values() if isinstance(element, Overlay) else [element]
             for el in layers:
                 if isinstance(el, Image) and el.value_dimensions[0].cyclic:
                     preference = el
-                    break
-            else:
-                raise Exception("At least one cyclic matrix required for hypercolumn analysis.")
+
+        if preference is None:
+            raise Exception("At least one cyclic matrix required for hypercolumn analysis.")
 
         pinwheels = self.search(tree, 'Points.Pinwheels')
         if not pinwheels:
@@ -121,8 +122,7 @@ class PowerSpectrumAnalysis(TreeOperation):
 
         kmax = info['kmax']
         info['rho'] = pinwheel_count / (kmax ** 2)
-        info['rho_metric'] = self.gamma_metric(info['rho'])
-        info['rho_metric'] = 0
+        info['rho_metric'] = self.gamma_metric(info['rho'], gamma_k=self.p.gamma_k)
 
         if fit is not None:
             samples = self.fit_samples(dim1/2, 100, fit)
@@ -147,20 +147,22 @@ class PowerSpectrumAnalysis(TreeOperation):
         return elements + analysis
 
 
-    def gamma_dist(self, x, k, theta):
+    @classmethod
+    def gamma_dist(cls, x, k, theta):
         "The gamma distribution used for the gamma metric"
         return (1.0/theta**k)*(1.0/gamma(k)) * x**(k-1) * np.exp(-(x/theta))
 
 
-    def gamma_metric(self, pwd):
+    @classmethod
+    def gamma_metric(cls, pwd, gamma_k):
         """
         The heavily-tailed gamma kernel used to squash the pinwheel
         density into unit range. The maximum value of unity is
         attained when the input pinwheel density is pi.
         """
-        theta = math.pi / (self.p.gamma_k -1) # Mode: (k - 1)* theta
-        norm = self.gamma_dist(math.pi, self.p.gamma_k, theta)
-        return (1.0/norm)*self.gamma_dist(pwd, self.p.gamma_k, theta)
+        theta = math.pi / (gamma_k -1) # Mode: (k - 1)* theta
+        norm = cls.gamma_dist(math.pi, gamma_k, theta)
+        return (1.0/norm)*cls.gamma_dist(pwd, gamma_k, theta)
 
 
     def wavenumber_spectrum(self, spectrum):
