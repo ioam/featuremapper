@@ -46,6 +46,10 @@ class PowerSpectrumAnalysis(TreeOperation):
 
     This is then used to generate a map quality estimate (with unit
     range) based on the pi-pinwheel density criterion.
+
+    If there is an Image with group 'FFT_Power', then this will be used
+    as the polar power spectrum, allowing the analysis of experimental
+    maps.
     """
 
 
@@ -117,7 +121,9 @@ class PowerSpectrumAnalysis(TreeOperation):
             raise Exception("Image must have matching x- and y-density")
         self._density = xdensity
 
-        power_spectrum = fft_power(preference)
+        power_spectrum = self.search(tree, 'Image.FFT_Power')[0]
+        if not power_spectrum:
+            power_spectrum = fft_power(preference)
         (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum.data)
 
         kmax = info['kmax']
