@@ -121,7 +121,10 @@ class PowerSpectrumAnalysis(TreeOperation):
             raise Exception("Image must have matching x- and y-density")
         self._density = xdensity
 
-        power_spectrum = self.search(tree, 'Image.FFT_Power')[0]
+        try:
+            power_spectrum = self.search(tree, 'Image.FFT_Power')[0]
+        except:
+            power_spectrum = None
         if not power_spectrum:
             power_spectrum = fft_power(preference)
         (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum.data)
