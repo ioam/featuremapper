@@ -14,13 +14,14 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import Dimension, TreeOperation
+from holoviews import Dimension
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Overlay, Image
 from holoviews.element.annotation import VLine
 from .raster import fft_power
 
 from .pinwheels import PinwheelAnalysis
+from . import TreeOperation
 
 try: # 2.7+
     gamma = math.gamma
