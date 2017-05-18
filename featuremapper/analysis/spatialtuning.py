@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 import param
 
 from holoviews import OrderedDict
-from holoviews import Curve, ItemTable, ElementOperation, TreeOperation
+from holoviews import Curve, ItemTable, ElementOperation
 
 
 #====================================#
