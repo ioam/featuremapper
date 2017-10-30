@@ -96,7 +96,6 @@ class vectorfield(ElementOperation):
         value_dimensions = [Dimension('Angle', cyclic=True, range=cyclic_dim.range)]
         if lengths is not None:
             value_dimensions.append(Dimension('Magnitude'))
-        print np.array(vector_data).shape
         return VectorField(np.array(vector_data), label=radians.label, group=self.p.group,
                            value_dimensions=value_dimensions)
 
