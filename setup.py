@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 import sys
-from distutils.core import setup
+
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 setup_args = {}
 
@@ -10,10 +14,10 @@ setup_args = {}
 
 required = {'param':">=0.0.1",
             'imagen':">=1.0",
-            'numpy':">=1.0"} 
+            'numpy':">=1.0"}
 
 # optional = {}
-            
+
 packages_to_install = [required]
 packages_to_state = [required]
 
