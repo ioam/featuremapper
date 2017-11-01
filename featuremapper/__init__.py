@@ -4,6 +4,7 @@ FeatureResponses and associated functions and classes.
 These classes implement map and tuning curve measurement based
 on measuring responses while varying features of an input pattern.
 """
+from __future__ import absolute_import
 
 import param
 from param.version import Version

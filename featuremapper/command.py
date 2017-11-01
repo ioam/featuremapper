@@ -13,6 +13,7 @@ set of parameters and some code, and only the bits that are specific
 to that particular plot or analysis appear below.  See the
 superclasses for the rest of the parameters and code.
 """
+from __future__ import absolute_import
 
 import copy
 import ImageDraw
@@ -24,7 +25,6 @@ import param
 from param import ParameterizedFunction, ParamOverrides
 
 from holoviews import HoloMap, Layout
-from holoviews.interface.collector import AttrDict, Collector
 from holoviews.element.raster import Image
 
 import imagen
@@ -33,11 +33,11 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
     OrientationContrast
 from imagen.deprecated import GaussiansCorner
 
-from featuremapper import FeatureResponses, FeatureMaps, FeatureCurves, \
-    ReverseCorrelation
-import features as f
-from metaparams import *
-from distribution import DSF_MaxValue, DistributionStatisticFn, \
+from . import FeatureResponses, FeatureMaps, FeatureCurves, ReverseCorrelation
+from . import features
+from .collector import Collector, AttrDict
+from .metaparams import *
+from .distribution import DSF_MaxValue, DistributionStatisticFn, \
     DSF_WeightedAverage, DSF_BimodalPeaks
 
 
