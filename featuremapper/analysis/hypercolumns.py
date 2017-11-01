@@ -14,13 +14,14 @@ from scipy.optimize import curve_fit
 
 import param
 
-from holoviews import Dimension, TreeOperation
+from holoviews import Dimension
 from holoviews.core.options import Store, Options
 from holoviews import Curve, Histogram, ItemTable, Overlay, Image
 from holoviews.element.annotation import VLine
 from .raster import fft_power
 
 from .pinwheels import PinwheelAnalysis
+from . import TreeOperation
 
 try: # 2.7+
     gamma = math.gamma
@@ -46,6 +47,10 @@ class PowerSpectrumAnalysis(TreeOperation):
 
     This is then used to generate a map quality estimate (with unit
     range) based on the pi-pinwheel density criterion.
+
+    If there is an Image with group 'FFT_Power', then this will be used
+    as the polar power spectrum, allowing the analysis of experimental
+    maps.
     """
 
 
@@ -117,7 +122,12 @@ class PowerSpectrumAnalysis(TreeOperation):
             raise Exception("Image must have matching x- and y-density")
         self._density = xdensity
 
-        power_spectrum = fft_power(preference)
+        try:
+            power_spectrum = self.search(tree, 'Image.FFT_Power')[0]
+        except:
+            power_spectrum = None
+        if not power_spectrum:
+            power_spectrum = fft_power(preference)
         (amplitudes, edges), fit, info = self.estimate_hypercolumn_distance(power_spectrum.data)
 
         kmax = info['kmax']
