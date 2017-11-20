@@ -6,6 +6,7 @@ import colorsys
 from holoviews import Element, Layout, NdOverlay, Overlay, Collator
 from holoviews import RGB, Image, ItemTable, ElementOperation, Dimension
 
+from holoviews.core.traversal import unique_dimkeys
 from holoviews.operation.normalization import raster_normalization
 
 from featuremapper.distribution import Distribution, DSF_WeightedAverage, \
