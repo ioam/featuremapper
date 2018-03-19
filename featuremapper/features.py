@@ -46,7 +46,7 @@ class Feature(Dimension):
             values = np.linspace(low_bound, up_bound, self.steps, not self.cyclic) + self.offset
             self.values = list(values % (up_bound - low_bound) if self.cyclic else values)
 
-        
+
     def __init__(self, name, **params):
         """
         Users can provide either a range and a step size, or a list of
