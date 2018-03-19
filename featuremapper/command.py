@@ -541,7 +541,7 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
 
         features = [f.Frequency(values=p.frequencies)]
 
-        if p.num_direction == 0: 
+        if p.num_direction == 0:
             features += [f.Orientation(steps=p.num_orientation,
                                        preference_fn=self.preference_fn)]
 
