@@ -357,7 +357,7 @@ class decode_feature(ElementOperation):
                              "activity and preference as input.")
         if selectivity is None:
             selectivity = Image(np.ones(preference.data.shape),
-                                 preference.bounds)
+                                 bounds=preference.bounds)
 
         cr = preference.cyclic_range
         cyclic = False if cr is None else True

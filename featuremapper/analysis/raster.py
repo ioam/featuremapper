@@ -43,7 +43,7 @@ class fft_power(ElementOperation):
         density = matrix.xdensity
         bounds = BoundingBox(radius=(density/2)/(r-l))
 
-        return Image(spectrum, bounds, label=matrix.label, group=self.p.group)
+        return Image(spectrum, bounds=bounds, label=matrix.label, group=self.p.group)
 
 
 
