@@ -21,7 +21,7 @@ from param.parameterized import ParamOverrides, bothmethod
 from holoviews import NdMapping, Dimension, HoloMap, GridSpace, Layout, Image
 from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
-from holoviews.interface.collector import AttrDict
+from .collector import AttrDict
 
 from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
 from . import features
@@ -418,7 +418,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             if p.store_responses:
                 cn, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = Image(act.copy(), bounds,
+                self._responses[name][key] = Image(act.copy(), bounds=bounds,
                                                     label='Response')
 
 
@@ -545,7 +545,7 @@ class FeatureMaps(FeatureResponses):
                         self._set_style(fp, map_name)
 
                         # Create views and stacks
-                        im = Image(map_view, output_metadata['bounds'],
+                        im = Image(map_view, bounds=output_metadata['bounds'],
                                    label=name, group=map_label,
                                    value_dimensions=[value_dimension])
                         im.metadata=AttrDict(timestamp=timestamp)
@@ -646,7 +646,7 @@ class FeatureCurves(FeatureResponses):
                     for j in range(cols):
                         y_axis_values[i, j] = curve_responses[i, j].get_value(x)
                 key = (timestamp,)+f_vals+(x,)
-                im = Image(y_axis_values, output_metadata['bounds'],
+                im = Image(y_axis_values, bounds=output_metadata['bounds'],
                            label=name, group=' '.join([curve_label, 'Response']),
                            value_dimensions=['Response'])
                 im.metadata = metadata.copy()
@@ -781,10 +781,10 @@ class ReverseCorrelation(FeatureResponses):
                     if p.store_responses:
                         key = (timestamp, d, self.n_permutation)
                         bounds = output_metadata['bounds']
-                        self._responses[out_label][key] = Image(out_response.copy(), bounds,
+                        self._responses[out_label][key] = Image(out_response.copy(), bounds=bounds,
                                                                 group='Response',
                                                                 label=out_label)
-                        self._responses[in_label][key] = Image(in_response.copy(), bounds,
+                        self._responses[in_label][key] = Image(in_response.copy(), bounds=bounds,
                                                                group='Response',
                                                                label=in_label)
 
@@ -820,7 +820,7 @@ class ReverseCorrelation(FeatureResponses):
             for i, ii in enumerate(rows):
                 for j, jj in enumerate(cols):
                     coord = scs.matrixidx2sheet(ii, jj)
-                    im = Image(rc_response[i, j], input_metadata['bounds'],
+                    im = Image(rc_response[i, j], bounds=input_metadata['bounds'],
                                label=out_label, group='Receptive Field',
                                value_dimensions=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
