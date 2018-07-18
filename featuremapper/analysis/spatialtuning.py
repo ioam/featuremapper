@@ -34,7 +34,7 @@ class TuningCurveAnalysis(ElementOperation):
     def _validate_curve(self, curve):
         if not isinstance(curve, Curve):
             raise Exception('Supplied views need to be curves.')
-        elif not self.p.feature in curve.key_dimensions[0].name:
+        elif not self.p.feature in curve.kdims[0].name:
             raise Exception('Analysis requires %s response curves.' % self.feature)
 
 
