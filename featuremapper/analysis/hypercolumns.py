@@ -97,7 +97,7 @@ class PowerSpectrumAnalysis(TreeOperation):
         for element in tree.values():
             layers = element.values() if isinstance(element, Overlay) else [element]
             for el in layers:
-                if isinstance(el, Image) and el.value_dimensions[0].cyclic:
+                if isinstance(el, Image) and el.vdims[0].cyclic:
                     preference = el
 
         if preference is None:
@@ -140,8 +140,8 @@ class PowerSpectrumAnalysis(TreeOperation):
             samples = zip([0, dim1/2], [0.0, 0.0])
 
         info_table = ItemTable(sorted(info.items()), group='PowerSpectrum Analysis', label=preference.label)
-        curve = Curve(samples, key_dimensions=[wavenumber_dim], label=preference.label, group='FFTPowerFit')
-        hist = Histogram(amplitudes, edges, key_dimensions=[wavenumber_dim],
+        curve = Curve(samples, kdims=[wavenumber_dim], label=preference.label, group='FFTPowerFit')
+        hist = Histogram(amplitudes, edges, kdims=[wavenumber_dim],
                          label=preference.label, group='FFTPowerHistogram')
 
 

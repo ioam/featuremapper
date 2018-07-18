@@ -547,7 +547,7 @@ class FeatureMaps(FeatureResponses):
                         # Create views and stacks
                         im = Image(map_view, bounds=output_metadata['bounds'],
                                    label=name, group=map_label,
-                                   value_dimensions=[value_dimension])
+                                   vdims=[value_dimension])
                         im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
                         if (map_label.replace(' ', ''), name) not in results:
@@ -648,7 +648,7 @@ class FeatureCurves(FeatureResponses):
                 key = (timestamp,)+f_vals+(x,)
                 im = Image(y_axis_values, bounds=output_metadata['bounds'],
                            label=name, group=' '.join([curve_label, 'Response']),
-                           value_dimensions=['Response'])
+                           vdims=['Response'])
                 im.metadata = metadata.copy()
                 results[(curve_label, name)][key] = im
                 if axis_feature.cyclic and x == axis_feature.range[0]:
@@ -822,7 +822,7 @@ class ReverseCorrelation(FeatureResponses):
                     coord = scs.matrixidx2sheet(ii, jj)
                     im = Image(rc_response[i, j], bounds=input_metadata['bounds'],
                                label=out_label, group='Receptive Field',
-                               value_dimensions=['Weight'])
+                               vdims=['Weight'])
                     im.metadata = AttrDict(timestamp=timestamp)
 
                     if coord in view:
