@@ -77,7 +77,7 @@ class vectorfield(ElementOperation):
         else:
             radians, lengths = view, None
 
-        cyclic_dim = radians.value_dimensions[0]
+        cyclic_dim = radians.vdims[0]
         if not cyclic_dim.cyclic:
             raise Exception("First input Image must be declared cyclic")
 
@@ -93,9 +93,9 @@ class vectorfield(ElementOperation):
 
             vector_data.append(components)
 
-        value_dimensions = [Dimension('Angle', cyclic=True, range=cyclic_dim.range)]
+        vdims = [Dimension('Angle', cyclic=True, range=cyclic_dim.range)]
         if lengths is not None:
-            value_dimensions.append(Dimension('Magnitude'))
+            vdims.append(Dimension('Magnitude'))
         return VectorField(np.array(vector_data), label=radians.label, group=self.p.group,
-                           value_dimensions=value_dimensions)
+                           vdims=vdims)
 

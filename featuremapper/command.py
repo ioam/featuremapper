@@ -34,7 +34,7 @@ from imagen import SineGrating, Gaussian, RawRectangle, Disk, Composite, \
 from imagen.deprecated import GaussiansCorner
 
 from . import FeatureResponses, FeatureMaps, FeatureCurves, ReverseCorrelation
-from . import features
+from . import features as f
 from .collector import Collector, AttrDict
 from .metaparams import *
 from .distribution import DSF_MaxValue, DistributionStatisticFn, \
@@ -390,7 +390,7 @@ class measure_response(FeatureResponses):
             label = ' '.join([name, response_label])
             metadata = self.metadata['outputs'][name]
             if path not in results:
-                vmap = HoloMap(key_dimensions=dims)
+                vmap = HoloMap(kdims=dims)
                 vmap.metadata = AttrDict(**metadata)
                 results.set_path(path, vmap)
 

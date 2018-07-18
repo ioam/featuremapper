@@ -78,10 +78,10 @@ class PinwheelAnalysis(ElementOperation):
         cyclic_matrix = None
         inputs = view.values() if isinstance(view, Overlay) else [view]
         for input_element in inputs:
-            if input_element.value_dimensions[0].cyclic:
+            if input_element.vdims[0].cyclic:
                 cyclic_matrix = input_element
                 bounds = cyclic_matrix.bounds
-                cyclic_range = input_element.value_dimensions[0].range
+                cyclic_range = input_element.vdims[0].range
                 label = cyclic_matrix.label
                 break
         else:
