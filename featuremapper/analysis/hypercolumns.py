@@ -141,7 +141,7 @@ class PowerSpectrumAnalysis(TreeOperation):
 
         info_table = ItemTable(sorted(info.items()), group='PowerSpectrum Analysis', label=preference.label)
         curve = Curve(samples, kdims=[wavenumber_dim], label=preference.label, group='FFTPowerFit')
-        hist = Histogram(amplitudes, edges, kdims=[wavenumber_dim],
+        hist = Histogram((edges, amplitudes), kdims=[wavenumber_dim],
                          label=preference.label, group='FFTPowerHistogram')
 
 
