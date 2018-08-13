@@ -114,6 +114,6 @@ Speed            = Float("Speed")
 
 # Time features
 Time     = Dimension("Time", type=param.Dynamic.time_fn.time_type)
-Duration = Time("Duration")
+Duration = Feature("Duration", type=param.Dynamic.time_fn.time_type, preference_fn=None)
 
 Feature._init = True # All Features created externally have to supply range or values
