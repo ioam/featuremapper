@@ -560,7 +560,7 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
             [f.Speed(values=[0])]
 
         if p.num_direction > 0 and p.num_speeds > 0: features += \
-            [f.Speed(range=(0.0, p.max_speed), steps=p.num_speeds)]
+            [f.Speed(range=(0.0, p.max_speed), steps=p.num_speeds), f.Duration(values=[np.max(p.durations)])]
 
         if p.num_direction > 0:
             # Compute orientation from direction
