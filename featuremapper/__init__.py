@@ -29,6 +29,14 @@ from .features import Feature # pyflakes:ignore (API import)
 
 activity_dtype = np.float64
 
+def has_preference_fn(feature):
+    """
+    Answer True if the feature has a preference_fun set. 
+    Answer False if not set or it does not have this attribute.
+    """
+    return hasattr(feature, 'preference_fn') and feature.preference_fn is not None
+
+
 class PatternDrivenAnalysis(param.ParameterizedFunction):
     """
     Abstract base class for various stimulus-response types of analysis.
@@ -267,8 +275,8 @@ class FeatureResponses(PatternDrivenAnalysis):
 
         # Features are split depending on whether a preference_fn is supplied
         # to collapse them
-        self.outer = [f for f in self.features if f.preference_fn is None]
-        self.inner = [f for f in self.features if f.preference_fn is not None]
+        self.outer = [f for f in self.features if not has_preference_fn(f)]
+        self.inner = [f for f in self.features if has_preference_fn(f)]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
             else zip(*[(f.name.lower(), f.values) for f in self.outer])
         dimensions = [features.Duration] + list(self.outer)
@@ -526,7 +534,7 @@ class FeatureMaps(FeatureResponses):
 
                 # Get information from the feature
                 fp = [f for f in self.features if f.name.lower() == fname][0]
-                pref_fn = fp.preference_fn if fp.preference_fn is not None\
+                pref_fn = fp.preference_fn if has_preference_fn(fp)\
                     else self.preference_fn
                 if p.selectivity_multiplier is not None:
                     pref_fn.selectivity_scale = (pref_fn.selectivity_scale[0],
@@ -715,9 +723,9 @@ class ReverseCorrelation(FeatureResponses):
                                                               p.durations)]
 
 
-        self.inner = [f for f in self.features if f.preference_fn is not None]
+        self.inner = [f for f in self.features if has_preference_fn(f)]
 
-        self.outer = [f for f in self.features if f.preference_fn is None]
+        self.outer = [f for f in self.features if not has_preference_fn(f)]
         self.outer_names, self.outer_vals = [(), ()] if not len(self.outer)\
             else zip(*[(f.name.lower(), f.values) for f in self.outer])
 
