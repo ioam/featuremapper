@@ -68,6 +68,11 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
     post_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after each pattern is presented.""")
 
+    post_presentation_capture_hooks = param.HookList(default=[],instantiate=False,doc="""
+        List of callable objects to be run after each pattern is presented that can be
+        used to capture the response for this presentation.
+        Arguments passed are the permutation and response""")
+
     post_analysis_session_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after an analysis session ends.""")
 
@@ -371,6 +376,7 @@ class FeatureResponses(PatternDrivenAnalysis):
                                                   durations=p.durations)
 
                 for f in p.post_presentation_hooks: f()
+                for f in p.post_presentation_capture_hooks: f(permutation, responses)
 
                 for response_labels, response in responses.items():
                     name, duration = response_labels
