@@ -66,16 +66,12 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
         List of callable objects to be run before each pattern is presented.""")
 
     post_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
-        List of callable objects to be run after each pattern is presented.""")
-
-    post_presentation_capture_hooks = param.HookList(default=[],instantiate=False,doc="""
-        List of callable objects to be run after each pattern is presented that can be
-        used to capture the response for this presentation.
-        Arguments passed are the permutation and response""")
+        List of callable objects to be run after each pattern is presented.
+        The callable objects can either be without arguments or with the arguments
+        permutation and response""")
 
     post_analysis_session_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after an analysis session ends.""")
-
 
 # CB: having a class called DistributionMatrix with an attribute
 # distribution_matrix to hold the distribution matrix seems silly.
@@ -375,8 +371,11 @@ class FeatureResponses(PatternDrivenAnalysis):
                                                   presentation_num, self.total_steps,
                                                   durations=p.durations)
 
-                for f in p.post_presentation_hooks: f()
-                for f in p.post_presentation_capture_hooks: f(permutation, responses)
+                for f in p.post_presentation_hooks: 
+                    try: 
+                        f()
+                    except:
+                        f(permutation, responses)
 
                 for response_labels, response in responses.items():
                     name, duration = response_labels
@@ -769,7 +768,11 @@ class ReverseCorrelation(FeatureResponses):
                                           permutation_num, self.total_steps,
                                           durations=p.durations)
 
-        for f in p.post_presentation_hooks: f()
+        for f in p.post_presentation_hooks: 
+            try: 
+                f()
+            except:
+                f(permutation, responses)
 
         self._update(p, responses)
         self.n_permutation += 1

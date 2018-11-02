@@ -367,7 +367,11 @@ class measure_response(FeatureResponses):
         responses = p.pattern_response_fn(inputs, output_names,
                                           durations=p.durations)
 
-        for f in p.post_presentation_hooks: f()
+        for f in p.post_presentation_hooks: 
+            try: 
+                f()
+            except:
+                f({}, responses)
 
         label = inputs.values()[0].__class__.__name__
         results = self._collate_results(responses, label)
