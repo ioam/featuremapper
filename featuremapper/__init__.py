@@ -63,7 +63,9 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
         List of callable objects to be run before an analysis session begins.""")
 
     pre_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
-        List of callable objects to be run before each pattern is presented.""")
+        List of callable objects to be run before each pattern is presented.        
+        The callable objects can either be without arguments or with the argument
+        permutation""")
 
     post_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after each pattern is presented.
@@ -361,7 +363,11 @@ class FeatureResponses(PatternDrivenAnalysis):
                 permutation = dict(permuted_settings)
                 permutation.update(zip(self.outer_names, op))
 
-                for f in p.pre_presentation_hooks: f()
+                for f in p.pre_presentation_hooks:
+                    try: 
+                        f()
+                    except:
+                        f(permutation)
 
                 presentation_num = p.repetitions*((self.n_outer*permutation_num)+i) + j
 
@@ -760,7 +766,11 @@ class ReverseCorrelation(FeatureResponses):
         permuted_settings = zip(self.feature_names, permutation)
 
         # Run hooks before and after pattern presentation.
-        for f in p.pre_presentation_hooks: f()
+        for f in p.pre_presentation_hooks:
+            try: 
+                f()
+            except:
+                f(permutation)
 
         inputs = self._coordinate_inputs(p, dict(permuted_settings))
         measurement_sources = self.metadata.outputs.keys() + self.metadata.inputs.keys()
