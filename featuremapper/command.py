@@ -362,7 +362,11 @@ class measure_response(FeatureResponses):
                 inputs[k] = copy.deepcopy(p.pattern_generator)
 
 
-        for f in p.pre_presentation_hooks: f()
+        for f in p.pre_presentation_hooks:
+            try: 
+                f()
+            except:
+                f({})
 
         responses = p.pattern_response_fn(inputs, output_names,
                                           durations=p.durations)
