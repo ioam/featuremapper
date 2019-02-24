@@ -1,5 +1,5 @@
 """
-Useful ElementOperations over Raster elements.
+Useful Operations over Raster elements.
 """
 
 import numpy as np
@@ -7,11 +7,11 @@ import numpy as np
 import param
 from holoviews import CompositeOverlay, BoundingBox, Dimension
 from holoviews import Image, Curve, VectorField
-from holoviews.core import ElementOperation
+from holoviews.core import Operation
 from holoviews.operation.normalization import raster_normalization
 
 
-class fft_power(ElementOperation):
+class fft_power(Operation):
     """
     Given a Image element, compute the power of the 2D Fast Fourier
     Transform (FFT).
@@ -47,7 +47,7 @@ class fft_power(ElementOperation):
 
 
 
-class vectorfield(ElementOperation):
+class vectorfield(Operation):
     """
     Given a Image with a single channel, convert it to a VectorField
     object at a given spatial sampling interval. The values in the
