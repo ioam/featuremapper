@@ -2,6 +2,7 @@ import numpy as np
 
 import param
 import colorsys
+from functools import reduce
 
 from holoviews import Element, Layout, NdOverlay, Overlay, Collator
 from holoviews import RGB, Image, ItemTable, Operation, Dimension
