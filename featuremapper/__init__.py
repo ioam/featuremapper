@@ -353,7 +353,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             self._activities[out_label][f_vals] *= 0
 
         # Calculate complete set of settings
-        permuted_settings = zip(self.feature_names, permutation)
+        permuted_settings = list(zip(self.feature_names, permutation))
         complete_settings = permuted_settings +\
                             [(f.name, f.compute_fn(permuted_settings))
                              for f in self.features_to_compute]
@@ -361,7 +361,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         for i, op in enumerate(self.outer_permutations):
             for j in range(0, p.repetitions):
                 permutation = dict(permuted_settings)
-                permutation.update(zip(self.outer_names, op))
+                permutation.update(list(zip(self.outer_names, op)))
 
                 for f in p.pre_presentation_hooks:
                     try: 
@@ -403,7 +403,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         input_names = self.metadata.inputs.keys()
         feature_values = dict(feature_values, **p.static_features)
 
-        for feature, value in feature_values.iteritems():
+        for feature, value in feature_values.items():
             setattr(p.pattern_generator, feature, value)
 
         if len(input_names) == 0:
