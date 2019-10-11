@@ -16,8 +16,8 @@ superclasses for the rest of the parameters and code.
 from __future__ import absolute_import
 
 import copy
-import ImageDraw
-import Image as PILImage
+from PIL import ImageDraw
+from PIL import Image as PILImage
 
 import numpy as np
 
