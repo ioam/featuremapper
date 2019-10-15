@@ -19,6 +19,8 @@ Distribution class
 import numpy as np
 
 import param
+import cmath
+import math
 
 unavailable_scipy_optimize = False
 try:
@@ -26,15 +28,6 @@ try:
 except ImportError:
     param.Parameterized().debug("scipy.optimize not available, dummy von Mises fit")
     unavailable_scipy_optimize = True
-
-def arg(z):
-    """
-    Return the complex argument (phase) of z.
-    (z in radians.)
-    """
-    z = z + complex(0,0)  # so that arg(z) also works for real z
-    return np.arctan2(z.imag, z.real)
-
 
 def wrap(lower, upper, x):
     """
@@ -47,8 +40,8 @@ def wrap(lower, upper, x):
     # Note that Python's % operator works on floats and arrays;
     # usually one can simply use that instead.  E.g. to wrap array or
     # scalar x into 0,2*pi, just use "x % (2*pi)".
-    range_ = upper-lower
-    return lower + np.fmod(x-lower + 2*range_*(1-np.floor(x/(2*range_))), range_)
+    axis_range = upper - lower
+    return lower + (x - lower + 2.0 * axis_range * (1.0 - math.floor(x / (2.0 * axis_range)))) % axis_range
 
 
 class Distribution(object):
@@ -110,7 +103,7 @@ class Distribution(object):
         self.axis_range = axis_range
         self.cyclic = cyclic
 
-    def set_values(self, data, counts, total_count, total_value):
+    def set_values(self, data, counts, total_count, total_value, theta):
         """
         Set the various values needed to calculate the distribution.
         """
@@ -118,6 +111,11 @@ class Distribution(object):
         self._counts = counts
         self.total_count = total_count
         self.total_value = total_value
+        
+        # Cache busy data
+        self._keys = list(data.keys())
+        self._values = list(data.values())
+        self._theta = theta
 
     def get_value(self, feature_bin):
         """
@@ -149,7 +147,7 @@ class Distribution(object):
         Note that the feature_bin-order of values returned does not necessarily
         match that returned by counts().
         """
-        return list(self._data.values())
+        return self._values
 
 
     def counts(self):
@@ -171,7 +169,7 @@ class Distribution(object):
         """
         Return a list of bins that have been populated.
         """
-        return list(self._data.keys())
+        return self._keys
 
 
     def sub_distr( self, distr ):
@@ -192,12 +190,12 @@ class Distribution(object):
 
     def max_value_bin(self):
         """Return the feature_bin with the largest value."""
-        return list(self._data.keys())[np.argmax(list(self._data.values()))]
+        return self._keys[np.argmax(self._values)]
 
 
     def weighted_sum(self):
         """Return the sum of each value times its feature_bin."""
-        return np.inner(list(self._data.keys()), list(self._data.values()))
+        return np.inner(self._keys, self._values)
 
 
     def value_mag(self, feature_bin):
@@ -211,16 +209,6 @@ class Distribution(object):
         # use of float()
 
 
-    def _bins_to_radians(self, feature_bins):
-        """
-        Convert a feature_bin number to a direction in radians.
-
-        Works for NumPy arrays of feature_bin numbers, returning
-        an array of directions.
-        """
-        return (2*np.pi)*feature_bins/self.axis_range
-
-
     def _radians_to_bins(self, direction):
         """
         Convert a direction in radians into a feature_bin number.
@@ -228,7 +216,7 @@ class Distribution(object):
         Works for NumPy arrays of direction, returning
         an array of feature_bin numbers.
         """
-        return direction*self.axis_range / (2*np.pi)
+        return direction * self.axis_range / (2 * np.pi)
 
 
     def _safe_divide(self, numerator, denominator):
@@ -326,13 +314,11 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
 
         """
         # vectors are represented in polar form as complex numbers
-        h = d._data
-        r = list(h.values())
-        theta = d._bins_to_radians(np.array(list(h.keys())))
-        v_sum = np.inner(r, np.exp(theta * 1j))
+        r = d.values()
+        v_sum = np.inner(r, d._theta)
 
         magnitude = abs(v_sum)
-        direction = arg(v_sum)
+        direction = cmath.phase(v_sum)
 
         if v_sum == 0:
             d.undefined_vals += 1
@@ -349,7 +335,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         Return the weighted_sum divided by the sum of the values
         """
-        return d._safe_divide(d.weighted_sum(), sum(list(d._data.values())))
+        return d._safe_divide(d.weighted_sum(), sum(d.values()))
 
 
     def selectivity(self, d):
@@ -392,9 +378,8 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         if len(d._data) <= 1:
             return 1.0
 
-        proportion = d._safe_divide(max(list(d._data.values())),
-                                    sum(list(d._data.values())))
-        offset = 1.0/len(d._data)
+        proportion = d._safe_divide(max(d.values()), sum(d.values()))
+        offset = 1.0/len(d.values())
         scaled = (proportion-offset) / (1.0-offset)
 
         # negative scaled is possible
@@ -424,7 +409,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         value of undefined_values() before and after a series of
         calls to this function.
         """
-        return d._safe_divide(self.vector_sum(d)[0], sum(list(d._data.values())))
+        return d._safe_divide(self.vector_sum(d)[0], sum(d.values()))
 
 
     __abstract = True
@@ -447,7 +432,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         """
         h = d._data
         if len(h) <= 1:
-            return list(h.keys())[0]
+            return d.bins()[0]
 
         k = self.max_value_bin()
         v = h.pop(k)

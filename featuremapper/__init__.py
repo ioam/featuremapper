@@ -134,13 +134,13 @@ class DistributionMatrix(param.Parameterized):
             
         self._counts[new_bin] += non_zeros
         
-    def _make_distribution(self, i, j):
+    def _make_distribution(self, theta, i, j):
         """
         Answer a distribution instance for coords i and j.
-        """
+        """        
         data = {feature: array[i,j] for feature, array in self._distribution_matrix.items()}
         count = {feature: array[i,j] for feature, array in self._counts.items()}
-        self._distribution.set_values(data, count, self._total_count[i,j], self._total_value[i,j])
+        self._distribution.set_values(data, count, self._total_count[i,j], self._total_value[i,j], theta)
         return self._distribution
 
     def apply_DSF(self, dsf):
@@ -153,13 +153,25 @@ class DistributionMatrix(param.Parameterized):
         values, instead of scalars
         """
 
+        def calc_theta(feature):
+            """
+            Convert a bin number to a direction in radians.
+    
+            Works for NumPy arrays of bin numbers, returning
+            an array of directions.
+            """
+            return np.exp( (2*np.pi)*feature/self._axis_range*1j)
+
+        # Cache theta values for vector sum since only depend on keys
+        theta =  calc_theta(np.array(list(self._distribution_matrix.keys())))
+
         shape = self._empty_matrix.shape
         result = {}
 
         # this is an extra call to the dsf() DistributionStatisticFn,
         # in order to retrieve
         # the dictionaries structure, and allocate the necessary matrices
-        response = dsf(self._make_distribution(0, 0))
+        response = dsf(self._make_distribution(theta, 0, 0))
         for k, maps in response.items():
             result[k] = {}
             for m in maps.keys():
@@ -167,7 +179,7 @@ class DistributionMatrix(param.Parameterized):
                 
         for i in range(shape[0]):
             for j in range(shape[1]):
-                response = dsf(self._make_distribution(i, j))
+                response = dsf(self._make_distribution(theta, i, j))
                 for k, maps in response.items():
                     for item, item_value in maps.items():
                         result[k][item][i, j] = item_value
