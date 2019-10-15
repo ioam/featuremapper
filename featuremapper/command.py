@@ -16,8 +16,8 @@ superclasses for the rest of the parameters and code.
 from __future__ import absolute_import
 
 import copy
-import ImageDraw
-import Image as PILImage
+from PIL import ImageDraw
+from PIL import Image as PILImage
 
 import numpy as np
 
@@ -362,12 +362,20 @@ class measure_response(FeatureResponses):
                 inputs[k] = copy.deepcopy(p.pattern_generator)
 
 
-        for f in p.pre_presentation_hooks: f()
+        for f in p.pre_presentation_hooks:
+            try: 
+                f()
+            except:
+                f({})
 
         responses = p.pattern_response_fn(inputs, output_names,
                                           durations=p.durations)
 
-        for f in p.post_presentation_hooks: f()
+        for f in p.post_presentation_hooks: 
+            try: 
+                f()
+            except:
+                f({}, responses)
 
         label = inputs.values()[0].__class__.__name__
         results = self._collate_results(responses, label)

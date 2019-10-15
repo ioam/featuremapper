@@ -156,7 +156,7 @@ class Distribution(object):
         Note that the bin-order of values returned does not necessarily
         match that returned by counts().
         """
-        return self._data.values()
+        return list(self._data.values())
 
 
     def counts(self):
@@ -171,14 +171,14 @@ class Distribution(object):
         Note that the bin-order of values returned does not necessarily
         match that returned by values().
         """
-        return self._counts.values()
+        return list(self._counts.values())
 
 
     def bins(self):
         """
         Return a list of bins that have been populated.
         """
-        return self._data.keys()
+        return list(self._data.keys())
 
 
     def add(self, new_data):
@@ -241,12 +241,12 @@ class Distribution(object):
 
     def max_value_bin(self):
         """Return the bin with the largest value."""
-        return self._data.keys()[np.argmax(self._data.values())]
+        return list(self._data.keys())[np.argmax(list(self._data.values()))]
 
 
     def weighted_sum(self):
         """Return the sum of each value times its bin."""
-        return np.inner(self._data.keys(), self._data.values())
+        return np.inner(list(self._data.keys()), list(self._data.values()))
 
 
     def value_mag(self, bin):
@@ -376,8 +376,8 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         # vectors are represented in polar form as complex numbers
         h = d._data
-        r = h.values()
-        theta = d._bins_to_radians(np.array(h.keys()))
+        r = list(h.values())
+        theta = d._bins_to_radians(np.array(list(h.keys())))
         v_sum = np.inner(r, np.exp(theta * 1j))
 
         magnitude = abs(v_sum)
@@ -398,7 +398,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         Return the weighted_sum divided by the sum of the values
         """
-        return d._safe_divide(d.weighted_sum(), sum(d._data.values()))
+        return d._safe_divide(d.weighted_sum(), sum(list(d._data.values())))
 
 
     def selectivity(self, d):
@@ -441,8 +441,8 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         if len(d._data) <= 1:
             return 1.0
 
-        proportion = d._safe_divide(max(d._data.values()),
-                                    sum(d._data.values()))
+        proportion = d._safe_divide(max(list(d._data.values())),
+                                    sum(list(d._data.values())))
         offset = 1.0/len(d._data)
         scaled = (proportion-offset) / (1.0-offset)
 
@@ -473,7 +473,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         value of undefined_values() before and after a series of
         calls to this function.
         """
-        return d._safe_divide(self.vector_sum(d)[0], sum(d._data.values()))
+        return d._safe_divide(self.vector_sum(d)[0], sum(list(d._data.values())))
 
 
     __abstract = True
@@ -496,7 +496,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         """
         h = d._data
         if len(h) <= 1:
-            return h.keys()[0]
+            return list(h.keys())[0]
 
         k = self.max_value_bin()
         v = h.pop(k)
@@ -531,10 +531,10 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         h = d._data
         k = d.max_value_bin()
         v = h.pop(k)
-        m = max(h.values())
+        m = max(list(h.values()))
         h[k] = v
 
-        proportion = d._safe_divide(m, sum(h.values()))
+        proportion = d._safe_divide(m, sum(list(h.values())))
         offset = 1.0 / len(h)
         scaled = (proportion - offset) / (1.0 - offset)
 
@@ -553,7 +553,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         s = d.vector_sum()[0]
         h[k] = v
 
-        return self._safe_divide(s, sum(h.values()))
+        return self._safe_divide(s, sum(list(h.values())))
 
 
     def second_peak_bin(self, d):
@@ -569,11 +569,11 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         h = d._data
         l = len(h)
         if l <= 1:
-            return h.keys()[0]
+            return list(h.keys())[0]
 
-        ks = h.keys()
+        ks = list(h.keys())
         ks.sort()
-        ik0 = ks.index(h.keys()[np.argmax(h.values())])
+        ik0 = ks.index(list(h.keys())[np.argmax(list(h.values()))])
         k0 = ks[ik0]
         v0 = h[k0]
 
@@ -637,7 +637,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
             return 0.0
 
         m = h[p2]
-        proportion = d._safe_divide(m, sum(h.values()))
+        proportion = d._safe_divide(m, sum(list(h.values())))
         offset = 1.0 / len(h)
         scaled = (proportion - offset) / (1.0 - offset)
 
@@ -655,7 +655,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         """
         h = d._data
         if len(h) <= 1:
-            return (h.keys()[0], 0.0)
+            return (list(h.keys())[0], 0.0)
 
         p1 = d.max_value_bin()
         p2 = self.second_peak_bin(d)
@@ -663,7 +663,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
             return (p1, 0.0)
 
         m = h[p2]
-        proportion = d._safe_divide(m, sum(h.values()))
+        proportion = d._safe_divide(m, sum(list(h.values())))
         offset = 1.0 / len(h)
         scaled = (proportion - offset) / (1.0 - offset)
 
@@ -893,7 +893,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             self.fit_exit_code = -1
             return 0, 0, 0
 
-        y = np.array(distribution.values())
+        y = np.array(list(distribution.values()))
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return 0, 0, 0
@@ -974,7 +974,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             param.Parameterized().warning( "no bimodal von Mises fit possible with less than 8 bins" )
             self.fit_exit_code = -1
             return null
-        y = np.array(distribution.values())
+        y = np.array(list(distribution.values()))
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return null

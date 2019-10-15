@@ -2,9 +2,10 @@ import numpy as np
 
 import param
 import colorsys
+from functools import reduce
 
 from holoviews import Element, Layout, NdOverlay, Overlay, Collator
-from holoviews import RGB, Image, ItemTable, ElementOperation, Dimension
+from holoviews import RGB, Image, ItemTable, Operation, Dimension
 
 from holoviews.core.traversal import unique_dimkeys
 from holoviews.operation.normalization import raster_normalization
@@ -111,7 +112,7 @@ class TreeOperation(param.ParameterizedFunction):
 
 
 
-class cyclic_difference(ElementOperation):
+class cyclic_difference(Operation):
     """
     The cyclic difference between any two cyclic Image quantities
     normalized such that maximum possible cyclic difference is 0.5.
@@ -194,7 +195,7 @@ class cyclic_difference(ElementOperation):
                      group=self.p.value)
 
 
-class center_cyclic(ElementOperation):
+class center_cyclic(Operation):
     """
     Centers the values in a 1D Element on the index returned
     by the supplied function (by default the argmax). Element
@@ -243,7 +244,7 @@ class center_cyclic(ElementOperation):
 
 
 
-class toHCS(ElementOperation):
+class toHCS(Operation):
     """
     Hue-Confidence-Strength plot.
 
@@ -304,7 +305,7 @@ class toHCS(ElementOperation):
 
 
 
-class decode_feature(ElementOperation):
+class decode_feature(Operation):
     """
     Estimate the value of a feature from the current activity pattern
     on a sheet and a preference map of the sheet. The activity and

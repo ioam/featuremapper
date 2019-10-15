@@ -10,7 +10,7 @@ import param
 from holoviews.core.options import Store, Options
 from holoviews import Points, Overlay
 from holoviews.element import Contours
-from holoviews.operation import ElementOperation
+from holoviews.operation import Operation
 
 __author__ = "Jean-Luc Stevens"
 
@@ -45,7 +45,7 @@ class WarningCounter(object):
 
 
 
-class PinwheelAnalysis(ElementOperation):
+class PinwheelAnalysis(Operation):
     """
     Given a Matrix or HoloMap of a cyclic feature preference, compute
     the position of all pinwheel singularities in the map. Optionally

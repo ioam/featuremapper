@@ -63,14 +63,17 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
         List of callable objects to be run before an analysis session begins.""")
 
     pre_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
-        List of callable objects to be run before each pattern is presented.""")
+        List of callable objects to be run before each pattern is presented.        
+        The callable objects can either be without arguments or with the argument
+        permutation""")
 
     post_presentation_hooks = param.HookList(default=[],instantiate=False,doc="""
-        List of callable objects to be run after each pattern is presented.""")
+        List of callable objects to be run after each pattern is presented.
+        The callable objects can either be without arguments or with the arguments
+        permutation and response""")
 
     post_analysis_session_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after an analysis session ends.""")
-
 
 # CB: having a class called DistributionMatrix with an attribute
 # distribution_matrix to hold the distribution matrix seems silly.
@@ -350,7 +353,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             self._activities[out_label][f_vals] *= 0
 
         # Calculate complete set of settings
-        permuted_settings = zip(self.feature_names, permutation)
+        permuted_settings = list(zip(self.feature_names, permutation))
         complete_settings = permuted_settings +\
                             [(f.name, f.compute_fn(permuted_settings))
                              for f in self.features_to_compute]
@@ -358,9 +361,13 @@ class FeatureResponses(PatternDrivenAnalysis):
         for i, op in enumerate(self.outer_permutations):
             for j in range(0, p.repetitions):
                 permutation = dict(permuted_settings)
-                permutation.update(zip(self.outer_names, op))
+                permutation.update(list(zip(self.outer_names, op)))
 
-                for f in p.pre_presentation_hooks: f()
+                for f in p.pre_presentation_hooks:
+                    try: 
+                        f()
+                    except:
+                        f(permutation)
 
                 presentation_num = p.repetitions*((self.n_outer*permutation_num)+i) + j
 
@@ -370,7 +377,11 @@ class FeatureResponses(PatternDrivenAnalysis):
                                                   presentation_num, self.total_steps,
                                                   durations=p.durations)
 
-                for f in p.post_presentation_hooks: f()
+                for f in p.post_presentation_hooks: 
+                    try: 
+                        f()
+                    except:
+                        f(permutation, responses)
 
                 for response_labels, response in responses.items():
                     name, duration = response_labels
@@ -392,7 +403,7 @@ class FeatureResponses(PatternDrivenAnalysis):
         input_names = self.metadata.inputs.keys()
         feature_values = dict(feature_values, **p.static_features)
 
-        for feature, value in feature_values.iteritems():
+        for feature, value in feature_values.items():
             setattr(p.pattern_generator, feature, value)
 
         if len(input_names) == 0:
@@ -755,7 +766,11 @@ class ReverseCorrelation(FeatureResponses):
         permuted_settings = zip(self.feature_names, permutation)
 
         # Run hooks before and after pattern presentation.
-        for f in p.pre_presentation_hooks: f()
+        for f in p.pre_presentation_hooks:
+            try: 
+                f()
+            except:
+                f(permutation)
 
         inputs = self._coordinate_inputs(p, dict(permuted_settings))
         measurement_sources = self.metadata.outputs.keys() + self.metadata.inputs.keys()
@@ -763,7 +778,11 @@ class ReverseCorrelation(FeatureResponses):
                                           permutation_num, self.total_steps,
                                           durations=p.durations)
 
-        for f in p.post_presentation_hooks: f()
+        for f in p.post_presentation_hooks: 
+            try: 
+                f()
+            except:
+                f(permutation, responses)
 
         self._update(p, responses)
         self.n_permutation += 1
