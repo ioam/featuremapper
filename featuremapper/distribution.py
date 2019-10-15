@@ -116,6 +116,71 @@ class Distribution(object):
         self._keys = list(data.keys())
         self._values = list(data.values())
         self._theta = theta
+        
+        if self.cyclic:
+            # Cache the vector sum
+            self._vector_sum = self._fast_vector_sum(self._values, theta)
+        else:
+            self._vector_sum = None
+
+    def vector_sum(self):
+        """
+        Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
+
+        Each feature_bin contributes a vector of length equal to its value, at
+        a direction corresponding to the feature_bin number.  Specifically,
+        the total feature_bin number range is mapped into a direction range
+        [0,2pi].
+
+        For a cyclic distribution, the avgbinnum will be a continuous
+        measure analogous to the max_value_bin() of the distribution.
+        But this quantity has more precision than max_value_bin()
+        because it is computed from the entire distribution instead of
+        just the peak feature_bin.  However, it is likely to be useful only
+        for uniform or very dense sampling; with sparse, non-uniform
+        sampling the estimates will be biased significantly by the
+        particular samples chosen.
+
+        The avgbinnum is not meaningful when the magnitude is 0,
+        because a zero-length vector has no direction.  To find out
+        whether such cases occurred, you can compare the value of
+        undefined_vals before and after a series of calls to this
+        function.
+        
+        This tries to use cached values of this.
+
+        """
+        if self._vector_sum is None:
+            # There is a non cyclic distribution that is using this.
+            # Calculate and then cache it
+            self._vector_sum = self._fast_vector_sum(self._values, self._theta)
+            
+        return self._vector_sum
+            
+    def _fast_vector_sum(self, values, theta):
+        """
+        Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
+        
+        This implementation assumes that the values of the distribution needed for the 
+        vector sum will not be changed and depends on cached values.
+        
+        """
+        # vectors are represented in polar form as complex numbers
+        v_sum = np.inner(values, theta)
+
+        magnitude = abs(v_sum)
+        direction = cmath.phase(v_sum)
+
+        if v_sum == 0:
+            self.undefined_vals += 1
+
+        direction_radians = self._radians_to_bins(direction)
+
+        # wrap the direction because arctan2 returns principal values
+        wrapped_direction = wrap(self.axis_bounds[0], self.axis_bounds[1], direction_radians)
+
+        return (magnitude, wrapped_direction)
+
 
     def get_value(self, feature_bin):
         """
@@ -190,7 +255,7 @@ class Distribution(object):
 
     def max_value_bin(self):
         """Return the feature_bin with the largest value."""
-        return self._keys[np.argmax(self._values)]
+        return list(self._data.keys())[np.argmax(list(self._data.values()))]
 
 
     def weighted_sum(self):
@@ -207,6 +272,16 @@ class Distribution(object):
         """Return the count of a single feature_bin as a proportion of total_count."""
         return self._safe_divide(float(self._counts.get(feature_bin)), float(self.total_count))
         # use of float()
+
+
+    def _bins_to_radians(self, bin):
+        """
+        Convert a bin number to a direction in radians.
+
+        Works for NumPy arrays of bin numbers, returning
+        an array of directions.
+        """
+        return (2*np.pi)*bin/self.axis_range
 
 
     def _radians_to_bins(self, direction):
@@ -292,16 +367,16 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
 
-        Each feature_bin contributes a vector of length equal to its value, at
-        a direction corresponding to the feature_bin number.  Specifically,
-        the total feature_bin number range is mapped into a direction range
+        Each bin contributes a vector of length equal to its value, at
+        a direction corresponding to the bin number.  Specifically,
+        the total bin number range is mapped into a direction range
         [0,2pi].
 
         For a cyclic distribution, the avgbinnum will be a continuous
         measure analogous to the max_value_bin() of the distribution.
         But this quantity has more precision than max_value_bin()
         because it is computed from the entire distribution instead of
-        just the peak feature_bin.  However, it is likely to be useful only
+        just the peak bin.  However, it is likely to be useful only
         for uniform or very dense sampling; with sparse, non-uniform
         sampling the estimates will be biased significantly by the
         particular samples chosen.
@@ -311,24 +386,17 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         whether such cases occurred, you can compare the value of
         undefined_vals before and after a series of calls to this
         function.
+        
+        This is a slow algorithm and should only be used if the
+        contents of the distribution have been changed by the statistical 
+        function.
+        If not, then the cached value in the distribution should be used.
 
         """
         # vectors are represented in polar form as complex numbers
-        r = d.values()
-        v_sum = np.inner(r, d._theta)
-
-        magnitude = abs(v_sum)
-        direction = cmath.phase(v_sum)
-
-        if v_sum == 0:
-            d.undefined_vals += 1
-
-        direction_radians = d._radians_to_bins(direction)
-
-        # wrap the direction because arctan2 returns principal values
-        wrapped_direction = wrap(d.axis_bounds[0], d.axis_bounds[1], direction_radians)
-
-        return (magnitude, wrapped_direction)
+        h = d._data
+        theta = np.exp(d._bins_to_radians(np.array(list(h.keys()))) * 1j)
+        return d._fast_vector_sum(list(h.values()), theta)
 
 
     def _weighted_average(self, d ):
@@ -409,7 +477,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         value of undefined_values() before and after a series of
         calls to this function.
         """
-        return d._safe_divide(self.vector_sum(d)[0], sum(d.values()))
+        return d._safe_divide(d.vector_sum()[0], sum(d.values()))
 
 
     __abstract = True
@@ -486,7 +554,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         h = d._data
         k = d.max_value_bin()
         v = h.pop(k)
-        s = d.vector_sum()[0]
+        s = self.vector_sum(d)[0]
         h[k] = v
 
         return self._safe_divide(s, sum(list(h.values())))
@@ -651,7 +719,7 @@ class DSF_WeightedAverage(DescriptiveStatisticFn):
     """
 
     def __call__(self, d):
-        p = self.vector_sum(d)[1] if d.cyclic else self._weighted_average(d)
+        p = d.vector_sum()[1] if d.cyclic else self._weighted_average(d)
         p = self.value_scale[1] * (p + self.value_scale[0])
         s = self.selectivity_scale[1] * (self.selectivity(d) + self.selectivity_scale[0])
 
