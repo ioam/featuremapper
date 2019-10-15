@@ -119,19 +119,6 @@ class Distribution(object):
         self.total_count = total_count
         self.total_value = total_value
 
-    ### JABHACKALERT!  The semantics of this operation are incorrect, because
-    ### an expression like x+y should not modify x, while this does.  It could
-    ### be renamed __iadd__, to implement += (which has the correct semantics),
-    ### but it's not yet clear how to do that.
-    def __add__(self, a):
-        """
-        Allows add() method to be used via the '+' operator; i.e.,
-        Distribution + dictionary does Distribution.add(dictionary).
-        """
-        self.add(a)
-        return None
-
-
     def get_value(self, feature_bin):
         """
         Return the value of the specified feature_bin.
@@ -187,48 +174,6 @@ class Distribution(object):
         return list(self._data.keys())
 
 
-    def add(self, new_data):
-        """
-        Add a set of new data in the form of a dictionary of (feature_bin,
-        value) pairs.  If the feature_bin already exists, the value is added
-        to the current value.  If the feature_bin doesn't exist, one is created
-        with that value.
-
-        Bin numbers outside axis_bounds are allowed for cyclic=True,
-        but otherwise a ValueError is raised.
-
-        If keep_peak=True, the value of the feature_bin is the maximum of the
-        current value and the supplied value.  That is, the feature_bin stores
-        the peak value seen so far.  Note that each call will increase
-        the total_value and total_count (and thus decrease the
-        value_mag() and count_mag()) even if the value doesn't happen
-        to be the maximum seen so far, since each data point still
-        helps improve the sampling and thus the confidence.
-        """
-        for feature_bin in new_data.keys():
-
-            if self.cyclic==False:
-                if not (self.axis_bounds[0] <= feature_bin <= self.axis_bounds[1]):
-                    raise ValueError("Bin outside bounds.")
-            # CEBALERT: Neet to support wrapping of feature_bin values
-            # else:  new_bin = wrap(self.axis_bounds[0], self.axis_bounds[1], feature_bin)
-            new_bin = feature_bin
-
-            if new_bin not in self._data:
-                self._data[new_bin] = 0.0
-                self._counts[new_bin] = 0
-
-            new_value = new_data[feature_bin]
-            self.total_value += new_value
-            self._counts[new_bin] += 1
-            self.total_count += 1
-
-            if self.keep_peak == True:
-                if new_value > self._data[new_bin]: self._data[new_bin] = new_value
-            else:
-                self._data[new_bin] += new_value
-
-
     def sub_distr( self, distr ):
         """
         Subtract the given distribution from the current one.
@@ -266,14 +211,14 @@ class Distribution(object):
         # use of float()
 
 
-    def _bins_to_radians(self, feature_bin):
+    def _bins_to_radians(self, feature_bins):
         """
         Convert a feature_bin number to a direction in radians.
 
         Works for NumPy arrays of feature_bin numbers, returning
         an array of directions.
         """
-        return (2*np.pi)*feature_bin/self.axis_range
+        return (2*np.pi)*feature_bins/self.axis_range
 
 
     def _radians_to_bins(self, direction):
