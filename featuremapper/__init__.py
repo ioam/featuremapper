@@ -595,13 +595,13 @@ class FeatureMaps(FeatureResponses):
                                    vdims=[value_dimension])
                         im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
-                        if (map_label.replace(' ', ''), name) not in results:
+                        if (map_index, name) not in results:
                             vmap = HoloMap((key, im), kdims=dimensions,
                                            label=name, group=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
-                            results.path_items[(map_index, name)][key] = im
+                            results[(map_index, name)][key] = im
                 if p.store_responses:
                     info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                     results.set_path(('%s_%s_%s' % info, name), self._responses[name])

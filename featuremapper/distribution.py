@@ -437,7 +437,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         # vectors are represented in polar form as complex numbers
         h = d.data()
-        theta = calc_theta(np.array(list(h.keys())), self.axis_range)
+        theta = calc_theta(np.array(list(h.keys())), d.axis_range)
         return d._fast_vector_sum(list(h.values()), theta)
 
 
@@ -543,9 +543,9 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         if len(d.bins()) <= 1:
             return d.bins()[0]
 
-        k = self.max_value_bin()
+        k = d.max_value_bin()
         d.pop(k)
-        m = self.max_value_bin()
+        m = d.max_value_bin()
         d.restore(k)
 
         return m
@@ -596,7 +596,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         s = self.vector_sum(d)[0]
         d.restore(k)
 
-        return self._safe_divide(s, sum(d.values()))
+        return d._safe_divide(s, sum(d.values()))
 
 
     def second_peak_bin(self, d):
