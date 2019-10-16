@@ -23,7 +23,7 @@ from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
 from .collector import AttrDict
 
-from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
+from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage, calc_theta
 from . import features
 from .features import Feature # pyflakes:ignore (API import)
 import math
@@ -97,7 +97,6 @@ class DistributionMatrix(param.Parameterized):
         self._keep_peak = keep_peak
         self._empty_matrix = np.empty(matrix_shape)
         self._distribution_matrix = {}
-        self._distribution = Distribution(self._axis_bounds, self._axis_range, cyclic)
         self._counts = {}
         # total_count and total_value hold the total number and sum
         # (respectively) of values that have ever been provided for
@@ -111,7 +110,7 @@ class DistributionMatrix(param.Parameterized):
         Add a new matrix of histogram values for a given bin value.
         """
         if self._cyclic==False:
-            if not (self.axis_bounds[0] <= feature <= self.axis_bounds[1]):
+            if not (self._axis_bounds[0] <= feature <= self._axis_bounds[1]):
                 raise ValueError("Bin outside bounds.")
         # CEBALERT: Neet to support wrapping of bin values
         # else:  new_bin = wrap(self.axis_bounds[0], self.axis_bounds[1], bin)
@@ -140,8 +139,8 @@ class DistributionMatrix(param.Parameterized):
         """        
         data = {feature: array[i,j] for feature, array in self._distribution_matrix.items()}
         count = {feature: array[i,j] for feature, array in self._counts.items()}
-        self._distribution.set_values(data, count, self._total_count[i,j], self._total_value[i,j], theta)
-        return self._distribution
+        distribution = Distribution(self._axis_bounds, self._axis_range, self._cyclic, data, count, self._total_count[i,j], self._total_value[i,j], theta)
+        return distribution
 
     def apply_DSF(self, dsf):
         """
@@ -153,17 +152,9 @@ class DistributionMatrix(param.Parameterized):
         values, instead of scalars
         """
 
-        def calc_theta(feature):
-            """
-            Convert a bin number to a direction in radians.
-    
-            Works for NumPy arrays of bin numbers, returning
-            an array of directions.
-            """
-            return np.exp( (2*np.pi)*feature/self._axis_range*1j)
-
-        # Cache theta values for vector sum since only depend on keys
-        theta =  calc_theta(np.array(list(self._distribution_matrix.keys())))
+        # Cache theta value for vector sum since only depend on keys and is used
+        # for every every cyclic Distribution in the DistributionMatrix
+        theta =  calc_theta(np.array(list(self._distribution_matrix.keys())), self._axis_range)
 
         shape = self._empty_matrix.shape
         result = {}
@@ -471,10 +462,9 @@ class FeatureResponses(PatternDrivenAnalysis):
             for feature, value in current_values:
                 self._featureresponses[name][f_vals][feature.lower()].update(act, value)
             if p.store_responses:
-                cn, cv = zip(*current_values)
+                _, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = Image(act.copy(), bounds=bounds,
-                                                    label='Response')
+                self._responses[name][key] = Image(act.copy(), bounds=bounds, label='Response')
 
 
     @bothmethod

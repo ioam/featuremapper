@@ -43,6 +43,15 @@ def wrap(lower, upper, x):
     axis_range = upper - lower
     return lower + (x - lower + 2.0 * axis_range * (1.0 - math.floor(x / (2.0 * axis_range)))) % axis_range
 
+def calc_theta(bins, axis_range):
+    """
+    Convert a bin number to a direction in radians.
+
+    Works for NumPy arrays of bin numbers, returning
+    an array of directions.
+    """
+    return np.exp( (2.0 * np.pi) * bins / axis_range * 1.0j )
+
 
 class Distribution(object):
     """
@@ -88,30 +97,23 @@ class Distribution(object):
     # not meaningful.
     undefined_vals  = 0
 
-    def __init__(self, axis_bounds, axis_range, cyclic=False):
-        self._data = {}
-        self._counts = {}
+    def __init__(self, axis_bounds, axis_range, cyclic, data, counts, total_count, total_value, theta):
+        self._data = data
+        self._counts = counts
 
         # total_count and total_value hold the total number and sum
         # (respectively) of values that have ever been provided for
         # each feature_bin.  For a simple distribution these will be the same as
         # sum_counts() and sum_values().
-        self.total_count = 0
-        self.total_value = 0.0
+        self.total_count = total_count
+        self.total_value = total_value
         
         self.axis_bounds = axis_bounds
         self.axis_range = axis_range
         self.cyclic = cyclic
-
-    def set_values(self, data, counts, total_count, total_value, theta):
-        """
-        Set the various values needed to calculate the distribution.
-        """
-        self._data = data
-        self._counts = counts
-        self.total_count = total_count
-        self.total_value = total_value
         
+        self._pop_store = None
+
         # Cache busy data
         self._keys = list(data.keys())
         self._values = list(data.values())
@@ -122,6 +124,36 @@ class Distribution(object):
             self._vector_sum = self._fast_vector_sum(self._values, theta)
         else:
             self._vector_sum = None
+            
+    def data(self):
+        """
+        Answer a dictionary with bins as keys.
+        """
+        return self._data
+    
+    def pop(self, feature_bin):
+        """
+        Remove the entry with bin from the distribution.
+        """
+        if self._pop_store is not None:
+            raise Exception("Distribution: attempt to pop value before outstanding restore")
+        self._pop_store = self._data.pop(feature_bin)
+        
+        self._keys = list(self._data.keys())
+        self._values = list(self._data.values())
+
+    def restore(self, feature_bin):
+        """
+        Restore the entry with bin from the distribution.
+        Only valid if called after a pop.
+        """
+        if self._pop_store is None:
+            raise Exception("Distribution: attempt to restore value before pop")
+        self._data[feature_bin] = self._pop_store
+        self._pop_store = None
+        
+        self._keys = list(self._data.keys())
+        self._values = list(self._data.values())
 
     def vector_sum(self):
         """
@@ -153,6 +185,11 @@ class Distribution(object):
         if self._vector_sum is None:
             # There is a non cyclic distribution that is using this.
             # Calculate and then cache it
+            
+            # First check if there is a cached theta. If not derive it.
+            if self._theta is None:          
+                self._theta =  calc_theta(np.array(self._keys), self.axis_range)
+
             self._vector_sum = self._fast_vector_sum(self._values, self._theta)
             
         return self._vector_sum
@@ -254,8 +291,13 @@ class Distribution(object):
 
 
     def max_value_bin(self):
-        """Return the feature_bin with the largest value."""
-        return list(self._data.keys())[np.argmax(list(self._data.values()))]
+        """
+        Return the feature_bin with the largest value.
+        
+        Note that uses cached values so that pop and restore
+        need to be used if want with altered distribution.
+        """
+        return self._keys[np.argmax(self._values)]
 
 
     def weighted_sum(self):
@@ -394,8 +436,8 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
 
         """
         # vectors are represented in polar form as complex numbers
-        h = d._data
-        theta = np.exp(d._bins_to_radians(np.array(list(h.keys()))) * 1j)
+        h = d.data()
+        theta = calc_theta(np.array(list(h.keys())), self.axis_range)
         return d._fast_vector_sum(list(h.values()), theta)
 
 
@@ -443,7 +485,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         """
         # A single feature_bin is considered fully selective (but could also
         # arguably be considered fully unselective)
-        if len(d._data) <= 1:
+        if len(d.data()) <= 1:
             return 1.0
 
         proportion = d._safe_divide(max(d.values()), sum(d.values()))
@@ -498,14 +540,13 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         mistakenly be claimed as secondary maximum, by forcing its selectivity
         to 0.0
         """
-        h = d._data
-        if len(h) <= 1:
+        if len(d.bins()) <= 1:
             return d.bins()[0]
 
         k = self.max_value_bin()
-        v = h.pop(k)
+        d.pop(k)
         m = self.max_value_bin()
-        h[k] = v
+        d.restore(k)
 
         return m
 
@@ -532,14 +573,13 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         Return the value of the second maximum as a proportion of the sum_value()
         see _relative_selectivity() for further details
         """
-        h = d._data
         k = d.max_value_bin()
-        v = h.pop(k)
-        m = max(list(h.values()))
-        h[k] = v
+        d.pop(k)
+        m = max(d.values())
+        d.restore(k)
 
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / len(d.data())
         scaled = (proportion - offset) / (1.0 - offset)
 
         return max(scaled, 0.0)
@@ -551,13 +591,12 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         maximum one, divided by the sum_value().
         see _vector_selectivity() for further details
         """
-        h = d._data
         k = d.max_value_bin()
-        v = h.pop(k)
+        d.pop(k)
         s = self.vector_sum(d)[0]
-        h[k] = v
+        d.restore(k)
 
-        return self._safe_divide(s, sum(list(h.values())))
+        return self._safe_divide(s, sum(d.values()))
 
 
     def second_peak_bin(self, d):
@@ -570,14 +609,14 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         plotting compatibility), however the corresponding selectivity will be
         forced to 0.0
         """
-        h = d._data
+        h = d.data()
         l = len(h)
         if l <= 1:
-            return list(h.keys())[0]
+            return d.keys()[0]
 
         ks = list(h.keys())
         ks.sort()
-        ik0 = ks.index(list(h.keys())[np.argmax(list(h.values()))])
+        ik0 = ks.index(d.keys()[np.argmax(d.values())])
         k0 = ks[ik0]
         v0 = h[k0]
 
@@ -631,8 +670,8 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         If the distribution has only one peak, return 0.0, and this value is
         also usefl to discriminate the validity of second_peak_bin()
         """
-        h = d._data
-        if len(h) <= 1:
+        l = len(d.keys())
+        if l <= 1:
             return 0.0
 
         p1 = d.max_value_bin()
@@ -640,9 +679,9 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         if p1 == p2:
             return 0.0
 
-        m = h[p2]
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        m = d.get_value(p2)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / l
         scaled = (proportion - offset) / (1.0 - offset)
 
         return max(scaled, 0.0)
@@ -657,18 +696,18 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         call of second_peak_bin(), if the user is interested in both preference
         and selectivity, as often is the case.
         """
-        h = d._data
-        if len(h) <= 1:
-            return (list(h.keys())[0], 0.0)
+        l = len(d.keys())
+        if l <= 1:
+            return (d.keys()[0], 0.0)
 
         p1 = d.max_value_bin()
         p2 = self.second_peak_bin(d)
         if p1 == p2:
             return (p1, 0.0)
 
-        m = h[p2]
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        m = d.get_value(p2)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / l
         scaled = (proportion - offset) / (1.0 - offset)
 
         return (p2, max(scaled, 0.0))
@@ -897,7 +936,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             self.fit_exit_code = -1
             return 0, 0, 0
 
-        y = np.array(list(distribution.values()))
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return 0, 0, 0
@@ -978,7 +1017,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             param.Parameterized().warning( "no bimodal von Mises fit possible with less than 8 bins" )
             self.fit_exit_code = -1
             return null
-        y = np.array(list(distribution.values()))
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return null
