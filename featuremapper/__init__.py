@@ -152,9 +152,12 @@ class DistributionMatrix(param.Parameterized):
         values, instead of scalars
         """
 
-        # Cache theta value for vector sum since only depend on keys and is used
-        # for every every cyclic Distribution in the DistributionMatrix
-        theta =  calc_theta(np.array(list(self._distribution_matrix.keys())), self._axis_range)
+        if self._cyclic:
+            # Cache theta value for vector sum since only depend on keys and is used
+            # for every every cyclic Distribution in the DistributionMatrix
+            theta =  calc_theta(np.array(list(self._distribution_matrix.keys())), self._axis_range)
+        else:
+            theta = None
 
         shape = self._empty_matrix.shape
         result = {}
