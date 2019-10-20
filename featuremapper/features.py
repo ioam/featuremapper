@@ -79,41 +79,41 @@ Integer = Feature("float", type=int)
 
 
 # Cyclic features
-Cyclic              = Float("cyclic", cyclic=True, unit="rad")
-Hue                 = Cyclic("hue", range=(0.0, 1.0))
+Cyclic              = Float.clone("cyclic", cyclic=True, unit="rad")
+Hue                 = Cyclic.clone("hue", range=(0.0, 1.0))
 
-FullCycle           = Cyclic("full cycle",
+FullCycle           = Cyclic.clone("full cycle",
                              value_format=degree_formatter,
                              range=(0, 2*np.pi),
                              unit="$^{\circ}$")
-Angle               = FullCycle("Angle")
-Direction           = FullCycle("Direction")
-Phase               = FullCycle("Phase")
-PhaseDisparity      = FullCycle("PhaseDisparity")
+Angle               = FullCycle.clone("Angle")
+Direction           = FullCycle.clone("Direction")
+Phase               = FullCycle.clone("Phase")
+PhaseDisparity      = FullCycle.clone("PhaseDisparity")
 
-HalfCycle           = Cyclic("half cycle", range=(0, np.pi),
+HalfCycle           = Cyclic.clone("half cycle", range=(0, np.pi),
                              value_format=degree_formatter,
                              unit="$^{\circ}$")
-Orientation         = HalfCycle("Orientation")
-OrientationSurround = HalfCycle("OrientationSurround",
+Orientation         = HalfCycle.clone("Orientation")
+OrientationSurround = HalfCycle.clone("OrientationSurround",
                                 range=(-np.pi/2., np.pi/2.))
 
 # Non-cyclic features
-Frequency    = Float("Frequency", unit="cycles per unit distance")
-Presentation = Integer("Presentation")
-Size         = Float("Size", unit="Diameter")
-Scale        = Float("Scale")
-X            = Float("X")
-Y            = Float("Y")
+Frequency    = Float.clone("Frequency", unit="cycles per unit distance")
+Presentation = Integer.clone("Presentation")
+Size         = Float.clone("Size", unit="Diameter")
+Scale        = Float.clone("Scale")
+X            = Float.clone("X")
+Y            = Float.clone("Y")
 
 # Complex features
-Contrast         = Float("Contrast", range=(0, 100), unit="%")
-ContrastSurround = Contrast("ContrastSurround", preference_fn=None)
-Ocular           = Integer("Ocular")
-Speed            = Float("Speed")
+Contrast         = Float.clone("Contrast", range=(0, 100), unit="%")
+ContrastSurround = Contrast.clone("ContrastSurround", preference_fn=None)
+Ocular           = Integer.clone("Ocular")
+Speed            = Float.clone("Speed")
 
 # Time features
 Time     = Dimension("Time", type=param.Dynamic.time_fn.time_type)
-Duration = Time("Duration")
+Duration = Time.clone("Duration")
 
 Feature._init = True # All Features created externally have to supply range or values
