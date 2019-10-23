@@ -23,9 +23,10 @@ from holoviews.core.sheetcoords import SheetCoordinateSystem
 from holoviews.core.options import Store, Options
 from .collector import AttrDict
 
-from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage
+from .distribution import Distribution, DistributionStatisticFn, DSF_WeightedAverage, calc_theta
 from . import features
 from .features import Feature # pyflakes:ignore (API import)
+import math
 
 activity_dtype = np.float64
 
@@ -75,47 +76,70 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
     post_analysis_session_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after an analysis session ends.""")
 
-# CB: having a class called DistributionMatrix with an attribute
-# distribution_matrix to hold the distribution matrix seems silly.
-# Either rename distribution_matrix or make DistributionMatrix into
-# a matrix.
 class DistributionMatrix(param.Parameterized):
     """
-    Maintains a matrix of Distributions (each of which is a dictionary
-    of (feature value: activity) pairs).
-
-    The matrix contains one Distribution for each unit in a
-    rectangular matrix (given by the matrix_shape constructor
-    argument).  The contents of each Distribution can be updated for a
-    given bin value all at once by providing a matrix of new values to
-    update().
+    Maintains a dictionary of matrices (the key is a feature and the matrix holds the activity for that feature).
 
     The results can then be accessed as a matrix of weighted averages
     (which can be used as a preference map) and/or a selectivity map
     (which measures the peakedness of each distribution).
     """
 
-    def __init__(self, matrix_shape, axis_range=(0.0, 1.0), cyclic=False,
-                 keep_peak=True):
-        """Initialize the internal data structure: a matrix of Distribution
-        objects."""
-        self.axis_range = axis_range
-        new_distribution = np.vectorize(
-            lambda x: Distribution(axis_range, cyclic, keep_peak),
-            doc="Return a Distribution instance for each element of x.")
-        self.distribution_matrix = new_distribution(np.empty(matrix_shape))
+    def __init__(self, matrix_shape, axis_range=(0.0, 1.0), cyclic=False, keep_peak=True):
+        """
+        Initialize the internal data structure: a matrix of Distribution
+        objects.
+        """
+        self._axis_bounds = axis_range
+        self._axis_range = axis_range[1] - axis_range[0]
+        self._cyclic = cyclic
+        self._keep_peak = keep_peak
+        self._empty_matrix = np.empty(matrix_shape)
+        self._response_data = {}
+        self._counts = {}
+        # total_count and total_value hold the total number and sum
+        # (respectively) of values that have ever been provided for
+        # each bin.  For a simple distribution these will be the same as
+        # sum_counts() and sum_values().
+        self._total_count = np.zeros_like(self._empty_matrix, dtype=np.uint32)
+        self._total_value = np.zeros_like(self._empty_matrix)
 
+    def update(self, new_values, feature):
+        """
+        Add a new matrix of histogram values for a given bin value.
+        """
+        if self._cyclic==False:
+            if not (self._axis_bounds[0] <= feature <= self._axis_bounds[1]):
+                raise ValueError("Bin outside bounds.")
+        # CEBALERT: Neet to support wrapping of bin values
+        # else:  new_bin = wrap(self.axis_bounds[0], self.axis_bounds[1], bin)
+        new_bin = feature
 
-    def update(self, new_values, bin):
-        """Add a new matrix of histogram values for a given bin value."""
-        ### JABHACKALERT!  The Distribution class should override +=,
-        ### rather than + as used here, because this operation
-        ### actually modifies the distribution_matrix, but that has
-        ### not yet been done.  Alternatively, it could use a different
-        ### function name altogether (e.g. update(x,y)).
-        self.distribution_matrix + np.fromfunction(
-            np.vectorize(lambda i, j: {bin: new_values[int(i), int(j)]}),
-            new_values.shape)
+        non_zeros = np.zeros_like(self._empty_matrix, dtype=np.uint32)
+        non_zeros[new_values.nonzero()] = 1
+        
+        self._total_value += new_values
+        self._total_count += non_zeros
+        
+        if new_bin not in self._response_data:
+            self._response_data[new_bin] = np.zeros_like(self._empty_matrix)
+            self._counts[new_bin] = np.zeros_like(self._empty_matrix, dtype=np.uint32)
+
+        if self._keep_peak:
+            self._response_data[new_bin] = np.maximum(self._response_data[new_bin], new_values)
+        else:
+            self._response_data[new_bin] += new_values
+            
+        self._counts[new_bin] += non_zeros
+        
+    def _make_distribution(self, theta, i, j):
+        """
+        Answer a distribution instance for coords i and j.
+        """        
+        data = {feature: array[i,j] for feature, array in self._response_data.items()}
+        count = {feature: array[i,j] for feature, array in self._counts.items()}
+        distribution = Distribution(self._axis_bounds, self._axis_range, self._cyclic, data, count, self._total_count[i,j], self._total_value[i,j], theta)
+        return distribution
 
     def apply_DSF(self, dsf):
         """
@@ -127,23 +151,30 @@ class DistributionMatrix(param.Parameterized):
         values, instead of scalars
         """
 
-        shape = self.distribution_matrix.shape
+        if self._cyclic:
+            # Cache theta value for vector sum since only depend on keys and is used
+            # for every every cyclic Distribution in the DistributionMatrix
+            theta =  calc_theta(np.array(list(self._response_data.keys())), self._axis_range)
+        else:
+            theta = None
+
+        shape = self._empty_matrix.shape
         result = {}
 
         # this is an extra call to the dsf() DistributionStatisticFn,
         # in order to retrieve
         # the dictionaries structure, and allocate the necessary matrices
-        r0 = dsf(self.distribution_matrix[0, 0])
-        for k, maps in r0.items():
+        response = dsf(self._make_distribution(theta, 0, 0))
+        for k, maps in response.items():
             result[k] = {}
             for m in maps.keys():
                 result[k][m] = np.zeros(shape, np.float64)
-
+                
         for i in range(shape[0]):
             for j in range(shape[1]):
-                response = dsf(self.distribution_matrix[i, j])
-                for k, d in response.items():
-                    for item, item_value in d.items():
+                response = dsf(self._make_distribution(theta, i, j))
+                for k, maps in response.items():
+                    for item, item_value in maps.items():
                         result[k][item][i, j] = item_value
 
         return result
@@ -284,8 +315,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             else zip(*[(f.name.lower(), f.values) for f in self.outer])
         dimensions = [features.Duration] + list(self.outer)
 
-        self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(),
-                                                         p.durations, *self.outer_vals)]
+        self.measurement_product = [mp for mp in product(self.metadata.outputs.keys(), p.durations, *self.outer_vals)]
 
         ndmapping_fn = lambda: NdMapping(kdims=dimensions)
         self._featureresponses = defaultdict(ndmapping_fn)
@@ -305,8 +335,7 @@ class FeatureResponses(PatternDrivenAnalysis):
             self._featureresponses[out_label][f_vals] = {}
             for f in self.inner:
                 self._featureresponses[out_label][f_vals][f.name.lower()] = \
-                    DistributionMatrix(output_metadata['shape'], axis_range=f.range,
-                                       cyclic=f.cyclic)
+                    DistributionMatrix(output_metadata['shape'], axis_range=f.range, cyclic=f.cyclic)
 
 
 
@@ -435,10 +464,9 @@ class FeatureResponses(PatternDrivenAnalysis):
             for feature, value in current_values:
                 self._featureresponses[name][f_vals][feature.lower()].update(act, value)
             if p.store_responses:
-                cn, cv = zip(*current_values)
+                _, cv = zip(*current_values)
                 key = (timestamp,)+f_vals+cv
-                self._responses[name][key] = Image(act.copy(), bounds=bounds,
-                                                    label='Response')
+                self._responses[name][key] = Image(act.copy(), bounds=bounds, label='Response')
 
 
     @bothmethod
@@ -569,13 +597,13 @@ class FeatureMaps(FeatureResponses):
                                    vdims=[value_dimension])
                         im.metadata=AttrDict(timestamp=timestamp)
                         key = (timestamp,)+f_vals
-                        if (map_label.replace(' ', ''), name) not in results:
+                        if (map_index, name) not in results:
                             vmap = HoloMap((key, im), kdims=dimensions,
                                            label=name, group=map_label)
                             vmap.metadata = AttrDict(**output_metadata)
                             results.set_path((map_index, name), vmap)
                         else:
-                            results.path_items[(map_index, name)][key] = im
+                            results[(map_index, name)][key] = im
                 if p.store_responses:
                     info = (p.pattern_generator.__class__.__name__, pattern_dim_label, 'Response')
                     results.set_path(('%s_%s_%s' % info, name), self._responses[name])
@@ -753,8 +781,7 @@ class ReverseCorrelation(FeatureResponses):
 
             rows, cols, _ = self._compute_roi(p, self.metadata.outputs[out_label])
 
-            rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype)
-                                  for r in rows] for c in cols])
+            rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype) for _ in rows] for _ in cols])
 
             self._featureresponses[in_label][out_label][duration] = rc_array
 
@@ -795,7 +822,6 @@ class ReverseCorrelation(FeatureResponses):
         timestamp = self.metadata['timestamp']
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
-                grid_key = (in_label, out_label)
                 for d in p.durations:
                     rows, cols, _ = self._compute_roi(p, output_metadata)
                     in_response = responses[(in_label, d)]

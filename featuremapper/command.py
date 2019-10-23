@@ -286,10 +286,10 @@ class FeatureCurveCommand(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Orientation(steps=p.num_orientation),
-                f.Phase(steps=p.num_phase),
-                f.Frequency(values=p.frequencies),
-                f.Contrast(values=p.contrasts, preference_fn=None)]
+        return [f.Orientation.clone(steps=p.num_orientation),
+                f.Phase.clone(steps=p.num_phase),
+                f.Frequency.clone(values=p.frequencies),
+                f.Contrast.clone(values=p.contrasts, preference_fn=None)]
 
 
 
@@ -547,13 +547,13 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
     def _feature_list(self, p):
         # Always varies frequency and phase; everything else depends on parameters.
 
-        features = [f.Frequency(values=p.frequencies)]
+        features = [f.Frequency.clone(values=p.frequencies)]
 
         if p.num_direction == 0:
-            features += [f.Orientation(steps=p.num_orientation,
+            features += [f.Orientation.clone(steps=p.num_orientation,
                                        preference_fn=self.preference_fn)]
 
-        features += [f.Phase(steps=p.num_phase)]
+        features += [f.Phase.clone(steps=p.num_phase)]
 
         if p.num_ocularity > 1: features += \
             [f.Ocular(range=(0.0, 1.0), steps=p.num_ocularity)]
@@ -577,7 +577,7 @@ class measure_sine_pref(SinusoidalMeasureResponseCommand):
                 [compute_orientation_from_direction([("direction", v)]) for v in
                  dr.values]))
             features += [dr, \
-                         f.Orientation(values=or_values,
+                         f.Orientation.clone(values=or_values,
                                        compute_fn=compute_orientation_from_direction,
                                        preference_fn=self.preference_fn)]
 
@@ -597,10 +597,10 @@ class measure_or_pref(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Frequency(values=p.frequencies),
-                f.Orientation(steps=p.num_orientation,
+        return [f.Frequency.clone(values=p.frequencies),
+                f.Orientation.clone(steps=p.num_orientation,
                               preference_fn=self.preference_fn),
-                f.Phase(steps=p.num_phase)]
+                f.Phase.clone(steps=p.num_phase)]
 
 
 
@@ -614,10 +614,10 @@ class measure_od_pref(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Frequency(values=p.frequencies),
-                f.Orientation(steps=p.num_orientation,
+        return [f.Frequency.clone(values=p.frequencies),
+                f.Orientation.clone(steps=p.num_orientation,
                               preference_fn=self.preference_fn),
-                f.Phase(steps=p.num_phase),
+                f.Phase.clone(steps=p.num_phase),
                 f.Ocular(range=(0.0, 1.0), values=[0.0, 1.0])]
 
 
@@ -643,8 +643,8 @@ class measure_phasedisparity(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Frequency(values=p.frequencies),
-                f.Phase(steps=p.num_phase),
+        return [f.Frequency.clone(values=p.frequencies),
+                f.Phase.clone(steps=p.num_phase),
                 f.PhaseDisparity(steps=p.num_disparity)]
 
 
@@ -686,11 +686,11 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
         return [f.Speed(values=[0]) if p.num_speeds is 0 else
                 f.Speed(range=(0.0, p.max_speed), steps=p.num_speeds),
                 f.Duration(values=[np.max(p.durations)]),
-                f.Frequency(values=p.frequencies),
+                f.Frequency.clone(values=p.frequencies),
                 f.Direction(steps=p.num_direction,
                             preference_fn=self.preference_fn),
-                f.Phase(steps=p.num_phase),
-                f.Orientation(values=or_values,
+                f.Phase.clone(steps=p.num_phase),
+                f.Orientation.clone(values=or_values,
                               compute_fn=compute_orientation_from_direction)]
 
 
@@ -712,10 +712,10 @@ class measure_hue_pref(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        return [f.Frequency(values=p.frequencies),
-                f.Orientation(steps=p.num_orientation),
+        return [f.Frequency.clone(values=p.frequencies),
+                f.Orientation.clone(steps=p.num_orientation),
                 f.Hue(steps=p.num_hue),
-                f.Phase(steps=p.num_phase)]
+                f.Phase.clone(steps=p.num_phase)]
 
 
 
@@ -735,14 +735,14 @@ class measure_second_or_pref(SinusoidalMeasureResponseCommand):
 
 
     def _feature_list(self, p):
-        fs = [f.Frequency(values=p.frequencies)]
+        fs = [f.Frequency.clone(values=p.frequencies)]
         if p.true_peak:
-            fs.append(f.Orientation(steps=p.num_orientation,
+            fs.append(f.Orientation.clone(steps=p.num_orientation,
                                     preference_fn=DSF_BimodalPeaks()))
         else:
-            fs.append(f.Orientation(steps=p.num_orientation,
+            fs.append(f.Orientation.clone(steps=p.num_orientation,
                                     preference_fn=DSF_BimodalPeaks()))
-            fs.append(f.Phase(steps=p.num_phase))
+            fs.append(f.Phase.clone(steps=p.num_phase))
 
         return fs
 
@@ -779,7 +779,7 @@ class measure_corner_or_pref(PositionMeasurementCommand):
                     preference_fn=self.preference_fn),
                 f.Y(range=p.y_range, steps=p.divisions,
                     preference_fn=self.preference_fn),
-                f.Orientation(range=(0, 2*np.pi), steps=p.num_orientation)]
+                f.Orientation.clone(range=(0, 2*np.pi), steps=p.num_orientation)]
 
 
 class measure_corner_angle_pref(PositionMeasurementCommand):
@@ -827,7 +827,7 @@ class measure_corner_angle_pref(PositionMeasurementCommand):
         self._make_key_image(p)
         return [f.X(range=p.x_range, steps=p.positions),
                 f.Y(range=p.y_range, steps=p.positions),
-                f.Orientation(range=(0, 2 * np.pi), steps=p.num_or),
+                f.Orientation.clone(range=(0, 2 * np.pi), steps=p.num_or),
                 f.Angle(range=a_range, steps=p.num_angle)]
 
 
@@ -997,11 +997,11 @@ class measure_size_response(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Phase(steps=p.num_phase),
-                f.Frequency(values=p.frequencies),
+        return [f.Phase.clone(steps=p.num_phase),
+                f.Frequency.clone(values=p.frequencies),
                 f.Size(range=(0.0, p.max_size),
                         steps=p.num_sizes),
-                f.Contrast(values=p.contrasts, preference_fn=None)]
+                f.Contrast.clone(values=p.contrasts, preference_fn=None)]
 
 
 class measure_contrast_response(UnitCurveCommand):
@@ -1057,10 +1057,10 @@ class measure_contrast_response(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Phase(steps=p.num_phase),
-                f.Frequency(values=p.frequencies),
-                f.Contrast(values=p.contrasts),
-                f.Orientation(preference_fn=None,
+        return [f.Phase.clone(steps=p.num_phase),
+                f.Frequency.clone(values=p.frequencies),
+                f.Contrast.clone(values=p.contrasts),
+                f.Orientation.clone(preference_fn=None,
                               values=[p.orientation+ro
                                       for ro in p.relative_orientations])]
 
@@ -1118,12 +1118,12 @@ class measure_frequency_response(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Orientation(values=[p.orientation]),
-                f.Phase(steps=p.num_phase),
-                f.Frequency(range=(0.0, p.max_freq),
+        return [f.Orientation.clone(values=[p.orientation]),
+                f.Phase.clone(steps=p.num_phase),
+                f.Frequency.clone(range=(0.0, p.max_freq),
                             steps=p.num_freq),
                 f.Size(values=[p.size]),
-                f.Contrast(values=p.contrasts, preference_fn=None)]
+                f.Contrast.clone(values=p.contrasts, preference_fn=None)]
 
 
 class measure_orientation_contrast(UnitCurveCommand):
@@ -1199,10 +1199,10 @@ class measure_orientation_contrast(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Frequency(values=p.frequencies),
-                f.Phase(steps=p.num_phase),
-                f.OrientationSurround(values=self.or_surrounds),
-                f.ContrastSurround(values=p.contrastsurround,
+        return [f.Frequency.clone(values=p.frequencies),
+                f.Phase.clone(steps=p.num_phase),
+                f.OrientationSurround.clone(values=self.or_surrounds),
+                f.ContrastSurround.clone(values=p.contrastsurround,
                                    preference_fn=None)]
 
 
@@ -1223,8 +1223,8 @@ class test_measure(UnitCurveCommand):
 
 
     def _feature_list(self, p):
-        return [f.Orientation(values=[1.0] * 22, preference_fn=None),
-                f.Contrast(values=[100])]
+        return [f.Orientation.clone(values=[1.0] * 22, preference_fn=None),
+                f.Contrast.clone(values=[100])]
 
 
 __all__ = [

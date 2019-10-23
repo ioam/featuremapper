@@ -19,6 +19,8 @@ Distribution class
 import numpy as np
 
 import param
+import cmath
+import math
 
 unavailable_scipy_optimize = False
 try:
@@ -26,15 +28,6 @@ try:
 except ImportError:
     param.Parameterized().debug("scipy.optimize not available, dummy von Mises fit")
     unavailable_scipy_optimize = True
-
-def arg(z):
-    """
-    Return the complex argument (phase) of z.
-    (z in radians.)
-    """
-    z = z + complex(0,0)  # so that arg(z) also works for real z
-    return np.arctan2(z.imag, z.real)
-
 
 def wrap(lower, upper, x):
     """
@@ -47,8 +40,17 @@ def wrap(lower, upper, x):
     # Note that Python's % operator works on floats and arrays;
     # usually one can simply use that instead.  E.g. to wrap array or
     # scalar x into 0,2*pi, just use "x % (2*pi)".
-    range_ = upper-lower
-    return lower + np.fmod(x-lower + 2*range_*(1-np.floor(x/(2*range_))), range_)
+    axis_range = upper - lower
+    return lower + (x - lower + 2.0 * axis_range * (1.0 - math.floor(x / (2.0 * axis_range)))) % axis_range
+
+def calc_theta(bins, axis_range):
+    """
+    Convert a bin number to a direction in radians.
+
+    Works for NumPy arrays of bin numbers, returning
+    an array of directions.
+    """
+    return np.exp( (2.0 * np.pi) * bins / axis_range * 1.0j )
 
 
 class Distribution(object):
@@ -56,14 +58,14 @@ class Distribution(object):
     Holds a distribution of the values f(x) associated with a variable x.
 
     A Distribution is a histogram-like object that is a dictionary of
-    samples.  Each sample is an x:f(x) pair, where x is called the bin
-    and f(x) is called the value(). Each bin's value is typically
+    samples.  Each sample is an x:f(x) pair, where x is called the feature_bin
+    and f(x) is called the value(). Each feature_bin's value is typically
     maintained as the sum of all the values that have been placed into
     it.
 
-    The bin axis is continuous, and can represent a continuous
+    The feature_bin axis is continuous, and can represent a continuous
     quantity without discretization.  Alternatively, this class can be
-    used as a traditional histogram by either discretizing the bin
+    used as a traditional histogram by either discretizing the feature_bin
     number before adding each sample, or by binning the values in the
     final Distribution.
 
@@ -76,16 +78,16 @@ class Distribution(object):
     ValueError.
 
     In addition to the values, can also return the counts, i.e., the
-    number of times that a sample has been added with the given bin.
+    number of times that a sample has been added with the given feature_bin.
 
     Not all instances of this class will be a true distribution in the
     mathematical sense; e.g. the values will have to be normalized
     before they can be considered a probability distribution.
 
-    If keep_peak=True, the value stored in each bin will be the
+    If keep_peak=True, the value stored in each feature_bin will be the
     maximum of all values ever added, instead of the sum.  The
     distribution will thus be a record of the maximum value
-    seen at each bin, also known as an envelope.
+    seen at each feature_bin, also known as an envelope.
     """
 
     # Holds the number of times that undefined values have been
@@ -95,53 +97,144 @@ class Distribution(object):
     # not meaningful.
     undefined_vals  = 0
 
-    def __init__(self, axis_bounds=(0.0, 2*np.pi), cyclic=False, keep_peak=False):
-        self._data = {}
-        self._counts = {}
+    def __init__(self, axis_bounds, axis_range, cyclic, data, counts, total_count, total_value, theta):
+        self._data = data
+        self._counts = counts
 
         # total_count and total_value hold the total number and sum
         # (respectively) of values that have ever been provided for
-        # each bin.  For a simple distribution these will be the same as
+        # each feature_bin.  For a simple distribution these will be the same as
         # sum_counts() and sum_values().
-        self.total_count = 0
-        self.total_value = 0.0
-
+        self.total_count = total_count
+        self.total_value = total_value
+        
         self.axis_bounds = axis_bounds
-        self.axis_range = axis_bounds[1] - axis_bounds[0]
+        self.axis_range = axis_range
         self.cyclic = cyclic
-        self.keep_peak = keep_peak
+        
+        self._pop_store = None
 
-
-
-    ### JABHACKALERT!  The semantics of this operation are incorrect, because
-    ### an expression like x+y should not modify x, while this does.  It could
-    ### be renamed __iadd__, to implement += (which has the correct semantics),
-    ### but it's not yet clear how to do that.
-    def __add__(self, a):
+        # Cache busy data
+        self._keys = list(data.keys())
+        self._values = list(data.values())
+        self._theta = theta
+        
+        if self.cyclic:
+            # Cache the vector sum
+            self._vector_sum = self._fast_vector_sum(self._values, theta)
+        else:
+            self._vector_sum = None
+            
+    def data(self):
         """
-        Allows add() method to be used via the '+' operator; i.e.,
-        Distribution + dictionary does Distribution.add(dictionary).
+        Answer a dictionary with bins as keys.
         """
-        self.add(a)
-        return None
-
-
-    def get_value(self, bin):
+        return self._data
+    
+    def pop(self, feature_bin):
         """
-        Return the value of the specified bin.
-
-        (Return None if there is no such bin.)
+        Remove the entry with bin from the distribution.
         """
-        return self._data.get(bin)
+        if self._pop_store is not None:
+            raise Exception("Distribution: attempt to pop value before outstanding restore")
+        self._pop_store = self._data.pop(feature_bin)
+        
+        self._keys = list(self._data.keys())
+        self._values = list(self._data.values())
 
-
-    def get_count(self, bin):
+    def restore(self, feature_bin):
         """
-        Return the count from the specified bin.
-
-        (Return None if there is no such bin.)
+        Restore the entry with bin from the distribution.
+        Only valid if called after a pop.
         """
-        return self._counts.get(bin)
+        if self._pop_store is None:
+            raise Exception("Distribution: attempt to restore value before pop")
+        self._data[feature_bin] = self._pop_store
+        self._pop_store = None
+        
+        self._keys = list(self._data.keys())
+        self._values = list(self._data.values())
+
+    def vector_sum(self):
+        """
+        Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
+
+        Each feature_bin contributes a vector of length equal to its value, at
+        a direction corresponding to the feature_bin number.  Specifically,
+        the total feature_bin number range is mapped into a direction range
+        [0,2pi].
+
+        For a cyclic distribution, the avgbinnum will be a continuous
+        measure analogous to the max_value_bin() of the distribution.
+        But this quantity has more precision than max_value_bin()
+        because it is computed from the entire distribution instead of
+        just the peak feature_bin.  However, it is likely to be useful only
+        for uniform or very dense sampling; with sparse, non-uniform
+        sampling the estimates will be biased significantly by the
+        particular samples chosen.
+
+        The avgbinnum is not meaningful when the magnitude is 0,
+        because a zero-length vector has no direction.  To find out
+        whether such cases occurred, you can compare the value of
+        undefined_vals before and after a series of calls to this
+        function.
+        
+        This tries to use cached values of this.
+
+        """
+        if self._vector_sum is None:
+            # There is a non cyclic distribution that is using this.
+            # Calculate and then cache it
+            
+            # First check if there is a cached theta. If not derive it.
+            if self._theta is None:          
+                self._theta =  calc_theta(np.array(self._keys), self.axis_range)
+
+            self._vector_sum = self._fast_vector_sum(self._values, self._theta)
+            
+        return self._vector_sum
+            
+    def _fast_vector_sum(self, values, theta):
+        """
+        Return the vector sum of the distribution as a tuple (magnitude, avgbinnum).
+        
+        This implementation assumes that the values of the distribution needed for the 
+        vector sum will not be changed and depends on cached values.
+        
+        """
+        # vectors are represented in polar form as complex numbers
+        v_sum = np.inner(values, theta)
+
+        magnitude = abs(v_sum)
+        direction = cmath.phase(v_sum)
+
+        if v_sum == 0:
+            self.undefined_vals += 1
+
+        direction_radians = self._radians_to_bins(direction)
+
+        # wrap the direction because arctan2 returns principal values
+        wrapped_direction = wrap(self.axis_bounds[0], self.axis_bounds[1], direction_radians)
+
+        return (magnitude, wrapped_direction)
+
+
+    def get_value(self, feature_bin):
+        """
+        Return the value of the specified feature_bin.
+
+        (Return None if there is no such feature_bin.)
+        """
+        return self._data.get(feature_bin)
+
+
+    def get_count(self, feature_bin):
+        """
+        Return the count from the specified feature_bin.
+
+        (Return None if there is no such feature_bin.)
+        """
+        return self._counts.get(feature_bin)
 
 
     def values(self):
@@ -151,12 +244,12 @@ class Distribution(object):
         Various statistics can then be calculated if desired:
 
           sum(vals)  (total of all values)
-          max(vals)  (highest value in any bin)
+          max(vals)  (highest value in any feature_bin)
 
-        Note that the bin-order of values returned does not necessarily
+        Note that the feature_bin-order of values returned does not necessarily
         match that returned by counts().
         """
-        return list(self._data.values())
+        return self._values
 
 
     def counts(self):
@@ -166,9 +259,9 @@ class Distribution(object):
         Various statistics can then be calculated if desired:
 
           sum(counts)  (total of all counts)
-          max(counts)  (highest count in any bin)
+          max(counts)  (highest count in any feature_bin)
 
-        Note that the bin-order of values returned does not necessarily
+        Note that the feature_bin-order of values returned does not necessarily
         match that returned by values().
         """
         return list(self._counts.values())
@@ -178,49 +271,7 @@ class Distribution(object):
         """
         Return a list of bins that have been populated.
         """
-        return list(self._data.keys())
-
-
-    def add(self, new_data):
-        """
-        Add a set of new data in the form of a dictionary of (bin,
-        value) pairs.  If the bin already exists, the value is added
-        to the current value.  If the bin doesn't exist, one is created
-        with that value.
-
-        Bin numbers outside axis_bounds are allowed for cyclic=True,
-        but otherwise a ValueError is raised.
-
-        If keep_peak=True, the value of the bin is the maximum of the
-        current value and the supplied value.  That is, the bin stores
-        the peak value seen so far.  Note that each call will increase
-        the total_value and total_count (and thus decrease the
-        value_mag() and count_mag()) even if the value doesn't happen
-        to be the maximum seen so far, since each data point still
-        helps improve the sampling and thus the confidence.
-        """
-        for bin in new_data.keys():
-
-            if self.cyclic==False:
-                if not (self.axis_bounds[0] <= bin <= self.axis_bounds[1]):
-                    raise ValueError("Bin outside bounds.")
-            # CEBALERT: Neet to support wrapping of bin values
-            # else:  new_bin = wrap(self.axis_bounds[0], self.axis_bounds[1], bin)
-            new_bin = bin
-
-            if new_bin not in self._data:
-                self._data[new_bin] = 0.0
-                self._counts[new_bin] = 0
-
-            new_value = new_data[bin]
-            self.total_value += new_value
-            self._counts[new_bin] += 1
-            self.total_count += 1
-
-            if self.keep_peak == True:
-                if new_value > self._data[new_bin]: self._data[new_bin] = new_value
-            else:
-                self._data[new_bin] += new_value
+        return self._keys
 
 
     def sub_distr( self, distr ):
@@ -240,23 +291,28 @@ class Distribution(object):
 
 
     def max_value_bin(self):
-        """Return the bin with the largest value."""
-        return list(self._data.keys())[np.argmax(list(self._data.values()))]
+        """
+        Return the feature_bin with the largest value.
+        
+        Note that uses cached values so that pop and restore
+        need to be used if want with altered distribution.
+        """
+        return self._keys[np.argmax(self._values)]
 
 
     def weighted_sum(self):
-        """Return the sum of each value times its bin."""
-        return np.inner(list(self._data.keys()), list(self._data.values()))
+        """Return the sum of each value times its feature_bin."""
+        return np.inner(self._keys, self._values)
 
 
-    def value_mag(self, bin):
-        """Return the value of a single bin as a proportion of total_value."""
-        return self._safe_divide(self._data.get(bin), self.total_value)
+    def value_mag(self, feature_bin):
+        """Return the value of a single feature_bin as a proportion of total_value."""
+        return self._safe_divide(self._data.get(feature_bin), self.total_value)
 
 
-    def count_mag(self, bin):
-        """Return the count of a single bin as a proportion of total_count."""
-        return self._safe_divide(float(self._counts.get(bin)), float(self.total_count))
+    def count_mag(self, feature_bin):
+        """Return the count of a single feature_bin as a proportion of total_count."""
+        return self._safe_divide(float(self._counts.get(feature_bin)), float(self.total_count))
         # use of float()
 
 
@@ -272,12 +328,12 @@ class Distribution(object):
 
     def _radians_to_bins(self, direction):
         """
-        Convert a direction in radians into a bin number.
+        Convert a direction in radians into a feature_bin number.
 
         Works for NumPy arrays of direction, returning
-        an array of bin numbers.
+        an array of feature_bin numbers.
         """
-        return direction*self.axis_range / (2*np.pi)
+        return direction * self.axis_range / (2 * np.pi)
 
 
     def _safe_divide(self, numerator, denominator):
@@ -372,33 +428,24 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         whether such cases occurred, you can compare the value of
         undefined_vals before and after a series of calls to this
         function.
+        
+        This is a slow algorithm and should only be used if the
+        contents of the distribution have been changed by the statistical 
+        function.
+        If not, then the cached value in the distribution should be used.
 
         """
         # vectors are represented in polar form as complex numbers
-        h = d._data
-        r = list(h.values())
-        theta = d._bins_to_radians(np.array(list(h.keys())))
-        v_sum = np.inner(r, np.exp(theta * 1j))
-
-        magnitude = abs(v_sum)
-        direction = arg(v_sum)
-
-        if v_sum == 0:
-            d.undefined_vals += 1
-
-        direction_radians = d._radians_to_bins(direction)
-
-        # wrap the direction because arctan2 returns principal values
-        wrapped_direction = wrap(d.axis_bounds[0], d.axis_bounds[1], direction_radians)
-
-        return (magnitude, wrapped_direction)
+        h = d.data()
+        theta = calc_theta(np.array(list(h.keys())), d.axis_range)
+        return d._fast_vector_sum(list(h.values()), theta)
 
 
     def _weighted_average(self, d ):
         """
         Return the weighted_sum divided by the sum of the values
         """
-        return d._safe_divide(d.weighted_sum(), sum(list(d._data.values())))
+        return d._safe_divide(d.weighted_sum(), sum(d.values()))
 
 
     def selectivity(self, d):
@@ -436,14 +483,13 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         is 0.0, and if all bins but one are zero, the selectivity is
         1.0.
         """
-        # A single bin is considered fully selective (but could also
+        # A single feature_bin is considered fully selective (but could also
         # arguably be considered fully unselective)
-        if len(d._data) <= 1:
+        if len(d.data()) <= 1:
             return 1.0
 
-        proportion = d._safe_divide(max(list(d._data.values())),
-                                    sum(list(d._data.values())))
-        offset = 1.0/len(d._data)
+        proportion = d._safe_divide(max(d.values()), sum(d.values()))
+        offset = 1.0/len(d.values())
         scaled = (proportion-offset) / (1.0-offset)
 
         # negative scaled is possible
@@ -460,7 +506,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         Return the magnitude of the vector_sum() divided by the sum_value().
 
         This quantity is a vector-based measure of the peakedness of
-        the distribution.  If only a single bin has a non-zero value(),
+        the distribution.  If only a single feature_bin has a non-zero value(),
         the selectivity will be 1.0, and if all bins have the same
         value() then the selectivity will be 0.0.  Other distributions
         will result in intermediate values.
@@ -473,7 +519,7 @@ class DescriptiveStatisticFn(DistributionStatisticFn):
         value of undefined_values() before and after a series of
         calls to this function.
         """
-        return d._safe_divide(self.vector_sum(d)[0], sum(list(d._data.values())))
+        return d._safe_divide(d.vector_sum()[0], sum(d.values()))
 
 
     __abstract = True
@@ -488,20 +534,19 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
 
     def second_max_value_bin(self, d):
         """
-        Return the bin with the second largest value.
-        If there is one bin only, return it. This is not a correct result,
+        Return the feature_bin with the second largest value.
+        If there is one feature_bin only, return it. This is not a correct result,
         however it is practical for plotting compatibility, and it will not
         mistakenly be claimed as secondary maximum, by forcing its selectivity
         to 0.0
         """
-        h = d._data
-        if len(h) <= 1:
-            return list(h.keys())[0]
+        if len(d.bins()) <= 1:
+            return d.bins()[0]
 
-        k = self.max_value_bin()
-        v = h.pop(k)
-        m = self.max_value_bin()
-        h[k] = v
+        k = d.max_value_bin()
+        d.pop(k)
+        m = d.max_value_bin()
+        d.restore(k)
 
         return m
 
@@ -509,7 +554,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
     def second_selectivity(self, d):
         """
         Return the selectivity of the second largest value in the distribution.
-        If there is one bin only, the selectivity is 0, since there is no second
+        If there is one feature_bin only, the selectivity is 0, since there is no second
         peack at all, and this value is also used to discriminate the validity
         of second_max_value_bin()
         Selectivity is computed in two ways depending on whether the variable is
@@ -528,14 +573,13 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         Return the value of the second maximum as a proportion of the sum_value()
         see _relative_selectivity() for further details
         """
-        h = d._data
         k = d.max_value_bin()
-        v = h.pop(k)
-        m = max(list(h.values()))
-        h[k] = v
+        d.pop(k)
+        m = max(d.values())
+        d.restore(k)
 
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / len(d.data())
         scaled = (proportion - offset) / (1.0 - offset)
 
         return max(scaled, 0.0)
@@ -547,33 +591,32 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         maximum one, divided by the sum_value().
         see _vector_selectivity() for further details
         """
-        h = d._data
         k = d.max_value_bin()
-        v = h.pop(k)
-        s = d.vector_sum()[0]
-        h[k] = v
+        d.pop(k)
+        s = self.vector_sum(d)[0]
+        d.restore(k)
 
-        return self._safe_divide(s, sum(list(h.values())))
+        return self._safe_divide(s, sum(d.values()))
 
 
     def second_peak_bin(self, d):
         """
-        Return the bin with the second peak in the distribution.
-        Unlike second_max_value_bin(), it does not return a bin which is the
+        Return the feature_bin with the second peak in the distribution.
+        Unlike second_max_value_bin(), it does not return a feature_bin which is the
         second largest value, if laying on a wing of the first peak, the second
         peak is returned only if the distribution is truly multimodal. If it isn't,
         return the first peak (for compatibility with numpy array type, and
         plotting compatibility), however the corresponding selectivity will be
         forced to 0.0
         """
-        h = d._data
+        h = d.data()
         l = len(h)
         if l <= 1:
-            return list(h.keys())[0]
+            return d.keys()[0]
 
         ks = list(h.keys())
         ks.sort()
-        ik0 = ks.index(list(h.keys())[np.argmax(list(h.values()))])
+        ik0 = ks.index(d.keys()[np.argmax(d.values())])
         k0 = ks[ik0]
         v0 = h[k0]
 
@@ -627,8 +670,8 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         If the distribution has only one peak, return 0.0, and this value is
         also usefl to discriminate the validity of second_peak_bin()
         """
-        h = d._data
-        if len(h) <= 1:
+        l = len(d.keys())
+        if l <= 1:
             return 0.0
 
         p1 = d.max_value_bin()
@@ -636,9 +679,9 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         if p1 == p2:
             return 0.0
 
-        m = h[p2]
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        m = d.get_value(p2)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / l
         scaled = (proportion - offset) / (1.0 - offset)
 
         return max(scaled, 0.0)
@@ -653,18 +696,18 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         call of second_peak_bin(), if the user is interested in both preference
         and selectivity, as often is the case.
         """
-        h = d._data
-        if len(h) <= 1:
-            return (list(h.keys())[0], 0.0)
+        l = len(d.keys())
+        if l <= 1:
+            return (d.keys()[0], 0.0)
 
         p1 = d.max_value_bin()
         p2 = self.second_peak_bin(d)
         if p1 == p2:
             return (p1, 0.0)
 
-        m = h[p2]
-        proportion = d._safe_divide(m, sum(list(h.values())))
-        offset = 1.0 / len(h)
+        m = d.get_value(p2)
+        proportion = d._safe_divide(m, sum(d.values()))
+        offset = 1.0 / l
         scaled = (proportion - offset) / (1.0 - offset)
 
         return (p2, max(scaled, 0.0))
@@ -696,7 +739,7 @@ class DSF_WeightedAverage(DescriptiveStatisticFn):
     For a cyclic distribution, this is the direction of the vector
     sum (see vector_sum()).
     For a non-cyclic distribution, this is the arithmetic average
-    of the data on the bin_axis, where each bin is weighted by its
+    of the data on the bin_axis, where each feature_bin is weighted by its
     value.
     Such a computation will generally produce much more precise maps using
     fewer test stimuli than the discrete method.  However, weighted_average
@@ -715,7 +758,7 @@ class DSF_WeightedAverage(DescriptiveStatisticFn):
     """
 
     def __call__(self, d):
-        p = self.vector_sum(d)[1] if d.cyclic else self._weighted_average(d)
+        p = d.vector_sum()[1] if d.cyclic else self._weighted_average(d)
         p = self.value_scale[1] * (p + self.value_scale[0])
         s = self.selectivity_scale[1] * (self.selectivity(d) + self.selectivity_scale[0])
 
@@ -771,7 +814,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
     # values to fit the maximum value of k parameter in von Mises distribution,
     # as a function of the number of bins in the distribution. Useful for
     # keeping selectivity in range 0..1. Values derived offline from distribution
-    # with a single active bin, and total bins from 8 to 32
+    # with a single active feature_bin, and total bins from 8 to 32
     vm_kappa_fit = (0.206, 0.614)
 
     # level of activity in units confoundable with noise. Used in von Mises fit,
@@ -863,7 +906,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
         computations in this class. The bandwith parameter is transposed in
         logaritmic scale, and is normalized by the maximum value for the number
         of bins in the distribution, in order to give roughly 1.0 for a
-        distribution with one bin at 1.0 an all the other at 0.0, and 0.0 for
+        distribution with one feature_bin at 1.0 an all the other at 0.0, and 0.0 for
         uniform distributions. The normalizing factor of the selectivity is fit
         for the total number of bins, using fit parameters computed offline.
         There are conditions that prevents apriori the possibility to fit the
@@ -893,7 +936,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             self.fit_exit_code = -1
             return 0, 0, 0
 
-        y = np.array(list(distribution.values()))
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return 0, 0, 0
@@ -974,7 +1017,7 @@ class VonMisesStatisticFn(DistributionStatisticFn):
             param.Parameterized().warning( "no bimodal von Mises fit possible with less than 8 bins" )
             self.fit_exit_code = -1
             return null
-        y = np.array(list(distribution.values()))
+        y = np.array(distribution.values())
         if y.std() < self.noise_level:
             self.fit_exit_code = 1
             return null
