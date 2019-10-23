@@ -96,7 +96,7 @@ class DistributionMatrix(param.Parameterized):
         self._cyclic = cyclic
         self._keep_peak = keep_peak
         self._empty_matrix = np.empty(matrix_shape)
-        self._distribution_matrix = {}
+        self._response_data = {}
         self._counts = {}
         # total_count and total_value hold the total number and sum
         # (respectively) of values that have ever been provided for
@@ -122,14 +122,14 @@ class DistributionMatrix(param.Parameterized):
         self._total_value += new_values
         self._total_count += non_zeros
         
-        if new_bin not in self._distribution_matrix:
-            self._distribution_matrix[new_bin] = np.zeros_like(self._empty_matrix)
+        if new_bin not in self._response_data:
+            self._response_data[new_bin] = np.zeros_like(self._empty_matrix)
             self._counts[new_bin] = np.zeros_like(self._empty_matrix, dtype=np.uint32)
 
         if self._keep_peak:
-            self._distribution_matrix[new_bin] = np.maximum(self._distribution_matrix[new_bin], new_values)
+            self._response_data[new_bin] = np.maximum(self._response_data[new_bin], new_values)
         else:
-            self._distribution_matrix[new_bin] += new_values
+            self._response_data[new_bin] += new_values
             
         self._counts[new_bin] += non_zeros
         
@@ -137,7 +137,7 @@ class DistributionMatrix(param.Parameterized):
         """
         Answer a distribution instance for coords i and j.
         """        
-        data = {feature: array[i,j] for feature, array in self._distribution_matrix.items()}
+        data = {feature: array[i,j] for feature, array in self._response_data.items()}
         count = {feature: array[i,j] for feature, array in self._counts.items()}
         distribution = Distribution(self._axis_bounds, self._axis_range, self._cyclic, data, count, self._total_count[i,j], self._total_value[i,j], theta)
         return distribution
@@ -155,7 +155,7 @@ class DistributionMatrix(param.Parameterized):
         if self._cyclic:
             # Cache theta value for vector sum since only depend on keys and is used
             # for every every cyclic Distribution in the DistributionMatrix
-            theta =  calc_theta(np.array(list(self._distribution_matrix.keys())), self._axis_range)
+            theta =  calc_theta(np.array(list(self._response_data.keys())), self._axis_range)
         else:
             theta = None
 
