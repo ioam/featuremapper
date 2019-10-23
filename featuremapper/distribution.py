@@ -596,7 +596,7 @@ class DescriptiveBimodalStatisticFn(DescriptiveStatisticFn):
         s = self.vector_sum(d)[0]
         d.restore(k)
 
-        return d._safe_divide(s, sum(d.values()))
+        return self._safe_divide(s, sum(d.values()))
 
 
     def second_peak_bin(self, d):

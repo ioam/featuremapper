@@ -76,7 +76,6 @@ class PatternDrivenAnalysis(param.ParameterizedFunction):
     post_analysis_session_hooks = param.HookList(default=[],instantiate=False,doc="""
         List of callable objects to be run after an analysis session ends.""")
 
-
 class DistributionMatrix(param.Parameterized):
     """
     Maintains a dictionary of matrices (the key is a feature and the matrix holds the activity for that feature).
@@ -782,8 +781,7 @@ class ReverseCorrelation(FeatureResponses):
 
             rows, cols, _ = self._compute_roi(p, self.metadata.outputs[out_label])
 
-            rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype)
-                                  for r in rows] for c in cols])
+            rc_array = np.array([[np.zeros(input_metadata['shape'], activity_dtype) for _ in rows] for _ in cols])
 
             self._featureresponses[in_label][out_label][duration] = rc_array
 
@@ -824,7 +822,6 @@ class ReverseCorrelation(FeatureResponses):
         timestamp = self.metadata['timestamp']
         for in_label in self.metadata.inputs:
             for out_label, output_metadata in self.metadata.outputs.items():
-                grid_key = (in_label, out_label)
                 for d in p.durations:
                     rows, cols, _ = self._compute_roi(p, output_metadata)
                     in_response = responses[(in_label, d)]
