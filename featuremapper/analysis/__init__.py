@@ -287,7 +287,7 @@ class toHCS(Operation):
         hue_data = hue.data
         hue_range = hue.vdims[0].range
         if (not hue.vdims[0].cyclic) or (None in hue_range):
-             raise Exception("The input hue channel must be declared cyclic with a defined range.")
+            raise Exception("The input hue channel must be declared cyclic with a defined range.")
         if hue.shape != confidence.shape:
             raise Exception("Cannot combine input Matrices with different shapes.")
 
@@ -362,9 +362,9 @@ class decode_feature(Operation):
 
         cr = preference.cyclic_range
         cyclic = False if cr is None else True
-        range = (0, 1.0 if cr is None else cr)
+        dist_range = (0, 1.0 if cr is None else cr)
 
-        d = Distribution(range, cyclic)
+        d = Distribution(dist_range, cyclic)
         for (p, a, s) in zip(preference.data.ravel(), activity.data.ravel(), selectivity.data.ravel()):
             d.add({p: a*s})
 

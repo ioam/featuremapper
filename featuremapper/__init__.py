@@ -8,7 +8,7 @@ from __future__ import absolute_import
 
 import param
 from param.version import Version
-__version__ = Version(release=(0,2,0), fpath=__file__,
+__version__ = Version(release=(0,2,1), fpath=__file__,
                       commit="$Format:%h$", reponame='featuremapper')
 
 import copy
@@ -470,12 +470,12 @@ class FeatureResponses(PatternDrivenAnalysis):
 
 
     @bothmethod
-    def set_cmd_overrides(self_or_cls, **kwargs):
+    def set_cmd_overrides(self, **kwargs):
         """
         Allows setting of cmd_overrides at the class and instance level.
         cmd_overrides are applied to the pattern_response_fn.
         """
-        self_or_cls.cmd_overrides = dict(self_or_cls.cmd_overrides, **kwargs)
+        self.cmd_overrides = dict(self.cmd_overrides, **kwargs)
 
 
     def _apply_cmd_overrides(self, p):
