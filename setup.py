@@ -42,7 +42,7 @@ for package_list in packages_to_state:
 
 setup_args.update(dict(
     name='FeatureMapper',
-    version="0.2.0",
+    version="0.2.1",
     description='FeatureMapper coordinates the presentation of input patterns, collating and analysing the responses.',
     long_description=open('README.rst').read(),
     author= "IOAM",
@@ -52,13 +52,17 @@ setup_args.update(dict(
     platforms=['Windows', 'Mac OS X', 'Linux'],
     license='BSD',
     url='http://ioam.github.com/featuremapper/',
-    packages = ["featuremapper"],
+    packages = ["featuremapper",
+                "featuremapper.analysis"],
     classifiers = [
         "License :: OSI Approved :: BSD License",
         "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 2.5",
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",

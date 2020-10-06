@@ -683,7 +683,7 @@ class measure_dr_pref(SinusoidalMeasureResponseCommand):
             [compute_orientation_from_direction([("direction", v)]) for v in
              dr.values]))
 
-        return [f.Speed(values=[0]) if p.num_speeds is 0 else
+        return [f.Speed(values=[0]) if p.num_speeds == 0 else
                 f.Speed(range=(0.0, p.max_speed), steps=p.num_speeds),
                 f.Duration(values=[np.max(p.durations)]),
                 f.Frequency.clone(values=p.frequencies),
