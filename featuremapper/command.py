@@ -140,7 +140,7 @@ class MeasureResponseCommand(PatternPresentingCommand):
         MeasurementResponseCommand and saves the default parameters to restore
         after measurement is complete.
         """
-        self._pr_fn_params = p.pattern_response_fn.get_param_values()
+        self._pr_fn_params = p.pattern_response_fn.param.get_param_values()
         for override, value in p.extra_keywords().items():
             if override in p.pattern_response_fn.params():
                 p.pattern_response_fn.set_param(override, value)
@@ -151,10 +151,10 @@ class MeasureResponseCommand(PatternPresentingCommand):
         Restores the default pattern_response_fn parameters after the
         measurement.
         """
-        params = self.pattern_response_fn.params()
+        params = self.pattern_response_fn.param.params()
         for key, value in self._pr_fn_params:
             if not params[key].constant:
-                self.pattern_response_fn.set_param(key, value)
+                self.pattern_response_fn.param.set_param(key, value)
 
 
 
